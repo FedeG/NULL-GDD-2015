@@ -1,0 +1,7 @@
+F:\PagoElectronico\bin\Debug\PagoElectronico.exe
+F:\PagoElectronico\bin\Debug\PagoElectronico.pdb
+F:\PagoElectronico\obj\Debug\ResolveAssemblyReference.cache
+F:\PagoElectronico\obj\Debug\PagoElectronico.Properties.Resources.resources
+F:\PagoElectronico\obj\Debug\PagoElectronico.csproj.GenerateResource.Cache
+F:\PagoElectronico\obj\Debug\PagoElectronico.exe
+F:\PagoElectronico\obj\Debug\PagoElectronico.pdb
