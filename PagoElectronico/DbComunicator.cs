@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace PagoElectronico{
 
@@ -9,10 +10,13 @@ namespace PagoElectronico{
         private SqlCommand Consulta;
         private SqlDataReader Lector;
 
+        public SqlDataReader getLector(){
+            return this.Lector;
+        }
+
         public void EjecutarQuery(string query){
             this.ConectarConDB();
-            this.getQuery(query);
-            this.CerrarConexion();
+            this.ObtenerQuery(query);
         }
 
         public void ObtenerQuery(string query){
@@ -22,7 +26,11 @@ namespace PagoElectronico{
 
         public void ConectarConDB(){
             // Crear la conexión con la base de datos
-            string strConexión = "Data Source=.\\sqlexpress2005;Initial Catalog=" + Properties.Settings.Default.DbName + ";Integrated Security=True";
+            string strConexión = "Data Source=" + Properties.Settings.Default.DbSource +
+                ";Initial Catalog=" + Properties.Settings.Default.DbName +
+                ";Integrated Security=True" +
+                ";User ID=" + Properties.Settings.Default.DbUser +
+                ";Password=" + Properties.Settings.Default.DbPassword;
             this.ConexionConBD = new SqlConnection(strConexión);
 
             // Abrir la base de datos
@@ -65,7 +73,7 @@ namespace PagoElectronico{
         }
 
         // Ejemplo de uso
-        public static void Main(){
+        public static void MainEjemplo(){
             DbComunicator db = new DbComunicator();
             try {
                 db.EjecutarQuery("SELECT Nombre FROM CLIENT");
@@ -78,6 +86,7 @@ namespace PagoElectronico{
                 while (db.Lector.Read()){
                     Console.WriteLine(" - " + db.Lector["Nombre"]);
                 };
+                db.CerrarConexion();
             }
         }
 
