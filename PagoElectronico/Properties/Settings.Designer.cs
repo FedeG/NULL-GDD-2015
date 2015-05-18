@@ -25,10 +25,37 @@ namespace PagoElectronico.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Gestion2015")]
+        [global::System.Configuration.DefaultSettingValueAttribute("GD1C2015")]
         public string DbName {
             get {
                 return ((string)(this["DbName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost\\SQLSERVER2008")]
+        public string DbSource {
+            get {
+                return ((string)(this["DbSource"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("gd")]
+        public string DbUser {
+            get {
+                return ((string)(this["DbUser"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("gd2015")]
+        public string DbPassword {
+            get {
+                return ((string)(this["DbPassword"]));
             }
         }
     }

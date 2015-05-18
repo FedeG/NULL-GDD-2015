@@ -3,7 +3,16 @@
   <Profiles />
   <Settings>
     <Setting Name="DbName" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Gestion2015</Value>
+      <Value Profile="(Default)">GD1C2015</Value>
+    </Setting>
+    <Setting Name="DbSource" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">localhost\SQLSERVER2008</Value>
+    </Setting>
+    <Setting Name="DbUser" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">gd</Value>
+    </Setting>
+    <Setting Name="DbPassword" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">gd2015</Value>
     </Setting>
   </Settings>
 </SettingsFile>
