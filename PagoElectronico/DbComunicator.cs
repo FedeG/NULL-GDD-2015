@@ -8,7 +8,6 @@ namespace PagoElectronico{
         private SqlConnection ConexionConBD;
         private SqlCommand Consulta;
         private SqlDataReader Lector;
-        private string DbName;
 
         public void EjecutarQuery(string query){
             this.ConectarConDB();
@@ -23,7 +22,7 @@ namespace PagoElectronico{
 
         public void ConectarConDB(){
             // Crear la conexión con la base de datos
-            string strConexión = "Data Source=.\\sqlexpress2005;Initial Catalog=" + this.DbName + ";Integrated Security=True";
+            string strConexión = "Data Source=.\\sqlexpress2005;Initial Catalog=" + Properties.Settings.Default.DbName + ";Integrated Security=True";
             this.ConexionConBD = new SqlConnection(strConexión);
 
             // Abrir la base de datos
