@@ -345,3 +345,22 @@ INSERT INTO "NULL".Funcionalidad(Func_Cod, Func_Nombre) VALUES
 	(11, 'Listados Estadísticos');
 
 SET IDENTITY_INSERT "NULL".Funcionalidad OFF
+
+INSERT INTO "NULL".Rol(Rol_Nombre) VALUES
+	('Administrador'),
+	('Cliente');
+
+INSERT INTO "NULL".Rol_Funcionalidad(Func_Cod, Rol_Nombre) VALUES
+	(1, 'Administrador'),
+	(2, 'Administrador'),
+	(3, 'Administrador'),
+	(4, 'Administrador'),
+	(5, 'Cliente'),
+	(6, 'Cliente'),
+	(7, 'Cliente'),
+	(8, 'Cliente'),
+	(9, 'Cliente'),
+	(9, 'Administrador'),
+	(10, 'Cliente'),
+	(10, 'Administrador'),
+	(11, 'Administrador');
