@@ -3,6 +3,7 @@ GO
 
 SET LANGUAGE Spanish
 
+/********************************** CREACIÓN DEL SCHEMA **************************************/
 IF NOT EXISTS 
 (
 	SELECT  schema_name
@@ -14,6 +15,54 @@ BEGIN
 	EXEC sp_executesql N'CREATE SCHEMA "NULL" AUTHORIZATION gd'
 END
 
+
+/********************************** FECHA DEL SISTEMA **************************************/
+IF OBJECT_ID('NULL.Fecha_Sistema', 'U') IS NOT NULL
+	DROP TABLE "NULL".Fecha_Sistema
+GO
+
+CREATE TABLE "NULL".Fecha_Sistema
+(
+	Fecha DATETIME PRIMARY KEY
+);
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spSetFechaSistema' 
+)
+   DROP PROCEDURE "NULL".spSetFechaSistema
+GO
+
+CREATE PROCEDURE "NULL".spSetFechaSistema 
+	@fecha DATETIME
+AS
+	BEGIN
+		IF @fecha is NULL
+				INSERT "NULL".Fecha_Sistema (Fecha) VALUES (GETDATE())
+		ELSE
+				INSERT "NULL".Fecha_Sistema (Fecha) VALUES (CONVERT(DATETIME, @fecha, 121)) --aaaa-mm-dd hh:mi:ss.mmm(24h)
+	END;
+GO
+
+IF OBJECT_ID (N'NULL.fnGetFechaSistema') IS NOT NULL
+   DROP FUNCTION "NULL".fnGetFechaSistema
+GO
+
+CREATE FUNCTION "NULL".fnGetFechaSistema()
+RETURNS DATETIME
+AS
+	BEGIN
+		DECLARE @fecha DATETIME
+		SELECT TOP 1 @fecha = Fecha FROM "NULL".Fecha_Sistema
+		RETURN @fecha
+	END
+GO
+
+EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
+
+/********************************** BORRADO DE TABLAS **************************************/
 IF OBJECT_ID('NULL.Rol_Funcionalidad', 'U') IS NOT NULL
 	DROP TABLE "NULL".Rol_Funcionalidad
 GO
@@ -99,12 +148,14 @@ IF OBJECT_ID('NULL.Moneda', 'U') IS NOT NULL
 GO
 
 
+/********************************** CREACIÓN DE TABLAS **************************************/
+
 CREATE TABLE "NULL".Funcionalidad
 (
 	Func_Cod NUMERIC(18,0) PRIMARY KEY IDENTITY(12,1),
 	Func_Nombre NVARCHAR(255), 
 	Func_Borrado BIT NOT NULL DEFAULT 0
-)
+);
 GO
 
 CREATE TABLE "NULL".Rol
@@ -129,7 +180,7 @@ CREATE TABLE "NULL".Usuario
 	Usr_Fecha_Ultima_Modificacion DATETIME NOT NULL,
 	Usr_Pregunta_Secreta NVARCHAR(255) NOT NULL,
 	Usr_Respuesta_Secreta NVARCHAR(255) NOT NULL,
-	Usr_INTentos_Login INT DEFAULT 0,
+	Usr_Intentos_Login INT DEFAULT 0,
 	Usr_Borrado BIT NOT NULL DEFAULT 0
 );
 
@@ -232,7 +283,7 @@ CREATE TABLE "NULL".Tarjeta
 	Tarjeta_Numero_Visible NVARCHAR(255) NOT NULL,
 	Tarjeta_Fecha_Emision DATETIME NOT NULL,
 	Tarjeta_Fecha_Vencimiento DATETIME NOT NULL,
-	Tarjeta_Codig_Seg NVARCHAR(255) NOT NULL,
+	Tarjeta_Codigo_Seg NVARCHAR(255) NOT NULL,
 	Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
 	Emisor_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Emisor(Emisor_Cod),
 	Tarjeta_Borrado BIT NOT NULL DEFAULT 0
@@ -364,3 +415,41 @@ INSERT INTO "NULL".Rol_Funcionalidad(Func_Cod, Rol_Nombre) VALUES
 	(10, 'Cliente'),
 	(10, 'Administrador'),
 	(11, 'Administrador');
+
+
+/*********** INSERTO 3 USUARIOS ADMIN, ADMIN2 Y ADMIN3 CON PASSWORD w23e **********************/
+INSERT INTO "NULL".Usuario(Usr_Username, Usr_Password, Usr_Fecha_Creacion, 
+							Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta,
+							Usr_Respuesta_Secreta, Usr_Intentos_Login, Usr_Borrado) VALUES
+	('admin', 'e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7',
+	[NULL].fnGetFechaSistema(), [NULL].fnGetFechaSistema(), 'Pregunta?',
+	'9853528a46d3fc973096dc43528e4a2a660496fb5a24739d9788d5891a49121d', 0, 0),
+	('admin2', 'e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7',
+	[NULL].fnGetFechaSistema(), [NULL].fnGetFechaSistema(), 'Pregunta?',
+	'9853528a46d3fc973096dc43528e4a2a660496fb5a24739d9788d5891a49121d', 0, 0),
+	('admin3', 'e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7',
+	[NULL].fnGetFechaSistema(), [NULL].fnGetFechaSistema(), 'Pregunta?',
+	'9853528a46d3fc973096dc43528e4a2a660496fb5a24739d9788d5891a49121d', 0, 0);
+
+INSERT INTO "NULL".Rol_Usuario(Rol_Nombre, Usr_Username) VALUES
+	('Administrador', 'admin'),
+	('Administrador', 'admin2'),
+	('Administrador', 'admin3');
+
+
+/****************************** MIGRACIÓN DEL RESTO DE LOS USUARIOS ***************************/
+INSERT INTO "NULL".Usuario(Usr_Username, Usr_Password, Usr_Fecha_Creacion, 
+			Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta, 
+			Usr_Intentos_Login, Usr_Borrado)
+SELECT DISTINCT LOWER(Cli_Nombre +'.'+ Cli_Apellido), 
+				'37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f', 
+				"NULL".fnGetFechaSistema(), "NULL".fnGetFechaSistema(), 'pregunta?', 
+				'9853528a46d3fc973096dc43528e4a2a660496fb5a24739d9788d5891a49121d', 0, 0 
+FROM GD1C2015.gd_esquema.Maestra
+WHERE Cli_Nombre IS NOT NULL;
+
+
+INSERT INTO "NULL".Rol_Usuario(Rol_Nombre,Usr_Username)
+SELECT 'Cliente', Usr_Username
+FROM "NULL".Usuario
+WHERE Usr_Username NOT IN ('admin', 'admin2', 'admin3');
