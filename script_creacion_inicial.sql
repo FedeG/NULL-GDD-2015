@@ -453,3 +453,12 @@ INSERT INTO "NULL".Rol_Usuario(Rol_Nombre,Usr_Username)
 SELECT 'Cliente', Usr_Username
 FROM "NULL".Usuario
 WHERE Usr_Username NOT IN ('admin', 'admin2', 'admin3');
+
+INSERT INTO "NULL".Moneda(Moneda_Nombre, Moneda_Simbolo, Moneda_Borrado) VALUES
+	('Dólares Estadounidenses', 'U$S', 0);
+
+INSERT INTO "NULL".Pais(Pais_Codigo, Pais_Desc, Pais_Borrado)
+SELECT DISTINCT Cli_Pais_Codigo, Cli_Pais_Desc, 0
+FROM GD1C2015.gd_esquema.Maestra
+WHERE Cli_Pais_Codigo IS NOT NULL;
+
