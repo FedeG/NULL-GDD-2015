@@ -131,6 +131,10 @@ IF OBJECT_ID('NULL.TipoDoc', 'U') IS NOT NULL
 	DROP TABLE "NULL".TipoDoc
 GO
 
+IF OBJECT_ID('NULL.Nacionalidad', 'U') IS NOT NULL
+	DROP TABLE "NULL".Nacionalidad
+GO
+
 IF OBJECT_ID('NULL.Pais', 'U') IS NOT NULL
 	DROP TABLE "NULL".Pais
 GO
@@ -377,6 +381,11 @@ CREATE TABLE "NULL".Factura_Item
 	PRIMARY KEY(Fact_Numero, Fact_Tipo, Transacc_Codigo)
 );
 
+CREATE TABLE "NULL".Nacionalidad
+(
+	Nac_Pais_Cod NUMERIC(18,0) REFERENCES "NULL".Pais(Pais_Codigo),
+	Nac_Nombre NVARCHAR(255)
+);
 
 /******************************* MIGRACION *********************************************/
 
@@ -454,6 +463,7 @@ SELECT 'Cliente', Usr_Username
 FROM "NULL".Usuario
 WHERE Usr_Username NOT IN ('admin', 'admin2', 'admin3');
 
+/*********************************** MAS MIGRACIONES ******************************************/
 INSERT INTO "NULL".Moneda(Moneda_Nombre, Moneda_Simbolo, Moneda_Borrado) VALUES
 	('Dólares Estadounidenses', 'U$S', 0);
 
@@ -462,3 +472,163 @@ SELECT DISTINCT Cli_Pais_Codigo, Cli_Pais_Desc, 0
 FROM GD1C2015.gd_esquema.Maestra
 WHERE Cli_Pais_Codigo IS NOT NULL;
 
+
+SET IDENTITY_INSERT "NULL".TipoDoc ON
+
+INSERT INTO "NULL".TipoDoc(TipoDoc_Cod, TipoDoc_Desc, TipoDoc_Borrado)
+SELECT DISTINCT Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc, 0 
+FROM GD1C2015.gd_esquema.Maestra
+WHERE Cli_Tipo_Doc_Cod IS NOT NULL;
+
+SET IDENTITY_INSERT "NULL".TipoDoc OFF
+
+
+SET IDENTITY_INSERT "NULL".Banco ON
+
+INSERT INTO "NULL".Banco(Banco_Codigo, Banco_Direccion, Banco_Nombre, Banco_Borrado)
+SELECT DISTINCT Banco_Cogido, Banco_Direccion, Banco_Nombre, 0
+FROM GD1C2015.gd_esquema.Maestra
+WHERE Banco_Cogido IS NOT NULL;
+
+SET IDENTITY_INSERT "NULL".Banco OFF
+
+
+INSERT INTO "NULL".Emisor(Emisor_Desc, Emisor_Borrado)
+SELECT DISTINCT Tarjeta_Emisor_Descripcion, 0
+FROM GD1C2015.gd_esquema.Maestra
+WHERE Tarjeta_Emisor_Descripcion IS NOT NULL;
+
+
+INSERT INTO "NULL".Nacionalidad(Nac_Pais_Cod, Nac_Nombre) VALUES
+	(212, 'Acrotirense y dhekeliano'),
+	(195, 'Andorrano'),
+	(23, 'Angolano'),
+	(224, 'Anguilense'),
+	(8, 'Argentino'),
+	(142, 'Armenio'),
+	(6, 'Australiano'),
+	(113, 'Azerbaiyano'),
+	(201, 'Barbadense'),
+	(102, 'Beninés'),
+	(229, 'Bermudeño'),
+	(40, 'Birmano'),
+	(128, 'Bosnio'),
+	(48, 'Botsuano'),
+	(173, 'Bruneano'),
+	(105, 'Búlgaro'),
+	(54, 'Camerunés'),
+	(164, 'Catarí'),
+	(21, 'Chadiano'),
+	(169, 'Chipriota'),
+	(246, 'Vaticano'),
+	(99, 'Coreano'),
+	(109, 'Coreano'),
+	(69, 'Marfileño'),
+	(129, 'Costarricense'),
+	(133, 'Danés'),
+	(187, 'Dominiqués'),
+	(74, 'Ecuatoriano'),
+	(153, 'Salvadoreño'),
+	(154, 'Eslavo'),
+	(52, 'Español'),
+	(132, 'Estonio'),
+	(73, 'Filipino'),
+	(156, 'Fiyiano'),
+	(77, 'Gabonés'),
+	(121, 'Georgiano'),
+	(82, 'Ghanés'),
+	(206, 'Granadino'),
+	(97, 'Griego'),
+	(12, 'Groenlandés'),
+	(194, 'Guameño'),
+	(107, 'Guatemalteco'),
+	(145, 'Ecuatoguineano'),
+	(137, 'Guineano'),
+	(147, 'Haitiano'),
+	(183, 'Hongkonés'),
+	(18, 'Iraní'),
+	(108, 'Islandés'),
+	(209, 'Caimanés'),
+	(182, 'Feroés'),
+	(177, 'de las Islas Georgias del Sur y Sandwich del Sur'),
+	(196, 'de las Islas Marianas del Norte'),
+	(216, 'Marshalés'),
+	(231, 'de las Islas Pitcairn'),
+	(143, 'Salomonense'),
+	(185, 'de las Islas Turcas y Caicos'),
+	(219, 'de las Islas Vírgenes Británicas'),
+	(152, 'Israelí'),
+	(166, 'Jamaiquino'),
+	(204, 'Janmayense'),
+	(222, 'Jersiais'),
+	(112, 'Jordano'),
+	(49, 'Keniata'),
+	(157, 'Kuwaití'),
+	(168, 'Libanés'),
+	(104, 'Liberio'),
+	(218, 'Liechtensteiniano'),
+	(235, ''),
+	(67, 'Malayo'),
+	(24, 'Maliense'),
+	(207, 'Maltés'),
+	(14, 'Mexicano'),
+	(245, 'Monaqués'),
+	(161, 'Montenegrino'),
+	(223, NULL),
+	(35, 'Mozambiqueño'),
+	(94, 'Nepalí'),
+	(98, 'Nicaragüeño'),
+	(32, 'Nigeriano'),
+	(68, 'Noruego'),
+	(155, 'Neocaledonio'),
+	(71, 'Omanés'),
+	(175, 'Francopolinesio'),
+	(70, 'Polaco'),
+	(138, 'Chino'),
+	(149, 'Macedonio'),
+	(64, 'Congoleño'),
+	(11, 'Congoleño'),
+	(148, 'Ruandés'),
+	(83, 'Rumano'),
+	(1, 'Ruso'),
+	(215, 'Samoano'),
+	(238, 'Francés'),
+	(226, 'San Marinés'),
+	(228, 'Sanmartinense'),
+	(184, 'Santotomense'),
+	(119, 'Sierraleonés'),
+	(89, 'Sirio'),
+	(43, 'Somalí'),
+	(122, 'Ceilandés'),
+	(25, 'Sudafricano'),
+	(56, 'Sueco'),
+	(135, 'Suizo'),
+	(92, 'Surinamés'),
+	(125, 'Svalbarense'),
+	(51, 'Tailandés'),
+	(96, 'tayiko'),
+	(159, 'Timorense'),
+	(126, 'Togolés'),
+	(240, 'Tokelauano'),
+	(188, 'Tongano'),
+	(236, 'Tuvaluano'),
+	(91, 'Uruguayo'),
+	(33, 'Venezolano'),
+	(220, 'Walisiano'),
+	(50, 'Jemetí'),
+	(150, 'yibutiano'),
+	(39, 'Zambiano'),
+	(242, 'de la Isla Clipperton'),
+	(233, 'Estadounidense');
+
+
+
+INSERT INTO "NULL".Cliente(Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc,
+						Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad,
+						Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
+
+SELECT DISTINCT LOWER(Cli_Nombre +'.'+ Cli_Apellido), Cli_Nombre, Cli_Apellido, Cli_Tipo_Doc_Cod,
+	Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, NULL,
+	Cli_Fecha_Nac, Cli_mail, Nac_Nombre, Cli_Pais_Codigo, 0
+FROM GD1C2015.gd_esquema.Maestra, "NULL".Nacionalidad
+WHERE Cli_Nombre IS NOT NULL AND Cli_Pais_Codigo = Nac_Pais_Cod;
