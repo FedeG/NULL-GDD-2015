@@ -27,12 +27,56 @@ namespace PagoElectronico.Login
             return result;
         }
 
-        private void button2_Click(object sender, EventArgs e){
-            DbComunicator db = new DbComunicator();
-            db.EjecutarQuery("SELECT * FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '" + textBox1.Text + "' and Usr_Password = '" + this.getHashString(textBox2.Text) + "'");
+        public List<String> getRoles(DbComunicator db,String username) {
+            db.EjecutarQuery("SELECT Rol_Nombre FROM [GD1C2015].[NULL].[Rol_Usuario] WHERE Usr_Username = '" + username + "'");
+            List<String> roles = new List<string>();
+            
             while (db.getLector().Read()){
-                MessageBox.Show(db.getLector()["Usr_Username"].ToString() + " ha sido logeado");
-            };
+                roles.Add(db.getLector()["Rol_Nombre"].ToString());
+            }
+
+            return roles;
+        }
+
+        private void button2_Click(object sender, EventArgs e){
+            int usersQuantity = 0; 
+            DbComunicator db = new DbComunicator();
+            string username = "";
+
+            db.EjecutarQuery("SELECT * FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '" + textBox1.Text + "' and Usr_Password = '" + this.getHashString(textBox2.Text) + "'");
+
+            while (db.getLector().Read()) {
+                username = db.getLector()["Usr_Username"].ToString();
+                usersQuantity++;
+            }
+
+            if (usersQuantity == 0) {
+                //TODO agregar llamado al store procedure
+                MessageBox.Show("Login Invalido!");
+                textBox2.Text = "";
+            }
+            
+            if(usersQuantity > 1){
+                MessageBox.Show("Hay mas de una coincidencia para el user password!");
+            }
+
+            if(usersQuantity == 1){
+                List<String> roles = this.getRoles(db, username);
+                if (roles.Count == 0) {
+                    MessageBox.Show(username + " no tiene roles asignados");
+                }
+
+                if (roles.Count == 1) {
+                    MessageBox.Show(username + " ha sido logeado");
+                    new FormSeleccionDeRol(roles).Show();
+
+                }
+
+                if (roles.Count > 1) {
+                    MessageBox.Show("Hay mas roles");
+                }
+            }      
+       
             db.CerrarConexion();
         }
     }
