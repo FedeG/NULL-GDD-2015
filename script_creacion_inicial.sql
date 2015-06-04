@@ -46,6 +46,47 @@ AS
 	END;
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spLoginRealizado' 
+)
+   DROP PROCEDURE "NULL".spLoginRealizado
+GO
+
+CREATE PROCEDURE "NULL".spLoginRealizado 
+	@User varchar(255), 
+	@EstadoLogin bit
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @Nro_fallo int
+	
+	IF @EstadoLogin = 1
+		BEGIN
+			SET @Nro_fallo = (SELECT TOP 1 Usr_Intentos_Login
+					FROM [GD1C2015].[NULL].[Usuario]
+					WHERE Usr_Username = @User) + 1
+		END
+	ELSE
+		BEGIN
+			SET @Nro_fallo = 0
+		END
+	
+	IF(@Nro_fallo = 3)
+		BEGIN
+			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo, Usr_Estado = 'Deshabilitado' WHERE Usr_Username = @User
+		END
+	ELSE
+		BEGIN
+			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo WHERE Usr_Username = @User
+		END
+	
+	INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Intento_Exitoso, Log_Nro_Fallo) VALUES
+	(@User, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
+END
+GO
+
 IF OBJECT_ID (N'NULL.fnGetFechaSistema') IS NOT NULL
    DROP FUNCTION "NULL".fnGetFechaSistema
 GO
@@ -63,6 +104,10 @@ GO
 EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
 /********************************** BORRADO DE TABLAS **************************************/
+IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
+	DROP TABLE "NULL".Auditoria_Login
+GO
+
 IF OBJECT_ID('NULL.Rol_Funcionalidad', 'U') IS NOT NULL
 	DROP TABLE "NULL".Rol_Funcionalidad
 GO
@@ -150,8 +195,6 @@ GO
 IF OBJECT_ID('NULL.Moneda', 'U') IS NOT NULL
 	DROP TABLE "NULL".Moneda
 GO
-
-
 /********************************** CREACIÓN DE TABLAS **************************************/
 
 CREATE TABLE "NULL".Funcionalidad
@@ -185,7 +228,8 @@ CREATE TABLE "NULL".Usuario
 	Usr_Pregunta_Secreta NVARCHAR(255) NOT NULL,
 	Usr_Respuesta_Secreta NVARCHAR(255) NOT NULL,
 	Usr_Intentos_Login INT DEFAULT 0,
-	Usr_Borrado BIT NOT NULL DEFAULT 0
+	Usr_Borrado BIT NOT NULL DEFAULT 0,
+	Usr_Estado NVARCHAR(255) DEFAULT 'Habilitado' NOT NULL CHECK (Usr_Estado IN('Habilitado', 'Deshabilitado'))
 );
 
 CREATE TABLE "NULL".Rol_Usuario
@@ -387,6 +431,15 @@ CREATE TABLE "NULL".Nacionalidad
 	Nac_Nombre NVARCHAR(255)
 );
 
+CREATE TABLE "NULL".Auditoria_Login
+(
+	Log_Cod NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	Usr_Username NVARCHAR(255) REFERENCES "NULL".Usuario(Usr_Username) NOT NULL,
+	Log_Fecha DATETIME NOT NULL,
+	Log_Intento_Exitoso BIT NOT NULL,
+	Log_Nro_Fallo NUMERIC(1,0) DEFAULT NULL
+);
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
@@ -406,9 +459,9 @@ INSERT INTO "NULL".Funcionalidad(Func_Cod, Func_Nombre) VALUES
 
 SET IDENTITY_INSERT "NULL".Funcionalidad OFF
 
-INSERT INTO "NULL".Rol(Rol_Nombre) VALUES
-	('Administrador'),
-	('Cliente');
+INSERT INTO "NULL".Rol(Rol_Nombre, Rol_Estado) VALUES
+	('Administrador', 'Habilitado'),
+	('Cliente', 'Habilitado');
 
 INSERT INTO "NULL".Rol_Funcionalidad(Func_Cod, Rol_Nombre) VALUES
 	(1, 'Administrador'),

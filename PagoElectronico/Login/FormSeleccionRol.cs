@@ -11,19 +11,24 @@ namespace PagoElectronico.Login
 {
     public partial class FormSeleccionDeRol : Form
     {
-        List<String> roles;
 
-        public FormSeleccionDeRol(List<String> roles)
+        public FormSeleccionDeRol(DbComunicator db)
         {
             InitializeComponent();
-
-            foreach (string rol in roles)
+            
+            while (db.getLector().Read())
             {
-                comboBox1.Items.Add(rol);
-            };
+                string sa = db.getLector()["Rol_Nombre"].ToString();
+                comboBox1.Items.Add(db.getLector()["Rol_Nombre"].ToString());
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FormSeleccionDeRol_Load(object sender, EventArgs e)
         {
 
         }

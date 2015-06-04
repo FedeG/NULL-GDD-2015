@@ -7,12 +7,34 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Security.Cryptography;
+using System.Data.SqlClient;
 
 namespace PagoElectronico.Login
 {
     public partial class FormLogin : Form{
         public FormLogin(){
             InitializeComponent();
+        }
+
+        public int getCountUsers(DbComunicator dbCount, string username)
+        {
+            dbCount.EjecutarQuery("SELECT count(*) FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '"
+            + textBox1.Text + "'");
+            
+            dbCount.getLector().Read();
+            int count = dbCount.getLector().GetInt32(0);
+            dbCount.CerrarConexion();
+            
+            return count;
+        }
+
+        public void LlamarProcedureLogin(string username, int estado) {
+            DbComunicator dbStoreProcedure = new DbComunicator();
+            SqlCommand storeProcedure = dbStoreProcedure.GetStoreProcedure("NULL.spLoginRealizado");
+            storeProcedure.Parameters.Add(new SqlParameter("@User", username));
+            storeProcedure.Parameters.Add(new SqlParameter("@EstadoLogin", estado));
+            storeProcedure.ExecuteNonQuery();
+            dbStoreProcedure.CerrarConexion();
         }
 
         private void button1_Click(object sender, EventArgs e){
@@ -27,31 +49,36 @@ namespace PagoElectronico.Login
             return result;
         }
 
-        public List<String> getRoles(DbComunicator db,String username) {
-            db.EjecutarQuery("SELECT Rol_Nombre FROM [GD1C2015].[NULL].[Rol_Usuario] WHERE Usr_Username = '" + username + "'");
-            List<String> roles = new List<string>();
-            
-            while (db.getLector().Read()){
-                roles.Add(db.getLector()["Rol_Nombre"].ToString());
-            }
-
-            return roles;
+        public DbComunicator getRoles(DbComunicator db,String username) {
+            db.EjecutarQuery("SELECT r.Rol_Nombre FROM [GD1C2015].[NULL].[Rol_Usuario] AS ru, [GD1C2015].[NULL].[Rol] AS r " + 
+                "WHERE ru.Usr_Username = '" + username + "' AND ru.Rol_Nombre = r.Rol_Nombre AND r.Rol_Estado = 'Habilitado'");
+            return db;
         }
 
         private void button2_Click(object sender, EventArgs e){
             int usersQuantity = 0; 
-            DbComunicator db = new DbComunicator();
-            string username = "";
+            DbComunicator db1 = new DbComunicator();
+            string username = textBox1.Text;
+            string userState = "";
+            string password = this.getHashString(textBox2.Text);
 
-            db.EjecutarQuery("SELECT * FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '" + textBox1.Text + "' and Usr_Password = '" + this.getHashString(textBox2.Text) + "'");
+            db1.EjecutarQuery("SELECT * FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '" 
+                + username + "' and Usr_Password = '" 
+                + password + "'");
 
-            while (db.getLector().Read()) {
-                username = db.getLector()["Usr_Username"].ToString();
+            while (db1.getLector().Read()) {
+                userState = db1.getLector()["Usr_Estado"].ToString();
                 usersQuantity++;
             }
 
             if (usersQuantity == 0) {
                 //TODO agregar llamado al store procedure
+                int count = this.getCountUsers(db1, username);
+                
+                if (count > 0) {
+                    this.LlamarProcedureLogin(username, 1);
+                }
+
                 MessageBox.Show("Login Invalido!");
                 textBox2.Text = "";
             }
@@ -61,23 +88,20 @@ namespace PagoElectronico.Login
             }
 
             if(usersQuantity == 1){
-                List<String> roles = this.getRoles(db, username);
-                if (roles.Count == 0) {
-                    MessageBox.Show(username + " no tiene roles asignados");
+                if (userState == "Habilitado") {
+                    this.LlamarProcedureLogin(username, 0);
+                    FormSeleccionDeRol form = new FormSeleccionDeRol(this.getRoles(db1, username));
+                    form.Show();
                 }
 
-                if (roles.Count == 1) {
-                    MessageBox.Show(username + " ha sido logeado");
-                    new FormSeleccionDeRol(roles).Show();
-
-                }
-
-                if (roles.Count > 1) {
-                    MessageBox.Show("Hay mas roles");
+                if (userState == "Deshabilitado") {
+                    MessageBox.Show("El usuario se encuentra deshabiltado, contacte un Administrador");
+                    textBox2.Text = "";
+                    password = "";
                 }
             }      
        
-            db.CerrarConexion();
+            db1.CerrarConexion();
         }
     }
 }
