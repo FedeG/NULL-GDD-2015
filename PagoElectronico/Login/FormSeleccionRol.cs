@@ -18,7 +18,6 @@ namespace PagoElectronico.Login
             
             while (db.getLector().Read())
             {
-                string sa = db.getLector()["Rol_Nombre"].ToString();
                 comboBox1.Items.Add(db.getLector()["Rol_Nombre"].ToString());
             }
         }
