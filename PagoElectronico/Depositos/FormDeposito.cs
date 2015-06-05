@@ -20,6 +20,7 @@ namespace PagoElectronico.Depositos
             {
                 comboMoneda.Items.Add(db.getLector()["Moneda_Nombre"].ToString());
             }
+            db.CerrarConexion();
         }
 
         private void botonRealizar_Click(object sender, EventArgs e)
