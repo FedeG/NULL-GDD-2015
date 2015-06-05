@@ -79,11 +79,11 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="DbComunicator.cs" />
-    <Compile Include="Depositos\Form1.cs">
+    <Compile Include="Depositos\FormDeposito.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Depositos\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Depositos\FormDeposito.Designer.cs">
+      <DependentUpon>FormDeposito.cs</DependentUpon>
     </Compile>
     <Compile Include="Facturacion\Form1.cs">
       <SubType>Form</SubType>
@@ -119,6 +119,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ABM Rol\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Depositos\FormDeposito.resx">
+      <DependentUpon>FormDeposito.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\FormSeleccionRol.resx">
       <DependentUpon>FormSeleccionRol.cs</DependentUpon>
