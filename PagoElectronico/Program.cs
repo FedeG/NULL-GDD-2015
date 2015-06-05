@@ -12,7 +12,7 @@ namespace PagoElectronico
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Depositos.FormDeposito());
+            Application.Run(new ABM_Rol.RolCreacion());
         }
     }
 }
