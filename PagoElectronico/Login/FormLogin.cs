@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Data.SqlClient;
+using PagoElectronico.Commons;
 
 namespace PagoElectronico.Login
 {
@@ -16,7 +17,7 @@ namespace PagoElectronico.Login
             InitializeComponent();
         }
 
-        public int getCountUsers(DbComunicator dbCount, string username)
+        public int GetCountUsers(DbComunicator dbCount, string username)
         {
             dbCount.EjecutarQuery("SELECT count(*) FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '"
             + textBox1.Text + "'");
@@ -28,80 +29,58 @@ namespace PagoElectronico.Login
             return count;
         }
 
-        public void LlamarProcedureLogin(string username, int estado) {
+        public int LlamarProcedureLogin(string username, string password) {
             DbComunicator dbStoreProcedure = new DbComunicator();
-            SqlCommand storeProcedure = dbStoreProcedure.GetStoreProcedure("NULL.spLoginRealizado");
-            storeProcedure.Parameters.Add(new SqlParameter("@User", username));
-            storeProcedure.Parameters.Add(new SqlParameter("@EstadoLogin", estado));
+            SqlCommand storeProcedure = dbStoreProcedure.GetStoreProcedure("NULL.spRealizarLogin");
+            SqlParameter returnParameter = storeProcedure.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+            storeProcedure.Parameters.Add(new SqlParameter("@Username", username));
+            storeProcedure.Parameters.Add(new SqlParameter("@Password", password));
             storeProcedure.ExecuteNonQuery();
             dbStoreProcedure.CerrarConexion();
+            return (int) returnParameter.Value;
         }
 
         private void button1_Click(object sender, EventArgs e){
             this.Close();
         }
 
-        public String getHashString(String password){
-            byte[] passwordSha256 = new SHA256Managed().ComputeHash(Encoding.UTF8.GetBytes(password));
-            string result = BitConverter.ToString(passwordSha256)
-                .Replace("-", string.Empty)
-                .ToLower();
-            return result;
-        }
-
-        public DbComunicator getRoles(DbComunicator db,String username) {
+        public DbComunicator GetRoles(DbComunicator db,String username) {
             db.EjecutarQuery("SELECT r.Rol_Nombre FROM [GD1C2015].[NULL].[Rol_Usuario] AS ru, [GD1C2015].[NULL].[Rol] AS r " + 
                 "WHERE ru.Usr_Username = '" + username + "' AND ru.Rol_Nombre = r.Rol_Nombre AND r.Rol_Estado = 'Habilitado'");
             return db;
         }
 
         private void button2_Click(object sender, EventArgs e){
-            int usersQuantity = 0; 
             DbComunicator db1 = new DbComunicator();
             string username = textBox1.Text;
-            string userState = "";
-            string password = this.getHashString(textBox2.Text);
+            string password = new Sha256Generator().GetHashString(textBox2.Text);
+            int resultado = this.LlamarProcedureLogin(username, password);
 
-            db1.EjecutarQuery("SELECT * FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '" 
-                + username + "' and Usr_Password = '" 
-                + password + "'");
-
-            while (db1.getLector().Read()) {
-                userState = db1.getLector()["Usr_Estado"].ToString();
-                usersQuantity++;
+            if (resultado == 0)
+            {
+                FormSeleccionDeRol form = new FormSeleccionDeRol(this.GetRoles(db1, username));
+                form.Show();
             }
 
-            if (usersQuantity == 0) {
-                //TODO agregar llamado al store procedure
-                int count = this.getCountUsers(db1, username);
-                
-                if (count > 0) {
-                    this.LlamarProcedureLogin(username, 1);
-                }
-
+            if (resultado == 1)
+            {
                 MessageBox.Show("Login Invalido!");
-                textBox2.Text = "";
-            }
-            
-            if(usersQuantity > 1){
-                MessageBox.Show("Hay mas de una coincidencia para el user password!");
             }
 
-            if(usersQuantity == 1){
-                if (userState == "Habilitado") {
-                    this.LlamarProcedureLogin(username, 0);
-                    FormSeleccionDeRol form = new FormSeleccionDeRol(this.getRoles(db1, username));
-                    form.Show();
-                }
+            if (resultado == 2)
+            {
+                MessageBox.Show("El usuario no existe");
+            }
 
-                if (userState == "Deshabilitado") {
-                    MessageBox.Show("El usuario se encuentra deshabiltado, contacte un Administrador");
-                    textBox2.Text = "";
-                    password = "";
-                }
-            }      
-       
+            if (resultado == 3)
+            {
+                MessageBox.Show("El usuario se encuentra deshabilitado. Comuniquese con un administrador del sistema.");
+            }
+
+            textBox2.Text = "";
             db1.CerrarConexion();
         }
+
     }
 }
