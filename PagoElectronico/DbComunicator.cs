@@ -24,14 +24,38 @@ namespace PagoElectronico{
             this.Lector = Consulta.ExecuteReader();
         }
 
-        public void ConectarConDB(){
-            // Crear la conexión con la base de datos
+        public Dictionary<object, object> GetQueryDictionary(string query, string keyName, string valueName) {
+            Dictionary<object, object> queryDictionary = new Dictionary<object, object>();
+            
+            this.ObtenerQuery(query);
+
+            while (this.getLector().Read()) {
+                queryDictionary.Add(this.getLector()[keyName], this.getLector()[valueName]);
+            }
+
+            return queryDictionary;
+        }
+
+        public DataSet GetDataAdapter(string query) {
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(query, this.GetConectionString());
+            SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapter);
+            DataSet ds = new DataSet();
+            dataAdapter.Fill(ds);
+            return ds;
+        }
+
+       private string GetConectionString() {
             string strConexión = "Data Source=" + Properties.Settings.Default.DbSource +
                 ";Initial Catalog=" + Properties.Settings.Default.DbName +
                 ";Integrated Security=True" +
                 ";User ID=" + Properties.Settings.Default.DbUser +
                 ";Password=" + Properties.Settings.Default.DbPassword;
-            this.ConexionConBD = new SqlConnection(strConexión);
+            return strConexión;
+        }
+
+        public void ConectarConDB(){
+            // Crear la conexión con la base de datos
+            this.ConexionConBD = new SqlConnection(this.GetConectionString());
 
             // Abrir la base de datos
             this.ConexionConBD.Open();

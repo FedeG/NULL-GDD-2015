@@ -70,7 +70,6 @@
             this.Controls.Add(this.label1);
             this.Name = "FormSeleccionDeRol";
             this.Text = "Seleccion de rol";
-            this.Load += new System.EventHandler(this.FormSeleccionDeRol_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
