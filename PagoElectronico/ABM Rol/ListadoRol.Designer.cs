@@ -1,0 +1,109 @@
+﻿namespace PagoElectronico.ABM_Rol
+{
+    partial class ListadoRol
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.rolTable = new System.Windows.Forms.DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.rolName = new System.Windows.Forms.TextBox();
+            this.createRolButton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.rolTable)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // rolTable
+            // 
+            this.rolTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.rolTable.Location = new System.Drawing.Point(12, 64);
+            this.rolTable.Name = "rolTable";
+            this.rolTable.ReadOnly = true;
+            this.rolTable.Size = new System.Drawing.Size(330, 150);
+            this.rolTable.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Nombre";
+            // 
+            // rolName
+            // 
+            this.rolName.Location = new System.Drawing.Point(84, 19);
+            this.rolName.Name = "rolName";
+            this.rolName.Size = new System.Drawing.Size(100, 20);
+            this.rolName.TabIndex = 2;
+            // 
+            // createRolButton
+            // 
+            this.createRolButton.Location = new System.Drawing.Point(13, 238);
+            this.createRolButton.Name = "createRolButton";
+            this.createRolButton.Size = new System.Drawing.Size(75, 23);
+            this.createRolButton.TabIndex = 3;
+            this.createRolButton.Text = "Crear Rol";
+            this.createRolButton.UseVisualStyleBackColor = true;
+            // 
+            // searchButton
+            // 
+            this.searchButton.Location = new System.Drawing.Point(267, 35);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.TabIndex = 4;
+            this.searchButton.Text = "Buscar";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+            // 
+            // ListadoRol
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(354, 273);
+            this.Controls.Add(this.searchButton);
+            this.Controls.Add(this.createRolButton);
+            this.Controls.Add(this.rolName);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.rolTable);
+            this.Name = "ListadoRol";
+            this.Text = "Listado roles";
+            ((System.ComponentModel.ISupportInitialize)(this.rolTable)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.DataGridView rolTable;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox rolName;
+        private System.Windows.Forms.Button createRolButton;
+        private System.Windows.Forms.Button searchButton;
+    }
+}
