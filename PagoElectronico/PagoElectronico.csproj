@@ -136,11 +136,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Retiros\Form1.cs">
+    <Compile Include="Retiros\FormRetiro.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Retiros\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Retiros\FormRetiro.Designer.cs">
+      <DependentUpon>FormRetiro.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Transferencias\Form1.cs">
