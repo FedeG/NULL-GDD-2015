@@ -62,6 +62,79 @@ GO
 
 EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
+)
+   DROP PROCEDURE "NULL".fnValidarDeposito
+GO
+
+CREATE FUNCTION "NULL".fnValidarDeposito(
+	@Username NVARCHAR(255), 
+	@TipoDoc_Cod Numeric(18,0), 
+	@Nro_Doc NVARCHAR(255), 
+	@Cuenta_Numero Numeric(18,0), 
+	@Importe Numeric(18,0)) 
+	RETURNS INT
+AS
+	BEGIN
+		DECLARE @Saldo int
+		IF(SELECT TOP 1 COUNT(*) 
+		FROM [GD1C2015].[NULL].[Cliente] 
+		WHERE Usr_Username = @Username AND Cli_Nro_Doc = @Nro_Doc AND TipoDoc_Cod = @TipoDoc_Cod) = 1
+		BEGIN
+			IF(SELECT TOP 1 Cuenta_Estado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 'Habilitado'
+			BEGIN
+				SET @Saldo = (SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+				IF @Saldo <= 0 
+				BEGIN
+					RETURN 2
+				END
+				ELSE
+				BEGIN
+					IF(@Saldo < @Importe)
+					BEGIN
+						RETURN 3
+					END
+					ELSE
+					BEGIN
+						RETURN 0
+					END
+				END
+			END
+			ELSE
+			BEGIN
+				RETURN 4
+			END
+		END
+		ELSE
+		BEGIN
+			RETURN 1
+		END
+		
+		RETURN 0
+	END;
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarRetiro' 
+)
+   DROP PROCEDURE "NULL".spRealizarRetiro
+GO
+
+CREATE PROCEDURE "NULL".spRealizarRetiro 
+	@Username NVARCHAR(255), 
+	@TipoDoc_Cod Numeric(18,0), 
+	@Nro_Doc NVARCHAR(255), 
+	@Cuenta_Numero Numeric(18,0), 
+	@Importe Numeric(18,0)
+AS
+	
+GO
+
 /********************************** BORRADO DE TABLAS **************************************/
 IF OBJECT_ID('NULL.Rol_Funcionalidad', 'U') IS NOT NULL
 	DROP TABLE "NULL".Rol_Funcionalidad
