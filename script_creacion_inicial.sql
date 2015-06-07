@@ -49,10 +49,86 @@ GO
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarLogin' 
+)
+   DROP PROCEDURE "NULL".spRealizarLogin
+GO
+
+CREATE PROCEDURE "NULL".spRealizarLogin 
+	@Username NVARCHAR (255), 
+	@Password NVARCHAR (255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @Nro_fallo int = 0
+	DECLARE @EstadoLogin NVARCHAR(20)
+	DECLARE @ValorRetorno int
+	
+	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username AND Usr_Password = @Password AND Usr_Estado = 'Habilitado') = 1
+		BEGIN
+			 SET @Nro_fallo = 0
+			 SET @EstadoLogin = 'Exitoso'
+			 SET @ValorRetorno = 0
+		END
+	ELSE 
+		BEGIN
+			IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username) = 1
+			BEGIN
+				IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username AND Usr_Password = @Password AND Usr_Estado = 'Deshabilitado') = 1
+				BEGIN
+					SET @ValorRetorno = 3
+				END
+				ELSE
+				BEGIN
+					SET @Nro_fallo = (SELECT TOP 1 Usr_Intentos_Login
+						FROM [GD1C2015].[NULL].[Usuario]
+						WHERE Usr_Username = @Username) + 1
+					SET @EstadoLogin = 'No Exitoso'
+					SET @ValorRetorno = 1
+				END
+			END
+			ELSE
+			BEGIN
+				SET @ValorRetorno = 2
+			END
+			
+		END
+	
+	IF(@Nro_fallo = 3)
+		BEGIN
+			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo, Usr_Estado = 'Deshabilitado' WHERE Usr_Username = @Username
+		END
+	ELSE
+		BEGIN
+			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo WHERE Usr_Username = @Username
+		END
+	
+	IF(@ValorRetorno = 0 OR @ValorRetorno = 1)
+	BEGIN
+		INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Estado, Log_Nro_Fallo) VALUES
+		(@Username, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
+	END
+
+	RETURN(@ValorRetorno)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
    WHERE SPECIFIC_NAME = N'spCrearRol' 
 )
    DROP PROCEDURE "NULL".spCrearRol
 GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spEditarRol' 
+)
+   DROP PROCEDURE "NULL".spEditarRol
+GO
+
 
 IF EXISTS (
 	SELECT * 
@@ -83,44 +159,43 @@ BEGIN
 END
 GO
 
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spLoginRealizado' 
-)
-   DROP PROCEDURE "NULL".spLoginRealizado
-GO
-
-CREATE PROCEDURE "NULL".spLoginRealizado 
-	@User varchar(255), 
-	@EstadoLogin bit
+CREATE PROCEDURE "NULL".spEditarRol
+	@Rol_Pk     varchar(255),
+	@Rol_Nombre varchar(255),
+	@Rol_Estado varchar(255),
+	@Lista_Funcionalidades As ListaNumeric READONLY
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @Nro_fallo int
 	
-	IF @EstadoLogin = 1
-		BEGIN
-			SET @Nro_fallo = (SELECT TOP 1 Usr_Intentos_Login
-					FROM [GD1C2015].[NULL].[Usuario]
-					WHERE Usr_Username = @User) + 1
-		END
-	ELSE
-		BEGIN
-			SET @Nro_fallo = 0
-		END
+	DELETE [GD1C2015].[NULL].[Rol_Funcionalidad]
+	WHERE Rol_Nombre = @Rol_Pk
 	
-	IF(@Nro_fallo = 3)
-		BEGIN
-			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo, Usr_Estado = 'Deshabilitado' WHERE Usr_Username = @User
-		END
-	ELSE
-		BEGIN
-			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo WHERE Usr_Username = @User
-		END
+	UPDATE [GD1C2015].[NULL].[Rol]
+	SET Rol_Nombre = @Rol_Nombre, Rol_Estado = @Rol_Estado
+	WHERE Rol_Nombre = @Rol_Pk
 	
-	INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Intento_Exitoso, Log_Nro_Fallo) VALUES
-	(@User, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
+	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
+	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spDeshabilitarRol' 
+)
+   DROP PROCEDURE "NULL".spDeshabilitarRol
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarRol
+	@Rol_Pk     varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE [GD1C2015].[NULL].[Rol]
+	SET Rol_Estado = 'Deshabilitado'
+	WHERE Rol_Nombre = @Rol_Pk
 END
 GO
 
@@ -278,13 +353,9 @@ CREATE TABLE "NULL".Rol_Usuario
 
 /**
 Para después insertar valores específicos para un identity:
-
 SET IDENTITY_INSERT Yaks ON
-
 INSERT INTO dbo.Yaks (YakID, YakName) Values(1, 'Mac the Yak')
-
 SET IDENTITY_INSERT Yaks OFF
-
  - See more at: http://www.sqlteam.com/article/understanding-identity-columns#sthash.VdvGfvjn.dpuf
 */
 
@@ -473,11 +544,12 @@ CREATE TABLE "NULL".Auditoria_Login
 	Log_Cod NUMERIC(18,0) PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	Usr_Username NVARCHAR(255) REFERENCES "NULL".Usuario(Usr_Username) NOT NULL,
 	Log_Fecha DATETIME NOT NULL,
-	Log_Intento_Exitoso BIT NOT NULL,
+	Log_Estado NVARCHAR(20) NOT NULL CHECK (Log_Estado IN('Exitoso', 'No Exitoso')),
 	Log_Nro_Fallo NUMERIC(1,0) DEFAULT NULL
 );
 
 /******************************* MIGRACION *********************************************/
+
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
 
 INSERT INTO "NULL".Funcionalidad(Func_Cod, Func_Nombre) VALUES 
@@ -639,12 +711,12 @@ INSERT INTO "NULL".Nacionalidad(Nac_Pais_Cod, Nac_Nombre) VALUES
 	(108, 'Islandés'),
 	(209, 'Caimanés'),
 	(182, 'Feroés'),
-	(177, 'de las Islas Georgias del Sur y Sandwich del Sur'),
+	(177, 'de las Islas Georgias del Sur y Sandwich del Sur'),
 	(196, 'de las Islas Marianas del Norte'),
 	(216, 'Marshalés'),
 	(231, 'de las Islas Pitcairn'),
 	(143, 'Salomonense'),
-	(185, 'de las Islas Turcas y Caicos'),
+	(185, 'de las Islas Turcas y Caicos'),
 	(219, 'de las Islas Vírgenes Británicas'),
 	(152, 'Israelí'),
 	(166, 'Jamaiquino'),
