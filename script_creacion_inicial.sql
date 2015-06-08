@@ -65,12 +65,12 @@ EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
+   WHERE SPECIFIC_NAME = N'fnValidarRetiro' 
 )
-   DROP PROCEDURE "NULL".fnValidarDeposito
+   DROP PROCEDURE "NULL".fnValidarRetiro
 GO
 
-CREATE FUNCTION "NULL".fnValidarDeposito(
+CREATE FUNCTION "NULL".fnValidarRetiro(
 	@Username NVARCHAR(255), 
 	@TipoDoc_Cod Numeric(18,0), 
 	@Nro_Doc NVARCHAR(255), 
@@ -127,12 +127,43 @@ GO
 
 CREATE PROCEDURE "NULL".spRealizarRetiro 
 	@Username NVARCHAR(255), 
-	@TipoDoc_Cod Numeric(18,0), 
+	@TipoDoc_Cod NUMERIC(18,0), 
 	@Nro_Doc NVARCHAR(255), 
-	@Cuenta_Numero Numeric(18,0), 
-	@Importe Numeric(18,0)
+	@Cuenta_Numero NUMERIC(18,0), 
+	@Importe NUMERIC(18,0),
+	@Fecha_Deposito DATETIME
 AS
+	DECLARE @Validacion int
+	SET @Validacion = "NULL".fnValidarRetiro(@Username, @TipoDoc_Cod, @Nro_Doc, @Cuenta_Numero, @Importe)
+	IF(@Validacion = 0)
+	BEGIN
+		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero)
+		VALUES (@Importe, @Fecha_Deposito, @Cuenta_Numero)
+		/* Crear Cheque*/
+		RETURN(@Validacion)
+	END
+	ELSE
+	BEGIN
+		RETURN(@Validacion)
+	END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trRetiro' 
+)
+   DROP TRIGGER "NULL".trRetiro
+GO
+
+CREATE TRIGGER "NULL".trRetiro ON "NULL".Retiro FOR INSERT
+AS
+	DECLARE @Cuenta_Pk NUMERIC(18,0)
+	SET @Cuenta_Pk = (SELECT TOP 1 Cuenta_Numero FROM inserted)
 	
+	UPDATE "NULL".Cuenta
+	SET Cuenta_Saldo = Cuenta_Saldo + (SELECT TOP 1 Retiro_Importe FROM inserted)
+	WHERE Cuenta_Numero = @Cuenta_Pk
 GO
 
 /********************************** BORRADO DE TABLAS **************************************/

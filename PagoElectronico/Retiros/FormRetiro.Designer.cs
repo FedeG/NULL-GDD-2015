@@ -113,6 +113,7 @@
             this.realizarButton.TabIndex = 8;
             this.realizarButton.Text = "Realizar";
             this.realizarButton.UseVisualStyleBackColor = true;
+            this.realizarButton.Click += new System.EventHandler(this.realizarButton_Click);
             // 
             // FormRetiro
             // 
