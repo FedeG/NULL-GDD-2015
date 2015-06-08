@@ -48,11 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABM Cliente\Form1.cs">
+    <Compile Include="ABM Cliente\ClienteCreacion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ABM Cliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ABM Cliente\ClienteCreacion.Designer.cs">
+      <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteData.Designer.cs">
+      <DependentUpon>ClienteData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteEdicion.Designer.cs">
+      <DependentUpon>ClienteEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteListado.Designer.cs">
+      <DependentUpon>ClienteListado.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cuenta\Form1.cs">
       <SubType>Form</SubType>
@@ -111,6 +129,18 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ABM Cliente\ClienteCreacion.resx">
+      <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteData.resx">
+      <DependentUpon>ClienteData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteEdicion.resx">
+      <DependentUpon>ClienteEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteListado.resx">
+      <DependentUpon>ClienteListado.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
