@@ -99,6 +99,14 @@ namespace PagoElectronico{
             this.CerrarConexion();
         }
 
+        public SqlCommand GetStoreProcedure(string nameStoreProcedure)
+        {
+            this.ConectarConDB();
+            SqlCommand storeProcedure = new SqlCommand(nameStoreProcedure, this.ConexionConBD);
+            storeProcedure.CommandType = CommandType.StoredProcedure;
+            return storeProcedure;
+        }
+
         // Ejemplo de uso
         public static void MainEjemplo(){
             DbComunicator db = new DbComunicator();
