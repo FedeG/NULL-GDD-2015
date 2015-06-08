@@ -12,10 +12,26 @@ namespace PagoElectronico.Retiros
 {
     public partial class FormRetiro : Form
     {
-        string username;
+        string username = "";
         public FormRetiro()
         {
             InitializeComponent();
+            DbComunicator db = new DbComunicator();
+            db.EjecutarQuery("SELECT Banco_Codigo, Banco_Nombre FROM [GD1C2015].[NULL].[Banco]");
+            Dictionary<string, string> bancoDictionary = new Dictionary<string, string>();
+            while (db.getLector().Read()) {
+                string codigo = db.getLector()["Banco_Codigo"].ToString();
+                string nombre = db.getLector()["Banco_Nombre"].ToString();
+                bancoDictionary.Add(nombre + " (" + codigo + ") ", codigo);
+            }
+            db.CerrarConexion();
+            db = new DbComunicator();
+            bancoComboBox.DataSource = new BindingSource(bancoDictionary, null);
+            bancoComboBox.DisplayMember = "Key";
+            bancoComboBox.ValueMember = "Value";
+            tipoDocComboBox.DataSource = new BindingSource(db.GetQueryDictionary("SELECT TipoDoc_Cod, TipoDoc_Desc FROM [GD1C2015].[NULL].[TipoDoc]", "TipoDoc_Cod", "TipoDoc_Desc"), null);
+            tipoDocComboBox.DisplayMember = "Key";
+            tipoDocComboBox.DisplayMember = "Value";
         }
 
         private void realizarButton_Click(object sender, EventArgs e)
@@ -29,6 +45,10 @@ namespace PagoElectronico.Retiros
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Nro_Doc", nroDocTextBox.Text));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Cuenta_Numero", cuentaComboBox.SelectedText));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Banco_Cod", bancoComboBox.SelectedValue));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Moneda_Nombre", "Dólares Estadounidenses"));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Fecha_Deposito", Properties.Settings.Default.FechaSistema));
+
             //Agregar la fecha de sistema.
             spRealizarRetiro.ExecuteNonQuery();
 

@@ -67,7 +67,7 @@ IF EXISTS (
     FROM INFORMATION_SCHEMA.ROUTINES 
    WHERE SPECIFIC_NAME = N'fnValidarRetiro' 
 )
-   DROP PROCEDURE "NULL".fnValidarRetiro
+   DROP FUNCTION "NULL".fnValidarRetiro
 GO
 
 CREATE FUNCTION "NULL".fnValidarRetiro(
@@ -131,39 +131,36 @@ CREATE PROCEDURE "NULL".spRealizarRetiro
 	@Nro_Doc NVARCHAR(255), 
 	@Cuenta_Numero NUMERIC(18,0), 
 	@Importe NUMERIC(18,0),
-	@Fecha_Deposito DATETIME
+	@Fecha_Deposito DATETIME,
+	@Banco_Cod NUMERIC(18,0),
+	@Moneda_Nombre NVARCHAR(255)
 AS
 	DECLARE @Validacion int
 	SET @Validacion = "NULL".fnValidarRetiro(@Username, @TipoDoc_Cod, @Nro_Doc, @Cuenta_Numero, @Importe)
 	IF(@Validacion = 0)
 	BEGIN
+		DECLARE @InsertedRetiros TABLE(
+			Retiro_Codigo Numeric(18,0)
+		);
+		DECLARE @Cheque_Nombre NVARCHAR(255)
+		
+		SET @Cheque_Nombre = (SELECT TOP 1 Cli_Apellido FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = @Username)
+		SET @Cheque_Nombre = @Cheque_Nombre + ', ' + (SELECT TOP 1 Cli_Nombre FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = @Username)
+		
 		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero)
+		OUTPUT inserted.Retiro_Codigo INTO @InsertedRetiros
 		VALUES (@Importe, @Fecha_Deposito, @Cuenta_Numero)
-		/* Crear Cheque*/
+		
+		INSERT INTO [GD1C2015].[NULL].[Cheque](Retiro_Codigo, Cheque_Fecha, Cheque_Importe, Cheque_Nombre, Banco_Codigo, Moneda_Nombre)
+		SELECT Retiro_Codigo, @Fecha_Deposito, @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre
+		FROM @InsertedRetiros
+		
 		RETURN(@Validacion)
 	END
 	ELSE
 	BEGIN
 		RETURN(@Validacion)
 	END
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'trRetiro' 
-)
-   DROP TRIGGER "NULL".trRetiro
-GO
-
-CREATE TRIGGER "NULL".trRetiro ON "NULL".Retiro FOR INSERT
-AS
-	DECLARE @Cuenta_Pk NUMERIC(18,0)
-	SET @Cuenta_Pk = (SELECT TOP 1 Cuenta_Numero FROM inserted)
-	
-	UPDATE "NULL".Cuenta
-	SET Cuenta_Saldo = Cuenta_Saldo + (SELECT TOP 1 Retiro_Importe FROM inserted)
-	WHERE Cuenta_Numero = @Cuenta_Pk
 GO
 
 /********************************** BORRADO DE TABLAS **************************************/
@@ -243,10 +240,6 @@ IF OBJECT_ID('NULL.Pais', 'U') IS NOT NULL
 	DROP TABLE "NULL".Pais
 GO
 
-IF OBJECT_ID('NULL.Usuario', 'U') IS NOT NULL
-	DROP TABLE "NULL".Usuario
-GO
-
 IF OBJECT_ID('NULL.TipoCuenta', 'U') IS NOT NULL
 	DROP TABLE "NULL".TipoCuenta
 GO
@@ -255,7 +248,9 @@ IF OBJECT_ID('NULL.Moneda', 'U') IS NOT NULL
 	DROP TABLE "NULL".Moneda
 GO
 
-
+IF OBJECT_ID('NULL.Usuario', 'U') IS NOT NULL
+	DROP TABLE "NULL".Usuario
+GO
 /********************************** CREACIÓN DE TABLAS **************************************/
 
 CREATE TABLE "NULL".Funcionalidad
@@ -491,6 +486,23 @@ CREATE TABLE "NULL".Nacionalidad
 	Nac_Nombre NVARCHAR(255)
 );
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trRetiro' 
+)
+   DROP TRIGGER "NULL".trRetiro
+GO
+
+CREATE TRIGGER "NULL".trRetiro ON [NULL].[Retiro] FOR INSERT
+AS
+	DECLARE @Cuenta_Pk NUMERIC(18,0)
+	SET @Cuenta_Pk = (SELECT TOP 1 Cuenta_Numero FROM inserted)
+	
+	UPDATE "NULL".Cuenta
+	SET Cuenta_Saldo = Cuenta_Saldo + (SELECT TOP 1 Retiro_Importe FROM inserted)
+	WHERE Cuenta_Numero = @Cuenta_Pk
+GO
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON

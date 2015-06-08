@@ -79,10 +79,10 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="DbComunicator.cs" />
-    <Compile Include="Depositos\Form1.cs">
+    <Compile Include="Login\Depositos\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Depositos\Form1.Designer.cs">
+    <Compile Include="Login\Depositos\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Facturacion\Form1.cs">
@@ -121,6 +121,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Retiros\FormRetiro.resx">
+      <DependentUpon>FormRetiro.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

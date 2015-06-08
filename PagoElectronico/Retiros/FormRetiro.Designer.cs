@@ -37,6 +37,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.importeTextBox = new System.Windows.Forms.TextBox();
             this.realizarButton = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.bancoComboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // cuentaComboBox
@@ -44,7 +46,7 @@
             this.cuentaComboBox.FormattingEnabled = true;
             this.cuentaComboBox.Location = new System.Drawing.Point(143, 13);
             this.cuentaComboBox.Name = "cuentaComboBox";
-            this.cuentaComboBox.Size = new System.Drawing.Size(121, 21);
+            this.cuentaComboBox.Size = new System.Drawing.Size(134, 21);
             this.cuentaComboBox.TabIndex = 0;
             // 
             // label1
@@ -70,7 +72,7 @@
             this.tipoDocComboBox.FormattingEnabled = true;
             this.tipoDocComboBox.Location = new System.Drawing.Point(143, 56);
             this.tipoDocComboBox.Name = "tipoDocComboBox";
-            this.tipoDocComboBox.Size = new System.Drawing.Size(121, 21);
+            this.tipoDocComboBox.Size = new System.Drawing.Size(134, 21);
             this.tipoDocComboBox.TabIndex = 3;
             // 
             // label3
@@ -86,7 +88,7 @@
             // 
             this.nroDocTextBox.Location = new System.Drawing.Point(143, 102);
             this.nroDocTextBox.Name = "nroDocTextBox";
-            this.nroDocTextBox.Size = new System.Drawing.Size(121, 20);
+            this.nroDocTextBox.Size = new System.Drawing.Size(134, 20);
             this.nroDocTextBox.TabIndex = 5;
             // 
             // label4
@@ -102,12 +104,12 @@
             // 
             this.importeTextBox.Location = new System.Drawing.Point(143, 146);
             this.importeTextBox.Name = "importeTextBox";
-            this.importeTextBox.Size = new System.Drawing.Size(121, 20);
+            this.importeTextBox.Size = new System.Drawing.Size(134, 20);
             this.importeTextBox.TabIndex = 7;
             // 
             // realizarButton
             // 
-            this.realizarButton.Location = new System.Drawing.Point(188, 238);
+            this.realizarButton.Location = new System.Drawing.Point(202, 238);
             this.realizarButton.Name = "realizarButton";
             this.realizarButton.Size = new System.Drawing.Size(75, 23);
             this.realizarButton.TabIndex = 8;
@@ -115,11 +117,30 @@
             this.realizarButton.UseVisualStyleBackColor = true;
             this.realizarButton.Click += new System.EventHandler(this.realizarButton_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(21, 199);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(38, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Banco";
+            // 
+            // bancoComboBox
+            // 
+            this.bancoComboBox.FormattingEnabled = true;
+            this.bancoComboBox.Location = new System.Drawing.Point(143, 190);
+            this.bancoComboBox.Name = "bancoComboBox";
+            this.bancoComboBox.Size = new System.Drawing.Size(134, 21);
+            this.bancoComboBox.TabIndex = 10;
+            // 
             // FormRetiro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 273);
+            this.ClientSize = new System.Drawing.Size(309, 273);
+            this.Controls.Add(this.bancoComboBox);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.realizarButton);
             this.Controls.Add(this.importeTextBox);
             this.Controls.Add(this.label4);
@@ -147,5 +168,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox importeTextBox;
         private System.Windows.Forms.Button realizarButton;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox bancoComboBox;
     }
 }
