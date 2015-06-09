@@ -472,6 +472,11 @@ SELECT DISTINCT Cli_Pais_Codigo, Cli_Pais_Desc, 0
 FROM GD1C2015.gd_esquema.Maestra
 WHERE Cli_Pais_Codigo IS NOT NULL;
 
+INSERT INTO "NULL".Pais(Pais_Codigo, Pais_Desc, Pais_Borrado)
+SELECT DISTINCT master.Cuenta_Pais_Codigo, master.Cuenta_Pais_Desc, 0
+FROM GD1C2015.gd_esquema.Maestra as master
+WHERE master.Cuenta_Pais_Codigo NOT IN (SELECT Pais_Codigo FROM GD1C2015."NULL".Pais);
+
 
 SET IDENTITY_INSERT "NULL".TipoDoc ON
 
@@ -1287,3 +1292,59 @@ GO
 IF OBJECT_ID('NULL.Tarjetas_Codigos_SHA_Temp', 'U') IS NOT NULL
 	DROP TABLE "NULL".Tarjetas_Codigos_SHA_Temp
 GO
+
+/******************************************* TIPO CUENTA ***************************************************/
+
+INSERT INTO "NULL".TipoCuenta(TipoCta_Nombre, TipoCta_Costo_Apertura, TipoCta_Duracion, TipoCta_Costo_Dia,
+							  TipoCta_Costo_Transf, TipoCta_Borrado) VALUES
+	('ORO', 300, 30, 10, 5, 0),
+	('PLATA', 200, 40, 5, 10, 0),
+	('BRONCE', 100, 20, 5, 15, 0),
+	('GRATUITA', 0, 999999999999999999, 0, 0, 0); /*Tendríamos que ver si la duración la ponemos así o la ignoramos por código*/
+
+
+/************************************************ CUENTAS ***************************************************/
+
+IF object_id(N'NULL.TipoCuentaRandom', 'V') IS NOT NULL
+	DROP VIEW "NULL".TipoCuentaRandom
+GO
+
+CREATE VIEW "NULL".TipoCuentaRandom AS
+	SELECT TOP 1 TipoCta_Nombre FROM "NULL".TipoCuenta ORDER BY NEWID()
+GO
+
+IF OBJECT_ID(N'NULL.fnGetTipoCuentaRandom') IS NOT NULL
+   DROP FUNCTION "NULL".fnGetTipoCuentaRandom
+GO
+
+CREATE FUNCTION "NULL".fnGetTipoCuentaRandom()
+RETURNS NVARCHAR(255)
+AS
+	BEGIN
+		DECLARE @TipoCta_Nombre NVARCHAR(255);
+		SELECT  @TipoCta_Nombre = TipoCta_Nombre FROM "NULL".TipoCuentaRandom;
+		RETURN @TipoCta_Nombre;
+	END
+GO
+
+SET IDENTITY_INSERT "NULL".Cuenta ON
+
+INSERT INTO "NULL".Cuenta(Cuenta_Numero, Cuenta_Estado, Cuenta_Fecha_Vencimiento, Cuenta_Fecha_Cierre,
+	Cuenta_Fecha_Creacion, Cuenta_Saldo, Pais_Codigo, TipoCta_Nombre, Cli_Cod, Moneda_Nombre, Cuenta_Borrado)
+SELECT DISTINCT master.Cuenta_Numero, 'Habilitada' Cuenta_Estado, NULL Cuenta_Fecha_Vencimiento, 
+	master.Cuenta_Fecha_Cierre, CONVERT(DATETIME, master.Cuenta_Fecha_Creacion, 121) Cuenta_Fecha_Creacion, 
+	0 Cuenta_Saldo, master.Cuenta_Pais_Codigo, [NULL].fnGetTipoCuentaRandom(), cli.Cli_Cod, 
+	'Dólares Estadounidenses' Moneda_Nombre, 0 Cuenta_Borrado
+FROM GD1C2015.gd_esquema.Maestra as master, GD1C2015."NULL".Cliente as cli
+WHERE master.Cli_Nro_Doc = cli.Cli_Nro_Doc AND master.Cli_Tipo_Doc_Cod = cli.TipoDoc_Cod
+
+SET IDENTITY_INSERT "NULL".Cuenta OFF
+
+
+--IF object_id(N'NULL.TipoCuentaRandom', 'V') IS NOT NULL
+--	DROP VIEW "NULL".TipoCuentaRandom
+--GO
+--
+--IF OBJECT_ID(N'NULL.fnGetTipoCuentaRandom') IS NOT NULL
+--   DROP FUNCTION "NULL".fnGetTipoCuentaRandom
+--GO
