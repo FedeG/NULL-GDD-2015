@@ -62,6 +62,7 @@
             this.Abrir.TabIndex = 10;
             this.Abrir.Text = "Abrir";
             this.Abrir.UseVisualStyleBackColor = true;
+            this.Abrir.Click += new System.EventHandler(this.Abrir_Click);
             // 
             // Funcionalidades
             // 

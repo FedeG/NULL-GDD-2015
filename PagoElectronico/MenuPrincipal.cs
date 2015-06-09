@@ -12,7 +12,8 @@ namespace PagoElectronico
     public partial class MenuPrincipal : Form
     {
         DbComunicator db;
-        Dictionary<object, object> FuncionalidadesDict, FormsDict;
+        Dictionary<object, object> FuncionalidadesDict;
+        Dictionary<object, Form> FormsDict;
 
         public MenuPrincipal(string rol){
             InitializeComponent();
@@ -22,7 +23,8 @@ namespace PagoElectronico
 
         private void LoadFuncionalidades(string rol){
             this.db.ConectarConDB();
-            this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Func_Cod, Func_Nombre FROM [GD1C2015].[NULL].[Funcionalidad] WHERE Func_Borrado = 0", "Func_Cod", "Func_Nombre");
+            string a = "SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + rol + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0";
+            this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + rol + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0", "Func_Cod", "Func_Nombre");
             this.db.CerrarConexion();
             foreach (object Func_Cod in FuncionalidadesDict.Keys){
                 string Func_Nombre = FuncionalidadesDict[Func_Cod].ToString();
@@ -30,21 +32,54 @@ namespace PagoElectronico
             }
         }
 
-        private void LoadForms(){
-            //this.FormsDict.Add(1, new  PagoElectronico.ABM_Rol.Form1);
-            this.FormsDict.Add(2, new  PagoElectronico.ABM_de_Usuario.Form1());
-            this.FormsDict.Add(3, new  PagoElectronico.ABM_Cliente.Form1());
-            this.FormsDict.Add(4, new  PagoElectronico.ABM_Cuenta.Form1());
-            //this.FormsDict.Add(5, new  PagoElectronico.Tarjeta.Form1());
-            this.FormsDict.Add(6, new  PagoElectronico.Depositos.Form1());
-            this.FormsDict.Add(7, new  PagoElectronico.Retiros.Form1());
-            this.FormsDict.Add(8, new  PagoElectronico.Transferencias.Form1());
-            this.FormsDict.Add(9, new  PagoElectronico.Facturacion.Form1());
-            this.FormsDict.Add(10, new  PagoElectronico.Consulta_Saldos.Form1());
-            this.FormsDict.Add(11, new PagoElectronico.Listados.Form1());
+        private Form SearchForm(object Func_Cod){
+            Form form = null;
+            switch ((Int16) Func_Cod){
+                //case 1: 
+                    //form = new  PagoElectronico.ABM_Rol.Form1();
+                    //break;
+                case 2: 
+                    form = new PagoElectronico.ABM_de_Usuario.Form1();
+                    break;
+                case 3:
+                    form = new  PagoElectronico.ABM_Cliente.Form1();
+                    break;
+                case 4:
+                    form = new  PagoElectronico.ABM_Cuenta.Form1();
+                    break;
+                //case 5: 
+                    //form = new  PagoElectronico.Tarjeta.Form1();
+                    //break;
+                case 6:
+                    form = new  PagoElectronico.Depositos.Form1();
+                    break;
+                case 7: 
+                    form = new  PagoElectronico.Retiros.Form1();
+                    break;
+                case 8: 
+                    form = new  PagoElectronico.Transferencias.Form1();
+                    break;
+                case 9: 
+                    form = new  PagoElectronico.Facturacion.Form1();
+                    break;
+                case 10: 
+                    form = new  PagoElectronico.Consulta_Saldos.Form1();
+                    break;
+                case 11: 
+                    form = new PagoElectronico.Listados.Form1();
+                    break;
+            }
+            return form;
         }
 
         private void Salir_Click(object sender, EventArgs e){
+            this.Close();
+        }
+
+        private void Abrir_Click(object sender, EventArgs e){
+            object FuncCod = this.FuncionalidadesDict.FirstOrDefault(Func => Func.Value.ToString().Equals(Funcionalidades.SelectedText.ToString())).Key;
+            Form form = this.SearchForm(FuncCod);
+            form.Show();
             this.Close();
         }
     }
