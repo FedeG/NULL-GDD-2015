@@ -500,9 +500,10 @@ AS
 	SET @Cuenta_Pk = (SELECT TOP 1 Cuenta_Numero FROM inserted)
 	
 	UPDATE "NULL".Cuenta
-	SET Cuenta_Saldo = Cuenta_Saldo + (SELECT TOP 1 Retiro_Importe FROM inserted)
+	SET Cuenta_Saldo = Cuenta_Saldo - (SELECT TOP 1 Retiro_Importe FROM inserted)
 	WHERE Cuenta_Numero = @Cuenta_Pk
 GO
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
