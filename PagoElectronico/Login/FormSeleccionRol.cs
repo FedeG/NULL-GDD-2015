@@ -26,7 +26,7 @@ namespace PagoElectronico.Login
         }
 
         private void button1_Click(object sender, EventArgs e){
-            PagoElectronico.MenuPrincipal form = new PagoElectronico.MenuPrincipal(comboBox1.SelectedText);
+            PagoElectronico.MenuPrincipal form = new PagoElectronico.MenuPrincipal(comboBox1.SelectedValue.ToString());
             form.Show();
             this.Close();
         }
