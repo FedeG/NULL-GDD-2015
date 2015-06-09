@@ -97,11 +97,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Listados\Form1.cs">
+    <Compile Include="Listados\ListadosForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Listados\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Listados\ListadosForm.Designer.cs">
+      <DependentUpon>ListadosForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Login\FormSeleccionRol.cs">
       <SubType>Form</SubType>
@@ -119,6 +119,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ABM Rol\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Listados\ListadosForm.resx">
+      <DependentUpon>ListadosForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\FormSeleccionRol.resx">
       <DependentUpon>FormSeleccionRol.cs</DependentUpon>
