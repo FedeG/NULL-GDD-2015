@@ -103,6 +103,100 @@ GO
 
 EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
+)
+   DROP FUNCTION "NULL".fnValidarDeposito
+GO
+
+CREATE FUNCTION "NULL".fnValidarDeposito(
+	@Cuenta_Numero NUMERIC(18,0), 
+	@Importe INT,
+	@Fecha_Deposito DATETIME,
+	@Moneda_Nombre NVARCHAR(255),
+	@Tarjeta_Numero NVARCHAR(255))
+	RETURNS INT
+AS
+BEGIN
+	IF(@Importe < 0)
+	BEGIN
+		RETURN(1)
+	END
+	
+	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero AND @Fecha_Deposito > Tarjeta_Fecha_Vencimiento) = 1)
+	BEGIN
+		RETURN(2)
+	END
+	
+	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 0)
+	BEGIN
+		RETURN(3)
+	END
+	
+	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0)
+	BEGIN
+		RETURN(4)
+	END
+
+	RETURN(0)
+END
+GO
+
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarDeposito' 
+)
+   DROP PROCEDURE "NULL".spRealizarDeposito
+GO
+
+CREATE PROCEDURE "NULL".spRealizarDeposito
+	@Cuenta_Numero NUMERIC(18,0), 
+	@Importe INT,
+	@Fecha_Deposito DATETIME,
+	@Moneda_Nombre NVARCHAR(255),
+	@Tarjeta_Numero NVARCHAR(255)
+AS
+BEGIN
+	DECLARE @Validacion int
+	SET @Validacion = "NULL".fnValidarDeposito(@Cuenta_Numero, @Importe, @Fecha_Deposito, @Moneda_Nombre, @Tarjeta_Numero)
+	
+	IF(@Validacion = 0)
+	BEGIN
+		INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
+		VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
+	END
+	RETURN(@Validacion)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trDeposito' 
+)
+   DROP TRIGGER "NULL".trDeposito
+GO
+
+CREATE TRIGGER "NULL".trDeposito ON "NULL".Deposito AFTER INSERT
+AS
+BEGIN
+	DECLARE @Importe INT
+	DECLARE @Cuenta_Numero NUMERIC(18,0)
+	
+	SET @Importe = (SELECT TOP 1 Deposito_Importe FROM inserted)
+	SET @Cuenta_Numero = (SELECT TOP 1 Cuenta_Numero FROM inserted)
+	
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Saldo = Cuenta_Saldo + @Importe
+	WHERE Cuenta_Numero = @Cuenta_Numero
+	
+END
+GO
+
 /********************************** BORRADO DE TABLAS **************************************/
 IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
 	DROP TABLE "NULL".Auditoria_Login
