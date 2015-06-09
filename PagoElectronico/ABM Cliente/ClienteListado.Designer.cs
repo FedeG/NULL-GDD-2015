@@ -57,7 +57,7 @@
             this.clienteTable.Name = "clienteTable";
             this.clienteTable.ReadOnly = true;
             this.clienteTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.clienteTable.Size = new System.Drawing.Size(738, 150);
+            this.clienteTable.Size = new System.Drawing.Size(845, 150);
             this.clienteTable.TabIndex = 0;
             // 
             // label1
@@ -73,7 +73,7 @@
             // 
             this.ClienteUsername.Location = new System.Drawing.Point(67, 26);
             this.ClienteUsername.Name = "ClienteUsername";
-            this.ClienteUsername.Size = new System.Drawing.Size(214, 20);
+            this.ClienteUsername.Size = new System.Drawing.Size(295, 20);
             this.ClienteUsername.TabIndex = 2;
             // 
             // createClienteButton
@@ -88,7 +88,7 @@
             // 
             // searchUsernameButton
             // 
-            this.searchUsernameButton.Location = new System.Drawing.Point(206, 61);
+            this.searchUsernameButton.Location = new System.Drawing.Point(287, 61);
             this.searchUsernameButton.Name = "searchUsernameButton";
             this.searchUsernameButton.Size = new System.Drawing.Size(75, 23);
             this.searchUsernameButton.TabIndex = 4;
@@ -122,7 +122,7 @@
             this.groupBox1.Controls.Add(this.searchUsernameButton);
             this.groupBox1.Location = new System.Drawing.Point(13, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(299, 100);
+            this.groupBox1.Size = new System.Drawing.Size(379, 100);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Buscar por Username";
@@ -134,9 +134,9 @@
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.DocCliente);
             this.groupBox2.Controls.Add(this.searchDocumentoButton);
-            this.groupBox2.Location = new System.Drawing.Point(318, 12);
+            this.groupBox2.Location = new System.Drawing.Point(398, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(432, 100);
+            this.groupBox2.Size = new System.Drawing.Size(459, 100);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Buscar por Documento";
@@ -146,7 +146,7 @@
             this.TipoDocCliente.FormattingEnabled = true;
             this.TipoDocCliente.Location = new System.Drawing.Point(44, 26);
             this.TipoDocCliente.Name = "TipoDocCliente";
-            this.TipoDocCliente.Size = new System.Drawing.Size(101, 21);
+            this.TipoDocCliente.Size = new System.Drawing.Size(126, 21);
             this.TipoDocCliente.TabIndex = 6;
             // 
             // label3
@@ -161,7 +161,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(151, 29);
+            this.label2.Location = new System.Drawing.Point(176, 29);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
             this.label2.TabIndex = 1;
@@ -169,14 +169,14 @@
             // 
             // DocCliente
             // 
-            this.DocCliente.Location = new System.Drawing.Point(201, 26);
+            this.DocCliente.Location = new System.Drawing.Point(226, 26);
             this.DocCliente.Name = "DocCliente";
             this.DocCliente.Size = new System.Drawing.Size(214, 20);
             this.DocCliente.TabIndex = 2;
             // 
             // searchDocumentoButton
             // 
-            this.searchDocumentoButton.Location = new System.Drawing.Point(340, 61);
+            this.searchDocumentoButton.Location = new System.Drawing.Point(365, 61);
             this.searchDocumentoButton.Name = "searchDocumentoButton";
             this.searchDocumentoButton.Size = new System.Drawing.Size(75, 23);
             this.searchDocumentoButton.TabIndex = 4;
@@ -199,7 +199,7 @@
             this.Acciones.Controls.Add(this.HabilitarButton);
             this.Acciones.Controls.Add(this.editarClienteButton);
             this.Acciones.Enabled = false;
-            this.Acciones.Location = new System.Drawing.Point(472, 275);
+            this.Acciones.Location = new System.Drawing.Point(579, 275);
             this.Acciones.Name = "Acciones";
             this.Acciones.Size = new System.Drawing.Size(278, 56);
             this.Acciones.TabIndex = 10;
@@ -210,7 +210,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 339);
+            this.ClientSize = new System.Drawing.Size(869, 339);
             this.Controls.Add(this.Acciones);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
