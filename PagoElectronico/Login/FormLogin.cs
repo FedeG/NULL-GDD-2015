@@ -20,7 +20,7 @@ namespace PagoElectronico.Login
         public int GetCountUsers(DbComunicator dbCount, string username)
         {
             dbCount.EjecutarQuery("SELECT count(*) FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '"
-            + textBox1.Text + "'");
+            + InputUsername.Text + "'");
             
             dbCount.getLector().Read();
             int count = dbCount.getLector().GetInt32(0);
@@ -53,32 +53,19 @@ namespace PagoElectronico.Login
 
         private void button2_Click(object sender, EventArgs e){
             DbComunicator db1 = new DbComunicator();
-            string username = textBox1.Text;
-            string password = new Sha256Generator().GetHashString(textBox2.Text);
+            string username = InputUsername.Text;
+            string password = new Sha256Generator().GetHashString(InputPassword.Text);
             int resultado = this.LlamarProcedureLogin(username, password);
-
-            if (resultado == 0)
-            {
-                FormSeleccionDeRol form = new FormSeleccionDeRol(this.GetRoles(db1, username));
-                form.Show();
+            switch (resultado){
+                case 0:
+                    FormSeleccionDeRol form = new FormSeleccionDeRol(this.GetRoles(db1, username));
+                    form.Show();
+                    break;
+                case 1: MessageBox.Show("Login Invalido!"); break;
+                case 2: MessageBox.Show("El usuario no existe"); break;
+                case 3: MessageBox.Show("El usuario se encuentra deshabilitado. Comuniquese con un administrador del sistema."); break;
             }
-
-            if (resultado == 1)
-            {
-                MessageBox.Show("Login Invalido!");
-            }
-
-            if (resultado == 2)
-            {
-                MessageBox.Show("El usuario no existe");
-            }
-
-            if (resultado == 3)
-            {
-                MessageBox.Show("El usuario se encuentra deshabilitado. Comuniquese con un administrador del sistema.");
-            }
-
-            textBox2.Text = "";
+            InputPassword.Text = "";
             db1.CerrarConexion();
         }
 
