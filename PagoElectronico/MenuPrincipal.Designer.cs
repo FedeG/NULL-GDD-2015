@@ -31,7 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.Salir = new System.Windows.Forms.Button();
             this.Abrir = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.Funcionalidades = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -63,26 +63,25 @@
             this.Abrir.Text = "Abrir";
             this.Abrir.UseVisualStyleBackColor = true;
             // 
-            // comboBox1
+            // Funcionalidades
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(13, 29);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(234, 21);
-            this.comboBox1.TabIndex = 11;
+            this.Funcionalidades.FormattingEnabled = true;
+            this.Funcionalidades.Location = new System.Drawing.Point(13, 29);
+            this.Funcionalidades.Name = "Funcionalidades";
+            this.Funcionalidades.Size = new System.Drawing.Size(234, 21);
+            this.Funcionalidades.TabIndex = 11;
             // 
             // MenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(259, 103);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.Funcionalidades);
             this.Controls.Add(this.Abrir);
             this.Controls.Add(this.Salir);
             this.Controls.Add(this.label1);
             this.Name = "MenuPrincipal";
             this.Text = "Menu Principal";
-            this.Load += new System.EventHandler(this.MenuPrincipal_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -93,7 +92,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button Salir;
         private System.Windows.Forms.Button Abrir;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox Funcionalidades;
     }
 }
 
