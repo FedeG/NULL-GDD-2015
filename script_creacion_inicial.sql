@@ -46,47 +46,6 @@ AS
 	END;
 GO
 
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spLoginRealizado' 
-)
-   DROP PROCEDURE "NULL".spLoginRealizado
-GO
-
-CREATE PROCEDURE "NULL".spLoginRealizado 
-	@User varchar(255), 
-	@EstadoLogin bit
-AS
-BEGIN
-	SET NOCOUNT ON;
-	DECLARE @Nro_fallo int
-	
-	IF @EstadoLogin = 1
-		BEGIN
-			SET @Nro_fallo = (SELECT TOP 1 Usr_Intentos_Login
-					FROM [GD1C2015].[NULL].[Usuario]
-					WHERE Usr_Username = @User) + 1
-		END
-	ELSE
-		BEGIN
-			SET @Nro_fallo = 0
-		END
-	
-	IF(@Nro_fallo = 3)
-		BEGIN
-			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo, Usr_Estado = 'Deshabilitado' WHERE Usr_Username = @User
-		END
-	ELSE
-		BEGIN
-			UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo WHERE Usr_Username = @User
-		END
-	
-	INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Intento_Exitoso, Log_Nro_Fallo) VALUES
-	(@User, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
-END
-GO
-
 IF OBJECT_ID (N'NULL.fnGetFechaSistema') IS NOT NULL
    DROP FUNCTION "NULL".fnGetFechaSistema
 GO
@@ -170,30 +129,6 @@ BEGIN
 		VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
 	END
 	RETURN(@Validacion)
-END
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'trDeposito' 
-)
-   DROP TRIGGER "NULL".trDeposito
-GO
-
-CREATE TRIGGER "NULL".trDeposito ON "NULL".Deposito AFTER INSERT
-AS
-BEGIN
-	DECLARE @Importe INT
-	DECLARE @Cuenta_Numero NUMERIC(18,0)
-	
-	SET @Importe = (SELECT TOP 1 Deposito_Importe FROM inserted)
-	SET @Cuenta_Numero = (SELECT TOP 1 Cuenta_Numero FROM inserted)
-	
-	UPDATE [GD1C2015].[NULL].[Cuenta]
-	SET Cuenta_Saldo = Cuenta_Saldo + @Importe
-	WHERE Cuenta_Numero = @Cuenta_Numero
-	
 END
 GO
 
@@ -533,6 +468,31 @@ CREATE TABLE "NULL".Auditoria_Login
 	Log_Intento_Exitoso BIT NOT NULL,
 	Log_Nro_Fallo NUMERIC(1,0) DEFAULT NULL
 );
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trDeposito' 
+)
+   DROP TRIGGER "NULL".trDeposito
+GO
+
+CREATE TRIGGER "NULL".trDeposito ON "NULL".Deposito AFTER INSERT
+AS
+BEGIN
+	DECLARE @Importe INT
+	DECLARE @Cuenta_Numero NUMERIC(18,0)
+	
+	SET @Importe = (SELECT TOP 1 Deposito_Importe FROM inserted)
+	SET @Cuenta_Numero = (SELECT TOP 1 Cuenta_Numero FROM inserted)
+	
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Saldo = Cuenta_Saldo + @Importe
+	WHERE Cuenta_Numero = @Cuenta_Numero
+	
+END
+GO
+
 
 /******************************* MIGRACION *********************************************/
 
