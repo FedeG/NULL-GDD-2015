@@ -13,13 +13,11 @@ namespace PagoElectronico.ABM_Cliente
     public partial class ClienteEdicion : ClienteData
     {
         string username;
-        Dictionary<object, object> TipoDocs;
 
         public ClienteEdicion(DataGridViewRow selected)
         {
             InitializeComponent();
             this.db = new DbComunicator();
-            this.getDictionarys();
             this.username = selected.Cells["Usr_Username"].Value.ToString();
             this.LoadUserData();
             this.LoadClientData(selected);
@@ -45,20 +43,19 @@ namespace PagoElectronico.ABM_Cliente
 
         private void LoadUserData(){
             Username.Text = this.username;
+            Username.Enabled = false;
             db.EjecutarQuery("SELECT Usr_Pregunta_Secreta FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = '" + username + "'");
             while (db.getLector().Read()){
                 Pregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
             }
         }
-        
-        private void getDictionarys(){
-            this.db.ConectarConDB();
-            this.TipoDocs = db.GetQueryDictionary("SELECT TipoDoc_Cod, TipoDoc_Desc FROM GD1C2015.[NULL].TipoDoc WHERE TipoDoc_Borrado=0", "TipoDoc_Cod", "TipoDoc_Desc");
-            this.db.CerrarConexion();
+
+        private void button2_Click(object sender, EventArgs e){
+            this.Close();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
+        private void button1_Click(object sender, EventArgs e){
+            this.ExecStoredProcedure("NULL.spEditarCliente");
             this.Close();
         }
 

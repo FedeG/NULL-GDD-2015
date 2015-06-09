@@ -21,5 +21,10 @@ namespace PagoElectronico.ABM_Cliente
             this.Close();
         }
 
+        private void button1_Click(object sender, EventArgs e){
+            this.ExecStoredProcedure("NULL.spCrearCliente");
+            this.Close();
+        }
+
     }
 }

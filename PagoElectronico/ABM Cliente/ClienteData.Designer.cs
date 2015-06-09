@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.Pregunta = new System.Windows.Forms.TextBox();
+            this.RespuestaSecreta = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.Password = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.Username = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.FechaNacimiento = new System.Windows.Forms.DateTimePicker();
@@ -61,8 +63,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.Pregunta = new System.Windows.Forms.TextBox();
-            this.Username = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -71,10 +71,10 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.Pregunta);
-            this.groupBox1.Controls.Add(this.textBox4);
+            this.groupBox1.Controls.Add(this.RespuestaSecreta);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.textBox2);
+            this.groupBox1.Controls.Add(this.Password);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.Username);
             this.groupBox1.Controls.Add(this.label4);
@@ -85,12 +85,19 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Usuario";
             // 
-            // textBox4
+            // Pregunta
             // 
-            this.textBox4.Location = new System.Drawing.Point(383, 74);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(206, 20);
-            this.textBox4.TabIndex = 17;
+            this.Pregunta.Location = new System.Drawing.Point(383, 34);
+            this.Pregunta.Name = "Pregunta";
+            this.Pregunta.Size = new System.Drawing.Size(206, 20);
+            this.Pregunta.TabIndex = 19;
+            // 
+            // RespuestaSecreta
+            // 
+            this.RespuestaSecreta.Location = new System.Drawing.Point(383, 74);
+            this.RespuestaSecreta.Name = "RespuestaSecreta";
+            this.RespuestaSecreta.Size = new System.Drawing.Size(206, 20);
+            this.RespuestaSecreta.TabIndex = 17;
             // 
             // label7
             // 
@@ -110,12 +117,12 @@
             this.label6.TabIndex = 14;
             this.label6.Text = "Pregunta Secreta";
             // 
-            // textBox2
+            // Password
             // 
-            this.textBox2.Location = new System.Drawing.Point(75, 74);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(172, 20);
-            this.textBox2.TabIndex = 13;
+            this.Password.Location = new System.Drawing.Point(75, 74);
+            this.Password.Name = "Password";
+            this.Password.Size = new System.Drawing.Size(172, 20);
+            this.Password.TabIndex = 13;
             // 
             // label5
             // 
@@ -125,6 +132,13 @@
             this.label5.Size = new System.Drawing.Size(53, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Password";
+            // 
+            // Username
+            // 
+            this.Username.Location = new System.Drawing.Point(75, 34);
+            this.Username.Name = "Username";
+            this.Username.Size = new System.Drawing.Size(172, 20);
+            this.Username.TabIndex = 11;
             // 
             // label4
             // 
@@ -293,7 +307,7 @@
             // 
             // Calle
             // 
-            this.Calle.Location = new System.Drawing.Point(75, 34);
+            this.Calle.Location = new System.Drawing.Point(66, 34);
             this.Calle.Name = "Calle";
             this.Calle.Size = new System.Drawing.Size(172, 20);
             this.Calle.TabIndex = 11;
@@ -372,20 +386,6 @@
             this.label11.TabIndex = 10;
             this.label11.Text = "Nombre";
             // 
-            // Pregunta
-            // 
-            this.Pregunta.Location = new System.Drawing.Point(383, 34);
-            this.Pregunta.Name = "Pregunta";
-            this.Pregunta.Size = new System.Drawing.Size(206, 20);
-            this.Pregunta.TabIndex = 19;
-            // 
-            // Username
-            // 
-            this.Username.Location = new System.Drawing.Point(75, 34);
-            this.Username.Name = "Username";
-            this.Username.Size = new System.Drawing.Size(172, 20);
-            this.Username.TabIndex = 11;
-            // 
             // ClienteData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,7 +395,6 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "ClienteData";
             this.Text = "ClienteData";
-            this.Load += new System.EventHandler(this.ClienteData_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -409,10 +408,10 @@
         #endregion
 
         public System.Windows.Forms.GroupBox groupBox1;
-        public System.Windows.Forms.TextBox textBox4;
+        public System.Windows.Forms.TextBox RespuestaSecreta;
         public System.Windows.Forms.Label label7;
         public System.Windows.Forms.Label label6;
-        public System.Windows.Forms.TextBox textBox2;
+        public System.Windows.Forms.TextBox Password;
         public System.Windows.Forms.Label label5;
         public System.Windows.Forms.Label label4;
         public System.Windows.Forms.GroupBox groupBox2;
