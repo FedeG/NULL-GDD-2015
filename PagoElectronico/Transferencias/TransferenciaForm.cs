@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace PagoElectronico.Transferencias
 {
-    public partial class Form1 : Form
+    public partial class TransferenciaForm : Form
     {
-        public Form1()
+        public TransferenciaForm()
         {
             InitializeComponent();
         }
