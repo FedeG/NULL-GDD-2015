@@ -30,7 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.cuentaOrigenTextBox = new System.Windows.Forms.ComboBox();
+            this.cuentaOrigenComboBox = new System.Windows.Forms.ComboBox();
             this.cuentaDestinoTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.importeTextBox = new System.Windows.Forms.TextBox();
@@ -55,13 +55,13 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Cuenta Destino";
             // 
-            // cuentaOrigenTextBox
+            // cuentaOrigenComboBox
             // 
-            this.cuentaOrigenTextBox.FormattingEnabled = true;
-            this.cuentaOrigenTextBox.Location = new System.Drawing.Point(159, 19);
-            this.cuentaOrigenTextBox.Name = "cuentaOrigenTextBox";
-            this.cuentaOrigenTextBox.Size = new System.Drawing.Size(121, 21);
-            this.cuentaOrigenTextBox.TabIndex = 2;
+            this.cuentaOrigenComboBox.FormattingEnabled = true;
+            this.cuentaOrigenComboBox.Location = new System.Drawing.Point(159, 19);
+            this.cuentaOrigenComboBox.Name = "cuentaOrigenComboBox";
+            this.cuentaOrigenComboBox.Size = new System.Drawing.Size(121, 21);
+            this.cuentaOrigenComboBox.TabIndex = 2;
             // 
             // cuentaDestinoTextBox
             // 
@@ -94,8 +94,9 @@
             this.realizarButton.TabIndex = 6;
             this.realizarButton.Text = "Realizar";
             this.realizarButton.UseVisualStyleBackColor = true;
+            this.realizarButton.Click += new System.EventHandler(this.realizarButton_Click);
             // 
-            // Form1
+            // TransferenciaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -104,10 +105,10 @@
             this.Controls.Add(this.importeTextBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cuentaDestinoTextBox);
-            this.Controls.Add(this.cuentaOrigenTextBox);
+            this.Controls.Add(this.cuentaOrigenComboBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
+            this.Name = "TransferenciaForm";
             this.Text = "Transferencia";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -118,7 +119,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cuentaOrigenTextBox;
+        private System.Windows.Forms.ComboBox cuentaOrigenComboBox;
         private System.Windows.Forms.TextBox cuentaDestinoTextBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox importeTextBox;

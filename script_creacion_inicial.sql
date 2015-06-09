@@ -60,6 +60,73 @@ AS
 	END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarTransferencia' 
+)
+   DROP FUNCTION "NULL".fnValidarTransferencia
+GO
+
+CREATE FUNCTION "NULL".fnValidarTransferencia(
+	@Cuenta_Origen NUMERIC(18,0), 
+	@Cuenta_Destino NUMERIC(18,0),
+	@Importe INT
+	)
+	RETURNS INT
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Destino AND Cuenta_Estado = 'Habilitada' AND Cuenta_Estado ='Inhabilitada') = 0
+	BEGIN
+		RETURN(1)
+	END
+	
+	IF @Importe < 0 
+	BEGIN
+		RETURN(2)
+	END
+	
+	IF(SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Origen) >= @Importe
+	BEGIN
+		RETURN(3)
+	END
+	
+	RETURN(0)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarTransferencia' 
+)
+   DROP PROCEDURE "NULL".spRealizarTransferencia
+GO
+
+CREATE PROCEDURE "NULL".spRealizarTransferencia
+	@Cuenta_Origen NUMERIC(18,0), 
+	@Cuenta_Destino NUMERIC(18,0),
+	@Fecha_Transferencia DATETIME,
+	@Importe INT
+AS
+BEGIN
+	DECLARE @Validacion INT = "NULL".fnValidarTransferencia(@Cuenta_Origen, @Cuenta_Destino, @Importe)
+	DECLARE @Transferencia_Costo INT = 0
+	IF(@Validacion = 0)
+	BEGIN
+		IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] as c1, [GD1C2015].[NULL].[Cuenta] as c2 WHERE c1.Cuenta_Numero = @Cuenta_Origen AND c2.Cuenta_Numero = @Cuenta_Destino AND c1.Cli_Cod = c2.Cli_Cod) = 0
+		BEGIN
+			SET @Importe = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
+		END
+		
+		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo)
+		VALUES(@Cuenta_Origen, @Cuenta_Destino, @Fecha_Transferencia, @Importe, @Transferencia_Costo)
+	END
+	
+	RETURN @Validacion
+END
+GO
+
 EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
 /********************************** BORRADO DE TABLAS **************************************/
@@ -386,6 +453,31 @@ CREATE TABLE "NULL".Nacionalidad
 	Nac_Pais_Cod NUMERIC(18,0) REFERENCES "NULL".Pais(Pais_Codigo),
 	Nac_Nombre NVARCHAR(255)
 );
+
+/*Triggers*/
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trTransferencia' 
+)
+   DROP TRIGGER "NULL".trTransferencia
+GO
+
+CREATE TRIGGER "NULL".trTransferencia ON "NULL".Transferencia AFTER INSERT
+AS
+BEGIN
+	DECLARE @Importe INT
+	DECLARE @Cuenta_Destino_Numero NUMERIC(18,0)
+	
+	SET @Importe = (SELECT TOP 1 Transf_Importe FROM inserted)
+	SET @Cuenta_Destino_Numero = (SELECT TOP 1 Cuenta_Destino_Numero FROM inserted)
+	
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Saldo = Cuenta_Saldo + @Importe
+	WHERE Cuenta_Numero = @Cuenta_Destino_Numero
+END
+GO
 
 /******************************* MIGRACION *********************************************/
 
