@@ -12,9 +12,13 @@ namespace PagoElectronico.ABM_Cliente
 {
     public partial class ClienteCreacion : ClienteData
     {
-        public ClienteCreacion()
-        {
+        public ClienteCreacion(){
             InitializeComponent();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
     }
