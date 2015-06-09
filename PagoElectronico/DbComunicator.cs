@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -24,19 +24,22 @@ namespace PagoElectronico{
             this.Lector = Consulta.ExecuteReader();
         }
 
-        public Dictionary<object, object> GetQueryDictionary(string query, string keyName, string valueName) {
+        public Dictionary<object, object> GetQueryDictionary(string query, string keyName, string valueName)
+        {
             Dictionary<object, object> queryDictionary = new Dictionary<object, object>();
-            
+
             this.ObtenerQuery(query);
 
-            while (this.getLector().Read()) {
+            while (this.getLector().Read())
+            {
                 queryDictionary.Add(this.getLector()[keyName], this.getLector()[valueName]);
             }
 
             return queryDictionary;
         }
 
-        public DataSet GetDataAdapter(string query) {
+        public DataSet GetDataAdapter(string query)
+        {
             SqlDataAdapter dataAdapter = new SqlDataAdapter(query, this.GetConectionString());
             SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapter);
             DataSet ds = new DataSet();
@@ -44,12 +47,12 @@ namespace PagoElectronico{
             return ds;
         }
 
-       private string GetConectionString() {
+        private string GetConectionString() {
             string strConexión = "Data Source=" + Properties.Settings.Default.DbSource +
-                ";Initial Catalog=" + Properties.Settings.Default.DbName +
-                ";Integrated Security=True" +
-                ";User ID=" + Properties.Settings.Default.DbUser +
-                ";Password=" + Properties.Settings.Default.DbPassword;
+                    ";Initial Catalog=" + Properties.Settings.Default.DbName +
+                    ";Integrated Security=True" +
+                    ";User ID=" + Properties.Settings.Default.DbUser +
+                    ";Password=" + Properties.Settings.Default.DbPassword;
             return strConexión;
         }
 
@@ -96,7 +99,8 @@ namespace PagoElectronico{
             this.CerrarConexion();
         }
 
-        public SqlCommand GetStoreProcedure(string nameStoreProcedure) {
+        public SqlCommand GetStoreProcedure(string nameStoreProcedure)
+        {
             this.ConectarConDB();
             SqlCommand storeProcedure = new SqlCommand(nameStoreProcedure, this.ConexionConBD);
             storeProcedure.CommandType = CommandType.StoredProcedure;
