@@ -34,7 +34,7 @@
             this.createClienteButton = new System.Windows.Forms.Button();
             this.searchUsernameButton = new System.Windows.Forms.Button();
             this.editarClienteButton = new System.Windows.Forms.Button();
-            this.habilitarButton = new System.Windows.Forms.Button();
+            this.BorrarButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TipoDocCliente = new System.Windows.Forms.ComboBox();
@@ -42,9 +42,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.DocCliente = new System.Windows.Forms.TextBox();
             this.searchDocumentoButton = new System.Windows.Forms.Button();
+            this.HabilitarButton = new System.Windows.Forms.Button();
+            this.Acciones = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.clienteTable)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.Acciones.SuspendLayout();
             this.SuspendLayout();
             // 
             // clienteTable
@@ -53,6 +56,7 @@
             this.clienteTable.Location = new System.Drawing.Point(12, 119);
             this.clienteTable.Name = "clienteTable";
             this.clienteTable.ReadOnly = true;
+            this.clienteTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.clienteTable.Size = new System.Drawing.Size(738, 150);
             this.clienteTable.TabIndex = 0;
             // 
@@ -74,7 +78,7 @@
             // 
             // createClienteButton
             // 
-            this.createClienteButton.Location = new System.Drawing.Point(13, 293);
+            this.createClienteButton.Location = new System.Drawing.Point(13, 294);
             this.createClienteButton.Name = "createClienteButton";
             this.createClienteButton.Size = new System.Drawing.Size(75, 23);
             this.createClienteButton.TabIndex = 3;
@@ -94,7 +98,7 @@
             // 
             // editarClienteButton
             // 
-            this.editarClienteButton.Location = new System.Drawing.Point(336, 293);
+            this.editarClienteButton.Location = new System.Drawing.Point(22, 19);
             this.editarClienteButton.Name = "editarClienteButton";
             this.editarClienteButton.Size = new System.Drawing.Size(75, 23);
             this.editarClienteButton.TabIndex = 5;
@@ -102,14 +106,14 @@
             this.editarClienteButton.UseVisualStyleBackColor = true;
             this.editarClienteButton.Click += new System.EventHandler(this.editarClienteButton_Click);
             // 
-            // habilitarButton
+            // BorrarButton
             // 
-            this.habilitarButton.Location = new System.Drawing.Point(675, 293);
-            this.habilitarButton.Name = "habilitarButton";
-            this.habilitarButton.Size = new System.Drawing.Size(75, 23);
-            this.habilitarButton.TabIndex = 6;
-            this.habilitarButton.Text = "Habilitar";
-            this.habilitarButton.UseVisualStyleBackColor = true;
+            this.BorrarButton.Location = new System.Drawing.Point(184, 19);
+            this.BorrarButton.Name = "BorrarButton";
+            this.BorrarButton.Size = new System.Drawing.Size(75, 23);
+            this.BorrarButton.TabIndex = 6;
+            this.BorrarButton.Text = "Dar de Baja";
+            this.BorrarButton.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -180,24 +184,47 @@
             this.searchDocumentoButton.UseVisualStyleBackColor = true;
             this.searchDocumentoButton.Click += new System.EventHandler(this.searchDocumentoButton_Click);
             // 
+            // HabilitarButton
+            // 
+            this.HabilitarButton.Location = new System.Drawing.Point(103, 19);
+            this.HabilitarButton.Name = "HabilitarButton";
+            this.HabilitarButton.Size = new System.Drawing.Size(75, 23);
+            this.HabilitarButton.TabIndex = 9;
+            this.HabilitarButton.Text = "Habilitar";
+            this.HabilitarButton.UseVisualStyleBackColor = true;
+            // 
+            // Acciones
+            // 
+            this.Acciones.Controls.Add(this.BorrarButton);
+            this.Acciones.Controls.Add(this.HabilitarButton);
+            this.Acciones.Controls.Add(this.editarClienteButton);
+            this.Acciones.Enabled = false;
+            this.Acciones.Location = new System.Drawing.Point(472, 275);
+            this.Acciones.Name = "Acciones";
+            this.Acciones.Size = new System.Drawing.Size(278, 56);
+            this.Acciones.TabIndex = 10;
+            this.Acciones.TabStop = false;
+            this.Acciones.Text = "Acciones";
+            // 
             // ClienteListado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 336);
+            this.ClientSize = new System.Drawing.Size(762, 339);
+            this.Controls.Add(this.Acciones);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.habilitarButton);
-            this.Controls.Add(this.editarClienteButton);
             this.Controls.Add(this.createClienteButton);
             this.Controls.Add(this.clienteTable);
             this.Name = "ClienteListado";
             this.Text = "Listado Clientes";
+            this.Load += new System.EventHandler(this.ClienteListado_Load);
             ((System.ComponentModel.ISupportInitialize)(this.clienteTable)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.Acciones.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -210,7 +237,7 @@
         private System.Windows.Forms.Button createClienteButton;
         private System.Windows.Forms.Button searchUsernameButton;
         private System.Windows.Forms.Button editarClienteButton;
-        private System.Windows.Forms.Button habilitarButton;
+        private System.Windows.Forms.Button BorrarButton;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label2;
@@ -218,5 +245,7 @@
         private System.Windows.Forms.Button searchDocumentoButton;
         private System.Windows.Forms.ComboBox TipoDocCliente;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button HabilitarButton;
+        private System.Windows.Forms.GroupBox Acciones;
     }
 }
