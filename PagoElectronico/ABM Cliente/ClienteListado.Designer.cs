@@ -44,6 +44,7 @@
             this.searchDocumentoButton = new System.Windows.Forms.Button();
             this.HabilitarButton = new System.Windows.Forms.Button();
             this.Acciones = new System.Windows.Forms.GroupBox();
+            this.DeshabilitarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.clienteTable)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -114,6 +115,7 @@
             this.BorrarButton.TabIndex = 6;
             this.BorrarButton.Text = "Dar de Baja";
             this.BorrarButton.UseVisualStyleBackColor = true;
+            this.BorrarButton.Click += new System.EventHandler(this.BorrarButton_Click);
             // 
             // groupBox1
             // 
@@ -192,9 +194,11 @@
             this.HabilitarButton.TabIndex = 9;
             this.HabilitarButton.Text = "Habilitar";
             this.HabilitarButton.UseVisualStyleBackColor = true;
+            this.HabilitarButton.Click += new System.EventHandler(this.HabilitarButton_Click);
             // 
             // Acciones
             // 
+            this.Acciones.Controls.Add(this.DeshabilitarButton);
             this.Acciones.Controls.Add(this.BorrarButton);
             this.Acciones.Controls.Add(this.HabilitarButton);
             this.Acciones.Controls.Add(this.editarClienteButton);
@@ -205,6 +209,17 @@
             this.Acciones.TabIndex = 10;
             this.Acciones.TabStop = false;
             this.Acciones.Text = "Acciones";
+            // 
+            // DeshabilitarButton
+            // 
+            this.DeshabilitarButton.Location = new System.Drawing.Point(103, 19);
+            this.DeshabilitarButton.Name = "DeshabilitarButton";
+            this.DeshabilitarButton.Size = new System.Drawing.Size(75, 23);
+            this.DeshabilitarButton.TabIndex = 11;
+            this.DeshabilitarButton.Text = "Deshabilitar";
+            this.DeshabilitarButton.UseVisualStyleBackColor = true;
+            this.DeshabilitarButton.Visible = false;
+            this.DeshabilitarButton.Click += new System.EventHandler(this.DeshabilitarButton_Click);
             // 
             // ClienteListado
             // 
@@ -247,5 +262,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button HabilitarButton;
         private System.Windows.Forms.GroupBox Acciones;
+        private System.Windows.Forms.Button DeshabilitarButton;
     }
 }

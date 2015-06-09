@@ -63,18 +63,58 @@ namespace PagoElectronico.ABM_Cliente
             if (!clienteTable.SelectedRows[0].Cells["Usr_Username"].Value.ToString().Equals(""))
             {
                 Acciones.Enabled = true;
-                if (clienteTable.SelectedRows[0].Cells["Usr_Estado"].Value.ToString().Equals("Habilitado"))
-                    HabilitarButton.Enabled = false;
-                if (clienteTable.SelectedRows[0].Cells["Cli_Borrado"].Value.Equals(1))
-                    BorrarButton.Enabled = false;
+                this.LoadHabilitacionButton();
+                this.LoadDarDeBajaButton();
                 clienteTable.SelectionChanged += this.DesactivarAcciones;
             }
             else this.DesactivarAcciones(sender, e);
+        }
+
+        private void LoadHabilitacionButton(){
+            if (clienteTable.SelectedRows[0].Cells["Usr_Estado"].Value.ToString().Equals("Habilitado"))
+            {
+                HabilitarButton.Enabled = false;
+                HabilitarButton.Visible = false;
+                DeshabilitarButton.Visible = true;
+                DeshabilitarButton.Enabled = true;
+            } else {
+                DeshabilitarButton.Visible = false;
+                DeshabilitarButton.Enabled = false;
+                HabilitarButton.Visible = true;
+                HabilitarButton.Enabled = true;
+            }
+        }
+
+        private void LoadDarDeBajaButton(){
+            if (clienteTable.SelectedRows[0].Cells["Cli_Borrado"].Value.Equals(1))
+                BorrarButton.Enabled = false;
         }
 
         private void DesactivarAcciones(object sender, EventArgs e){
             Acciones.Enabled = false;
             clienteTable.SelectionChanged -= this.DesactivarAcciones;
         }
+
+        private void HabilitarButton_Click(object sender, EventArgs e){
+            SqlCommand spHabilitarUsuario = this.db.GetStoreProcedure("NULL.spHabilitarUsuario");
+            spHabilitarUsuario.Parameters.Add(new SqlParameter("@Usr_Username", clienteTable.SelectedRows[0].Cells["Usr_Username"].Value.ToString()));
+            spHabilitarUsuario.ExecuteNonQuery();
+            this.SearchClientePorUsername();
+        }
+
+        private void DeshabilitarButton_Click(object sender, EventArgs e){
+            SqlCommand spDeshabilitarUsuario = this.db.GetStoreProcedure("NULL.spDeshabilitarUsuario");
+            spDeshabilitarUsuario.Parameters.Add(new SqlParameter("@Usr_Username", clienteTable.SelectedRows[0].Cells["Usr_Username"].Value.ToString()));
+            spDeshabilitarUsuario.ExecuteNonQuery();
+            this.SearchClientePorUsername();
+        }
+
+        private void BorrarButton_Click(object sender, EventArgs e){
+            SqlCommand spDarDeBajaCliente = this.db.GetStoreProcedure("NULL.spDarDeBajaCliente");
+            spDarDeBajaCliente.Parameters.Add(new SqlParameter("@Usr_Username", clienteTable.SelectedRows[0].Cells["Usr_Username"].Value.ToString()));
+            spDarDeBajaCliente.ExecuteNonQuery();
+            this.SearchClientePorUsername();
+        }
+
     }
 }
