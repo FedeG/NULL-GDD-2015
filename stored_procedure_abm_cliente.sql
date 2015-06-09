@@ -97,6 +97,23 @@ BEGIN
 END
 GO
 
+IF OBJECT_ID (N'NULL.spDeshabilitarUsuario') IS NOT NULL
+   DROP PROCEDURE "NULL".spDeshabilitarUsuario
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarUsuario
+	@Usr_Username varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Usuario]
+	SET Usr_Estado = 'Deshabilitado'
+	WHERE Usr_Username = @Usr_Username
+
+END
+GO
+
 IF OBJECT_ID (N'NULL.spDarDeBajaCliente') IS NOT NULL
    DROP PROCEDURE "NULL".spDarDeBajaCliente
 GO
