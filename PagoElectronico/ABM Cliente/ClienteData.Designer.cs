@@ -96,6 +96,7 @@
             // 
             this.RespuestaSecreta.Location = new System.Drawing.Point(383, 74);
             this.RespuestaSecreta.Name = "RespuestaSecreta";
+            this.RespuestaSecreta.PasswordChar = '*';
             this.RespuestaSecreta.Size = new System.Drawing.Size(206, 20);
             this.RespuestaSecreta.TabIndex = 17;
             // 
@@ -121,6 +122,7 @@
             // 
             this.Password.Location = new System.Drawing.Point(75, 74);
             this.Password.Name = "Password";
+            this.Password.PasswordChar = '*';
             this.Password.Size = new System.Drawing.Size(172, 20);
             this.Password.TabIndex = 13;
             // 
