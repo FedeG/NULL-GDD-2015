@@ -268,7 +268,7 @@ CREATE TABLE "NULL".Cuenta
 	Cuenta_Fecha_Creacion DATETIME NOT NULL,
 	Cuenta_Saldo NUMERIC(18,2) NOT NULL DEFAULT 0,
 	Pais_Codigo NUMERIC(18,0) NOT NULL REFERENCES "NULL".Pais(Pais_Codigo),
-	TipoCta_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".TipoCuenta(TipoCta_Nombre),
+	TipoCta_Nombre NVARCHAR(255) REFERENCES "NULL".TipoCuenta(TipoCta_Nombre),
 	Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
 	Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
 	Cuenta_Borrado BIT NOT NULL	 DEFAULT 0
@@ -1300,7 +1300,7 @@ INSERT INTO "NULL".TipoCuenta(TipoCta_Nombre, TipoCta_Costo_Apertura, TipoCta_Du
 	('ORO', 300, 30, 10, 5, 0),
 	('PLATA', 200, 40, 5, 10, 0),
 	('BRONCE', 100, 20, 5, 15, 0),
-	('GRATUITA', 0, 999999999999999999, 0, 0, 0); /*Tendríamos que ver si la duración la ponemos así o la ignoramos por código*/
+	('GRATUITA', 0, 9999, 0, 0, 0); /*Tendríamos que ver si la duración la ponemos así o la ignoramos por código*/
 
 
 /************************************************ CUENTAS ***************************************************/
@@ -1322,7 +1322,7 @@ RETURNS NVARCHAR(255)
 AS
 	BEGIN
 		DECLARE @TipoCta_Nombre NVARCHAR(255);
-		SELECT  @TipoCta_Nombre = TipoCta_Nombre FROM "NULL".TipoCuentaRandom;
+		SELECT @TipoCta_Nombre = TipoCta_Nombre FROM "NULL".TipoCuentaRandom;
 		RETURN @TipoCta_Nombre;
 	END
 GO
@@ -1333,18 +1333,32 @@ INSERT INTO "NULL".Cuenta(Cuenta_Numero, Cuenta_Estado, Cuenta_Fecha_Vencimiento
 	Cuenta_Fecha_Creacion, Cuenta_Saldo, Pais_Codigo, TipoCta_Nombre, Cli_Cod, Moneda_Nombre, Cuenta_Borrado)
 SELECT DISTINCT master.Cuenta_Numero, 'Habilitada' Cuenta_Estado, NULL Cuenta_Fecha_Vencimiento, 
 	master.Cuenta_Fecha_Cierre, CONVERT(DATETIME, master.Cuenta_Fecha_Creacion, 121) Cuenta_Fecha_Creacion, 
-	0 Cuenta_Saldo, master.Cuenta_Pais_Codigo, [NULL].fnGetTipoCuentaRandom(), cli.Cli_Cod, 
+	0 Cuenta_Saldo, master.Cuenta_Pais_Codigo, NULL, cli.Cli_Cod, 
 	'Dólares Estadounidenses' Moneda_Nombre, 0 Cuenta_Borrado
 FROM GD1C2015.gd_esquema.Maestra as master, GD1C2015."NULL".Cliente as cli
 WHERE master.Cli_Nro_Doc = cli.Cli_Nro_Doc AND master.Cli_Tipo_Doc_Cod = cli.TipoDoc_Cod
 
 SET IDENTITY_INSERT "NULL".Cuenta OFF
 
+UPDATE "NULL".Cuenta
+SET TipoCta_Nombre = [NULL].fnGetTipoCuentaRandom()
 
---IF object_id(N'NULL.TipoCuentaRandom', 'V') IS NOT NULL
---	DROP VIEW "NULL".TipoCuentaRandom
---GO
---
---IF OBJECT_ID(N'NULL.fnGetTipoCuentaRandom') IS NOT NULL
---   DROP FUNCTION "NULL".fnGetTipoCuentaRandom
---GO
+ALTER TABLE "NULL".Cuenta
+	ALTER COLUMN TipoCta_Nombre NVARCHAR(255) NOT NULL
+GO
+
+UPDATE "NULL".Cuenta
+SET Cuenta_Fecha_Vencimiento = DATEADD(day, tipo.TipoCta_Duracion, cta.Cuenta_Fecha_Creacion)
+FROM
+	"NULL".Cuenta as cta, "NULL".TipoCuenta as tipo
+WHERE
+	cta.TipoCta_Nombre = tipo.TipoCta_Nombre
+
+
+IF object_id(N'NULL.TipoCuentaRandom', 'V') IS NOT NULL
+	DROP VIEW "NULL".TipoCuentaRandom
+GO
+
+IF OBJECT_ID(N'NULL.fnGetTipoCuentaRandom') IS NOT NULL
+   DROP FUNCTION "NULL".fnGetTipoCuentaRandom
+GO
