@@ -23,18 +23,16 @@ namespace PagoElectronico
 
         private void LoadFuncionalidades(string rol){
             this.db.ConectarConDB();
-            string a = "SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + rol + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0";
             this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + rol + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0", "Func_Cod", "Func_Nombre");
             this.db.CerrarConexion();
-            foreach (object Func_Cod in FuncionalidadesDict.Keys){
-                string Func_Nombre = FuncionalidadesDict[Func_Cod].ToString();
-                if (Func_Nombre != "") Funcionalidades.Items.Add(Func_Nombre);
-            }
+            Funcionalidades.DataSource = new BindingSource(this.FuncionalidadesDict, null);
+            Funcionalidades.DisplayMember = "Value";
+            Funcionalidades.ValueMember = "Key";
         }
 
-        private Form SearchForm(object Func_Cod){
+        private Form SearchForm(Int16 Func_Cod){
             Form form = null;
-            switch ((Int16) Func_Cod){
+            switch (Func_Cod){
                 //case 1: 
                     //form = new  PagoElectronico.ABM_Rol.Form1();
                     //break;
@@ -77,8 +75,7 @@ namespace PagoElectronico
         }
 
         private void Abrir_Click(object sender, EventArgs e){
-            object FuncCod = this.FuncionalidadesDict.FirstOrDefault(Func => Func.Value.ToString().Equals(Funcionalidades.SelectedText.ToString())).Key;
-            Form form = this.SearchForm(FuncCod);
+            Form form = this.SearchForm(Convert.ToInt16(Funcionalidades.SelectedValue));
             form.Show();
             this.Close();
         }

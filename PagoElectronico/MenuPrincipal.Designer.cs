@@ -70,7 +70,8 @@
             this.Funcionalidades.Location = new System.Drawing.Point(13, 29);
             this.Funcionalidades.Name = "Funcionalidades";
             this.Funcionalidades.Size = new System.Drawing.Size(234, 21);
-            this.Funcionalidades.TabIndex = 11;
+            this.Funcionalidades.Sorted = true;
+            this.Funcionalidades.TabIndex = 1;
             // 
             // MenuPrincipal
             // 
