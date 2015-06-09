@@ -24,29 +24,29 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void LoadClientData(DataGridViewRow selected){
-            Nombre.Text = selected.Cells["Cli_Nombre"].Value.ToString();
-            Apellido.Text = selected.Cells["Cli_Apellido"].Value.ToString();
-            NacCliente.Text = selected.Cells["Cli_Nacionalidad"].Value.ToString();
-            Calle.Text = selected.Cells["Cli_Dom_Calle"].Value.ToString();
-            NumDomicilio.Text = selected.Cells["Cli_Dom_Nro"].Value.ToString();
+            InputNombre.Text = selected.Cells["Cli_Nombre"].Value.ToString();
+            InputApellido.Text = selected.Cells["Cli_Apellido"].Value.ToString();
+            InputNacCliente.Text = selected.Cells["Cli_Nacionalidad"].Value.ToString();
+            InputCalle.Text = selected.Cells["Cli_Dom_Calle"].Value.ToString();
+            InputNumDomicilio.Text = selected.Cells["Cli_Dom_Nro"].Value.ToString();
             db.EjecutarQuery("SELECT * FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = '" + username + "'");
             while (db.getLector().Read()) {
-                Mail.Text = db.getLector()["Cli_Mail"].ToString();
-                TipoDocCliente.Text = this.TipoDocs[db.getLector()["TipoDoc_Cod"]].ToString();
-                NumDoc.Text = db.getLector()["Cli_Nro_Doc"].ToString();
-                Piso.Text = db.getLector()["Cli_Dom_Piso"].ToString();
-                Depto.Text = db.getLector()["Cli_Dom_Depto"].ToString();
-                Localidad.Text = db.getLector()["Cli_Localidad"].ToString();
-                FechaNacimiento.Value = Convert.ToDateTime(db.getLector()["Cli_Fecha_Nac"].ToString());
+                InputMail.Text = db.getLector()["Cli_Mail"].ToString();
+                InputTipoDocCliente.Text = this.TipoDocs[db.getLector()["TipoDoc_Cod"]].ToString();
+                InputNumDoc.Text = db.getLector()["Cli_Nro_Doc"].ToString();
+                InputPiso.Text = db.getLector()["Cli_Dom_Piso"].ToString();
+                InputDepto.Text = db.getLector()["Cli_Dom_Depto"].ToString();
+                InputLocalidad.Text = db.getLector()["Cli_Localidad"].ToString();
+                InputFechaNacimiento.Value = Convert.ToDateTime(db.getLector()["Cli_Fecha_Nac"].ToString());
             }
         }
 
         private void LoadUserData(){
-            Username.Text = this.username;
-            Username.Enabled = false;
+            InputUsername.Text = this.username;
+            InputUsername.Enabled = false;
             db.EjecutarQuery("SELECT Usr_Pregunta_Secreta FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = '" + username + "'");
             while (db.getLector().Read()){
-                Pregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
+                InputPregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
             }
         }
 

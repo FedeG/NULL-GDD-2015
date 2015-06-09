@@ -26,42 +26,42 @@ namespace PagoElectronico.ABM_Cliente
         private void Nacionalidades_Load(){
             this.db.ConectarConDB();
             this.NacionalidadesDict = db.GetQueryDictionary("SELECT Nac_Pais_Cod, Nac_Nombre FROM GD1C2015.[NULL].Nacionalidad", "Nac_Pais_Cod", "Nac_Nombre");
-            NacCliente.DataSource = new BindingSource(this.NacionalidadesDict, null);
-            NacCliente.DisplayMember = "Value";
-            NacCliente.ValueMember = "Key";
+            InputNacCliente.DataSource = new BindingSource(this.NacionalidadesDict, null);
+            InputNacCliente.DisplayMember = "Value";
+            InputNacCliente.ValueMember = "Key";
             this.db.CerrarConexion();
         }
 
         private void Tipo_Docs_Load(){
             this.db.ConectarConDB();
             this.TipoDocs = db.GetQueryDictionary("SELECT TipoDoc_Cod, TipoDoc_Desc FROM GD1C2015.[NULL].TipoDoc WHERE TipoDoc_Borrado=0", "TipoDoc_Cod", "TipoDoc_Desc");
-            TipoDocCliente.DataSource = new BindingSource(this.TipoDocs, null);
-            TipoDocCliente.DisplayMember = "Value";
-            TipoDocCliente.ValueMember = "Key";
+            InputTipoDocCliente.DataSource = new BindingSource(this.TipoDocs, null);
+            InputTipoDocCliente.DisplayMember = "Value";
+            InputTipoDocCliente.ValueMember = "Key";
             this.db.CerrarConexion();
         }
 
         public void ExecStoredProcedure(string sp_name){
             SqlCommand sp = this.db.GetStoreProcedure(sp_name);
-            sp.Parameters.Add(new SqlParameter("@Usr_Username", Username.Text));
-            string password = new Sha256Generator().GetHashString(Password.Text);
+            sp.Parameters.Add(new SqlParameter("@Usr_Username", InputUsername.Text));
+            string password = new Sha256Generator().GetHashString(InputPassword.Text);
             sp.Parameters.Add(new SqlParameter("@Usr_Password", password));
-            sp.Parameters.Add(new SqlParameter("@Usr_Pregunta_Secreta", Pregunta.Text));
-            string respuesta_secreta = new Sha256Generator().GetHashString(RespuestaSecreta.Text);
+            sp.Parameters.Add(new SqlParameter("@Usr_Pregunta_Secreta", InputPregunta.Text));
+            string respuesta_secreta = new Sha256Generator().GetHashString(InputRespuestaSecreta.Text);
             sp.Parameters.Add(new SqlParameter("@Usr_Respuesta_Secreta", respuesta_secreta));
-            sp.Parameters.Add(new SqlParameter("@Cli_Nombre", Nombre.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Apellido", Apellido.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Nro_Doc", NumDoc.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Calle", Calle.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Localidad", Localidad.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Mail", Mail.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Nacionalidad", NacCliente.Text)); 
-            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Nro", NumDomicilio.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Piso", Piso.Text));
-            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Depto", Depto.Text));
-            sp.Parameters.Add(new SqlParameter("@TipoDoc_Cod", TipoDocCliente.SelectedValue));
-            sp.Parameters.Add(new SqlParameter("@Pais_Codigo", NacCliente.SelectedValue));
-            sp.Parameters.Add(new SqlParameter("@Cli_Fecha_Nac", FechaNacimiento.Value.Date));
+            sp.Parameters.Add(new SqlParameter("@Cli_Nombre", InputNombre.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Apellido", InputApellido.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Nro_Doc", InputNumDoc.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Calle", InputCalle.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Localidad", InputLocalidad.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Mail", InputMail.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Nacionalidad", InputNacCliente.Text)); 
+            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Nro", InputNumDomicilio.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Piso", InputPiso.Text));
+            sp.Parameters.Add(new SqlParameter("@Cli_Dom_Depto", InputDepto.Text));
+            sp.Parameters.Add(new SqlParameter("@TipoDoc_Cod", InputTipoDocCliente.SelectedValue));
+            sp.Parameters.Add(new SqlParameter("@Pais_Codigo", InputNacCliente.SelectedValue));
+            sp.Parameters.Add(new SqlParameter("@Cli_Fecha_Nac", InputFechaNacimiento.Value.Date));
             sp.ExecuteNonQuery();
         }
 
