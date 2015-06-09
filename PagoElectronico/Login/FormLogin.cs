@@ -81,6 +81,5 @@ namespace PagoElectronico.Login
             textBox2.Text = "";
             db1.CerrarConexion();
         }
-
     }
 }

@@ -25,9 +25,10 @@ namespace PagoElectronico.Login
             comboBox1.ValueMember = "Key";
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
+        private void button1_Click(object sender, EventArgs e){
+            PagoElectronico.MenuPrincipal form = new PagoElectronico.MenuPrincipal(comboBox1.SelectedText);
+            form.Show();
+            this.Close();
         }
         
     }
