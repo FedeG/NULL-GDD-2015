@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace PagoElectronico.Depositos
 {
@@ -41,19 +42,15 @@ namespace PagoElectronico.Depositos
 
         private void botonRealizar_Click(object sender, EventArgs e)
         {
+            DbComunicator db = new DbComunicator();
+            SqlCommand spRealizarDeposito = db.GetStoreProcedure("NULL.spRealizarDeposito");
 
-         /* Falta agregar las chequeos de Tarjeta y los campos incompletos (moneda y cuentas) */
-            
-           int num = Int32.Parse(importeTextBox.Text);
-        
-             if ( num >= 1 ) //& ( fechaVencTarjeta >= DateTime.Now )
-               
-               MessageBox.Show("Se realizo");
-            else
-                MessageBox.Show("Importe invalido");
-           // if ( fechaVencTarjeta > DateTime.Now ) 
-               
-            
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Cuenta_Numero", comboCuenta.SelectedValue));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Tarjeta_Numero", comboTarjeta.SelectedValue.ToString()));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Fecha_Deposito", fechaDeposito.Value));
+            spRealizarDeposito.ExecuteNonQuery();           
         }
 
     }

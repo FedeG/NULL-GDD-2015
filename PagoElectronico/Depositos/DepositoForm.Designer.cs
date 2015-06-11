@@ -36,7 +36,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.comboCuenta = new System.Windows.Forms.ComboBox();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.fechaDeposito = new System.Windows.Forms.DateTimePicker();
             this.label5 = new System.Windows.Forms.Label();
             this.importeTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
@@ -111,12 +111,12 @@
             this.comboCuenta.Size = new System.Drawing.Size(121, 21);
             this.comboCuenta.TabIndex = 8;
             // 
-            // dateTimePicker1
+            // fechaDeposito
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(106, 137);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(203, 20);
-            this.dateTimePicker1.TabIndex = 9;
+            this.fechaDeposito.Location = new System.Drawing.Point(106, 137);
+            this.fechaDeposito.Name = "fechaDeposito";
+            this.fechaDeposito.Size = new System.Drawing.Size(203, 20);
+            this.fechaDeposito.TabIndex = 9;
             // 
             // label5
             // 
@@ -141,7 +141,7 @@
             this.ClientSize = new System.Drawing.Size(413, 217);
             this.Controls.Add(this.importeTextBox);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.fechaDeposito);
             this.Controls.Add(this.comboCuenta);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -167,7 +167,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboCuenta;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.DateTimePicker fechaDeposito;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox importeTextBox;
     }
