@@ -66,12 +66,6 @@
     <Compile Include="ABM de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ABM Rol\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ABM Rol\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Commons\Sha256Generator.cs" />
     <Compile Include="Consulta Saldos\Form1.cs">
       <SubType>Form</SubType>
@@ -118,12 +112,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD
     <EmbeddedResource Include="ABM Rol\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Depositos\DepositoForm.resx">
       <DependentUpon>DepositoForm.cs</DependentUpon>
     </EmbeddedResource>
+=======
+>>>>>>> 27768d9c983b42c871bec0e75d2723bdffb56811
     <EmbeddedResource Include="Login\FormSeleccionRol.resx">
       <DependentUpon>FormSeleccionRol.cs</DependentUpon>
     </EmbeddedResource>

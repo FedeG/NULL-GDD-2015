@@ -46,9 +46,62 @@ AS
 	END;
 GO
 
+IF OBJECT_ID (N'NULL.fnGetFechaSistema') IS NOT NULL
+   DROP FUNCTION "NULL".fnGetFechaSistema
+GO
+
+CREATE FUNCTION "NULL".fnGetFechaSistema()
+RETURNS DATETIME
+AS
+	BEGIN
+		DECLARE @fecha DATETIME
+		SELECT TOP 1 @fecha = Fecha FROM "NULL".Fecha_Sistema
+		RETURN @fecha
+	END
+GO
+
+EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
+
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
+<<<<<<< HEAD
+   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
+)
+   DROP FUNCTION "NULL".fnValidarDeposito
+GO
+
+CREATE FUNCTION "NULL".fnValidarDeposito(
+	@Cuenta_Numero NUMERIC(18,0), 
+	@Importe INT,
+	@Fecha_Deposito DATETIME,
+	@Moneda_Nombre NVARCHAR(255),
+	@Tarjeta_Numero NVARCHAR(255))
+	RETURNS INT
+AS
+BEGIN
+	IF(@Importe < 0)
+	BEGIN
+		RETURN(1)
+	END
+	
+	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero AND @Fecha_Deposito > Tarjeta_Fecha_Vencimiento) = 1)
+	BEGIN
+		RETURN(2)
+	END
+	
+	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 0)
+	BEGIN
+		RETURN(3)
+	END
+	
+	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0)
+	BEGIN
+		RETURN(4)
+	END
+
+	RETURN(0)
+=======
    WHERE SPECIFIC_NAME = N'spRealizarLogin' 
 )
    DROP PROCEDURE "NULL".spRealizarLogin
@@ -110,63 +163,7 @@ BEGIN
 	END
 
 	RETURN(@ValorRetorno)
-END
-GO
-
-IF OBJECT_ID (N'NULL.fnGetFechaSistema') IS NOT NULL
-   DROP FUNCTION "NULL".fnGetFechaSistema
-GO
-
-CREATE FUNCTION "NULL".fnGetFechaSistema()
-RETURNS DATETIME
-AS
-	BEGIN
-		DECLARE @fecha DATETIME
-		SELECT TOP 1 @fecha = Fecha FROM "NULL".Fecha_Sistema
-		RETURN @fecha
-	END
-GO
-
-EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
-)
-   DROP FUNCTION "NULL".fnValidarDeposito
-GO
-
-CREATE FUNCTION "NULL".fnValidarDeposito(
-	@Cuenta_Numero NUMERIC(18,0), 
-	@Importe INT,
-	@Fecha_Deposito DATETIME,
-	@Moneda_Nombre NVARCHAR(255),
-	@Tarjeta_Numero NVARCHAR(255))
-	RETURNS INT
-AS
-BEGIN
-	IF(@Importe < 0)
-	BEGIN
-		RETURN(1)
-	END
-	
-	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero AND @Fecha_Deposito > Tarjeta_Fecha_Vencimiento) = 1)
-	BEGIN
-		RETURN(2)
-	END
-	
-	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 0)
-	BEGIN
-		RETURN(3)
-	END
-	
-	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0)
-	BEGIN
-		RETURN(4)
-	END
-
-	RETURN(0)
+>>>>>>> 27768d9c983b42c871bec0e75d2723bdffb56811
 END
 GO
 

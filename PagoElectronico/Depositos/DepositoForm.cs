@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace PagoElectronico.Depositos
 {
-    public partial class FormDeposito : Form
+    public partial class DepositoForm : Form
     {
-        public FormDeposito()
+        public DepositoForm()
         {
             InitializeComponent();
             DbComunicator db = new DbComunicator();
@@ -20,9 +20,8 @@ namespace PagoElectronico.Depositos
             {
                 comboMoneda.Items.Add(db.getLector()["Moneda_Nombre"].ToString());
             }
+            
             db.CerrarConexion();
-
-
      
 
             DbComunicator db1 = new DbComunicator();/* FALTA COMPLETAR SELECT QUE TRAE TARJETA DEL CLIENTE */
@@ -49,7 +48,7 @@ namespace PagoElectronico.Depositos
 
          /* Falta agregar las chequeos de Tarjeta y los campos incompletos (moneda y cuentas) */
             
-           int num = Int32.Parse(maskedImporte.Text);
+           int num = Int32.Parse(importeTextBox.Text);
         
              if ( num >= 1 ) //& ( fechaVencTarjeta >= DateTime.Now )
                
@@ -60,37 +59,6 @@ namespace PagoElectronico.Depositos
                
             
         }
-
-        private void comboTarjeta_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboMoneda_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FormDeposito_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void maskedImporte_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-            
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-       
-
-
-
-
 
     }
 }

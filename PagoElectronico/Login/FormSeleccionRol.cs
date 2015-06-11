@@ -15,24 +15,20 @@ namespace PagoElectronico.Login
         public FormSeleccionDeRol(DbComunicator db)
         {
             InitializeComponent();
-            
+            Dictionary<object, object> itemsComboBox = new Dictionary<object, object>();
             while (db.getLector().Read())
             {
-                string sa = db.getLector()["Rol_Nombre"].ToString();
-                comboBox1.Items.Add(db.getLector()["Rol_Nombre"].ToString());
+                itemsComboBox.Add(db.getLector()["Rol_Nombre"], db.getLector()["Rol_Nombre"]);
             }
+            comboBox1.DataSource = new BindingSource(itemsComboBox, null);
+            comboBox1.DisplayMember = "Value";
+            comboBox1.ValueMember = "Key";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
 
         }
-
-        private void FormSeleccionDeRol_Load(object sender, EventArgs e)
-        {
-
-        }
-
         
     }
 }
