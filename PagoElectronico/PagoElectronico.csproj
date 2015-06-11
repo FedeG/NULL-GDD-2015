@@ -120,6 +120,9 @@
     <EmbeddedResource Include="ABM Rol\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Depositos\DepositoForm.resx">
+      <DependentUpon>DepositoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login\FormSeleccionRol.resx">
       <DependentUpon>FormSeleccionRol.cs</DependentUpon>
     </EmbeddedResource>
