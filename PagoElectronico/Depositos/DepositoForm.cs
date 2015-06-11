@@ -44,13 +44,21 @@ namespace PagoElectronico.Depositos
         {
             DbComunicator db = new DbComunicator();
             SqlCommand spRealizarDeposito = db.GetStoreProcedure("NULL.spRealizarDeposito");
-
+            SqlParameter returnParameter = spRealizarDeposito.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Cuenta_Numero", comboCuenta.SelectedValue));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Tarjeta_Numero", comboTarjeta.SelectedValue.ToString()));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Fecha_Deposito", fechaDeposito.Value));
+
             spRealizarDeposito.ExecuteNonQuery();           
+            
+            if ((int)returnParameter.Value == 0) { MessageBox.Show("Deposito realizado."); }
+            if ((int)returnParameter.Value == 1) { MessageBox.Show("Importe menor a 0."); }
+            if ((int)returnParameter.Value == 2) { MessageBox.Show("Tarjeta vencida."); }
+            if ((int)returnParameter.Value == 3) { MessageBox.Show("Cuenta inexistente."); }
+            if ((int)returnParameter.Value == 4) { MessageBox.Show("La cuenta debe encontrarse habilitada para poder realizar el deposito.");}
         }
 
     }
