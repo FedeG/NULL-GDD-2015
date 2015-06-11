@@ -146,23 +146,27 @@ CREATE FUNCTION "NULL".fnValidarDeposito(
 	RETURNS INT
 AS
 BEGIN
-	IF(@Importe < 0)
+	IF(@Importe <= 0)
+	/*Importe menor igual a 0*/
 	BEGIN
 		RETURN(1)
 	END
 	
 	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero AND @Fecha_Deposito > Tarjeta_Fecha_Vencimiento) = 1)
 	BEGIN
+		/*Tarjeta Vencida*/
 		RETURN(2)
 	END
 	
 	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 0)
 	BEGIN
+		/*Cuenta Inexistente*/
 		RETURN(3)
 	END
 	
 	IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0)
 	BEGIN
+		/*Cuenta no habilitada*/
 		RETURN(4)
 	END
 
