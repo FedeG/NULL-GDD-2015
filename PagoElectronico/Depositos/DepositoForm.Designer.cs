@@ -53,14 +53,14 @@
             // comboMoneda
             // 
             this.comboMoneda.FormattingEnabled = true;
-            this.comboMoneda.Location = new System.Drawing.Point(121, 78);
+            this.comboMoneda.Location = new System.Drawing.Point(94, 78);
             this.comboMoneda.Name = "comboMoneda";
             this.comboMoneda.Size = new System.Drawing.Size(125, 21);
             this.comboMoneda.TabIndex = 1;
             // 
             // botonRealizar
             // 
-            this.botonRealizar.Location = new System.Drawing.Point(383, 182);
+            this.botonRealizar.Location = new System.Drawing.Point(324, 182);
             this.botonRealizar.Name = "botonRealizar";
             this.botonRealizar.Size = new System.Drawing.Size(75, 23);
             this.botonRealizar.TabIndex = 2;
@@ -71,7 +71,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(284, 25);
+            this.label2.Location = new System.Drawing.Point(230, 25);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 13);
             this.label2.TabIndex = 3;
@@ -80,7 +80,7 @@
             // comboTarjeta
             // 
             this.comboTarjeta.FormattingEnabled = true;
-            this.comboTarjeta.Location = new System.Drawing.Point(346, 22);
+            this.comboTarjeta.Location = new System.Drawing.Point(278, 22);
             this.comboTarjeta.Name = "comboTarjeta";
             this.comboTarjeta.Size = new System.Drawing.Size(121, 21);
             this.comboTarjeta.TabIndex = 4;
@@ -88,7 +88,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(284, 81);
+            this.label3.Location = new System.Drawing.Point(230, 81);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 5;
@@ -106,14 +106,14 @@
             // comboCuenta
             // 
             this.comboCuenta.FormattingEnabled = true;
-            this.comboCuenta.Location = new System.Drawing.Point(121, 22);
+            this.comboCuenta.Location = new System.Drawing.Point(94, 22);
             this.comboCuenta.Name = "comboCuenta";
             this.comboCuenta.Size = new System.Drawing.Size(121, 21);
             this.comboCuenta.TabIndex = 8;
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(121, 137);
+            this.dateTimePicker1.Location = new System.Drawing.Point(106, 137);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(203, 20);
             this.dateTimePicker1.TabIndex = 9;
@@ -129,7 +129,7 @@
             // 
             // importeTextBox
             // 
-            this.importeTextBox.Location = new System.Drawing.Point(346, 78);
+            this.importeTextBox.Location = new System.Drawing.Point(278, 78);
             this.importeTextBox.Name = "importeTextBox";
             this.importeTextBox.Size = new System.Drawing.Size(121, 20);
             this.importeTextBox.TabIndex = 11;
@@ -138,7 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 217);
+            this.ClientSize = new System.Drawing.Size(413, 217);
             this.Controls.Add(this.importeTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.dateTimePicker1);
