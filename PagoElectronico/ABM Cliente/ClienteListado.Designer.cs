@@ -175,6 +175,7 @@
             this.DocCliente.Name = "DocCliente";
             this.DocCliente.Size = new System.Drawing.Size(214, 20);
             this.DocCliente.TabIndex = 2;
+            this.DocCliente.KeyPress += this.DocCliente_KeyPress;
             // 
             // searchDocumentoButton
             // 

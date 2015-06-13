@@ -297,6 +297,7 @@
             this.InputNumDomicilio.Name = "InputNumDomicilio";
             this.InputNumDomicilio.Size = new System.Drawing.Size(47, 20);
             this.InputNumDomicilio.TabIndex = 13;
+            this.InputNumDomicilio.KeyPress += this.InputNumField_KeyPress;
             // 
             // label14
             // 
@@ -337,6 +338,7 @@
             this.InputNumDoc.Name = "InputNumDoc";
             this.InputNumDoc.Size = new System.Drawing.Size(187, 20);
             this.InputNumDoc.TabIndex = 17;
+            this.InputNumDoc.KeyPress += this.InputNumField_KeyPress;
             // 
             // label8
             // 

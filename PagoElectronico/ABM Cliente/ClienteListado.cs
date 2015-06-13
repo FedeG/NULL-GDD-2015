@@ -7,16 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using PagoElectronico.Commons;
 
 namespace PagoElectronico.ABM_Cliente
 {
     public partial class ClienteListado : Form
     {
         DbComunicator db;
+        Commons.Validator validator;
 
         public ClienteListado(){
             InitializeComponent();
-            db = new DbComunicator();
+            this.db = new DbComunicator();
+            this.validator = new Commons.Validator();
         }
 
         private void searchButton_Click(object sender, EventArgs e){
@@ -114,6 +117,10 @@ namespace PagoElectronico.ABM_Cliente
             spDarDeBajaCliente.Parameters.Add(new SqlParameter("@Usr_Username", clienteTable.SelectedRows[0].Cells["Usr_Username"].Value.ToString()));
             spDarDeBajaCliente.ExecuteNonQuery();
             this.SearchClientePorUsername();
+        }
+
+        private void DocCliente_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
         }
 
     }

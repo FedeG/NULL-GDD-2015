@@ -14,11 +14,13 @@ namespace PagoElectronico.ABM_Cliente
     public partial class ClienteData : Form
     {
         public DbComunicator db;
+        public Commons.Validator validator;
         public Dictionary<object, object> TipoDocs, NacionalidadesDict;
 
         public ClienteData(){
             InitializeComponent();
             this.db = new DbComunicator();
+            this.validator = new Commons.Validator();
             this.Nacionalidades_Load();
             this.Tipo_Docs_Load();
         }
@@ -63,6 +65,10 @@ namespace PagoElectronico.ABM_Cliente
             sp.Parameters.Add(new SqlParameter("@Pais_Codigo", InputNacCliente.SelectedValue));
             sp.Parameters.Add(new SqlParameter("@Cli_Fecha_Nac", InputFechaNacimiento.Value.Date));
             sp.ExecuteNonQuery();
+        }
+
+        private void InputNumField_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
         }
 
     }
