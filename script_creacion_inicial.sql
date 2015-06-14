@@ -701,6 +701,92 @@ BEGIN
 END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spCrearRol' 
+)
+   DROP PROCEDURE "NULL".spCrearRol
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spEditarRol' 
+)
+   DROP PROCEDURE "NULL".spEditarRol
+GO
+
+
+IF EXISTS (
+	SELECT * 
+	FROM sys.types 
+	WHERE is_table_type = 1 AND name = 'ListaNumeric'
+)
+	DROP TYPE "NULL".ListaNumeric
+GO
+
+CREATE TYPE "NULL".ListaNumeric AS Table (
+        number Numeric(18,0)
+);
+GO
+
+CREATE PROCEDURE "NULL".spCrearRol
+	@Rol_Nombre varchar(255),
+	@Rol_Estado varchar(255),
+	@Lista_Funcionalidades As ListaNumeric READONLY
+AS
+BEGIN
+	SET NOCOUNT ON;
+	
+	INSERT INTO [GD1C2015].[NULL].[Rol](Rol_Nombre, Rol_Estado)
+	VALUES (@Rol_Nombre, @Rol_Estado)
+	
+	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
+	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
+END
+GO
+
+CREATE PROCEDURE "NULL".spEditarRol
+	@Rol_Pk     varchar(255),
+	@Rol_Nombre varchar(255),
+	@Rol_Estado varchar(255),
+	@Lista_Funcionalidades As ListaNumeric READONLY
+AS
+BEGIN
+	SET NOCOUNT ON;
+	
+	DELETE [GD1C2015].[NULL].[Rol_Funcionalidad]
+	WHERE Rol_Nombre = @Rol_Pk
+	
+	UPDATE [GD1C2015].[NULL].[Rol]
+	SET Rol_Nombre = @Rol_Nombre, Rol_Estado = @Rol_Estado
+	WHERE Rol_Nombre = @Rol_Pk
+	
+	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
+	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spDeshabilitarRol' 
+)
+   DROP PROCEDURE "NULL".spDeshabilitarRol
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarRol
+	@Rol_Pk     varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE [GD1C2015].[NULL].[Rol]
+	SET Rol_Estado = 'Deshabilitado'
+	WHERE Rol_Nombre = @Rol_Pk
+END
+GO
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
