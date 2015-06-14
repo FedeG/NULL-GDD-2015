@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -20,6 +20,7 @@ namespace PagoElectronico{
         }
 
         public void ObtenerQuery(string query){
+            this.ConectarConDB();
             Consulta = new SqlCommand(query, this.ConexionConBD);
             this.Lector = Consulta.ExecuteReader();
         }

@@ -48,14 +48,56 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABM Cliente\Form1.cs">
+    <Compile Include="ABM Cliente\ClienteCreacion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ABM Cliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ABM Cliente\ClienteCreacion.Designer.cs">
+      <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteData.Designer.cs">
+      <DependentUpon>ClienteData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteEdicion.Designer.cs">
+      <DependentUpon>ClienteEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteListado.Designer.cs">
+      <DependentUpon>ClienteListado.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cuenta\Form1.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolCreacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolCreacion.Designer.cs">
+      <DependentUpon>RolCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Rol\RolEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolEdicion.Designer.cs">
+      <DependentUpon>RolEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Rol\RolListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolListado.Designer.cs">
+      <DependentUpon>RolListado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Rol\RolData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolData.Designer.cs">
+      <DependentUpon>RolData.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cuenta\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -66,35 +108,31 @@
     <Compile Include="ABM de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ABM Rol\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ABM Rol\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Commons\Sha256Generator.cs" />
+    <Compile Include="Commons\Validator.cs" />
     <Compile Include="Consulta Saldos\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Consulta Saldos\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="DbComunicator.cs" />
-    <Compile Include="Login\Depositos\Form1.cs">
+    <Compile Include="Consulta Saldos\ConsultaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Login\Depositos\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Consulta Saldos\ConsultaForm.Designer.cs">
+      <DependentUpon>ConsultaForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DbComunicator.cs" />
+    <Compile Include="Depositos\DepositoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Depositos\DepositoForm.Designer.cs">
+      <DependentUpon>DepositoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Facturacion\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Facturacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Listados\Form1.cs">
@@ -103,24 +141,72 @@
     <Compile Include="Listados\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login\FormSeleccionRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\FormSeleccionRol.Designer.cs">
+      <DependentUpon>FormSeleccionRol.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login\FormLogin.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Login\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="MenuPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuPrincipal.Designer.cs">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ABM Rol\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="ABM Cliente\ClienteCreacion.resx">
+      <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Consulta Saldos\ConsultaForm.resx">
+      <DependentUpon>ConsultaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteData.resx">
+      <DependentUpon>ClienteData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteEdicion.resx">
+      <DependentUpon>ClienteEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteListado.resx">
+      <DependentUpon>ClienteListado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Depositos\DepositoForm.resx">
+      <DependentUpon>DepositoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolCreacion.resx">
+      <DependentUpon>RolCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolEdicion.resx">
+      <DependentUpon>RolEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolListado.resx">
+      <DependentUpon>RolListado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolData.resx">
+      <DependentUpon>RolData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\FormSeleccionRol.resx">
+      <DependentUpon>FormSeleccionRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuPrincipal.resx">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transferencias\TransferenciaForm.resx">
+      <DependentUpon>TransferenciaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Retiros\FormRetiro.resx">
       <DependentUpon>FormRetiro.cs</DependentUpon>
@@ -139,6 +225,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Retiros\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Retiros\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Retiros\FormRetiro.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,12 +238,16 @@
       <DependentUpon>FormRetiro.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Transferencias\Form1.cs">
+    <Compile Include="Transferencias\TransferenciaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transferencias\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Transferencias\TransferenciaForm.Designer.cs">
+      <DependentUpon>TransferenciaForm.cs</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ABM Rol\" />
+    <Folder Include="Depositos\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
