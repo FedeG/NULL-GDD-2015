@@ -196,6 +196,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transferencias\TransferenciaForm.resx">
+      <DependentUpon>TransferenciaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -217,11 +220,11 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Transferencias\Form1.cs">
+    <Compile Include="Transferencias\TransferenciaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transferencias\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Transferencias\TransferenciaForm.Designer.cs">
+      <DependentUpon>TransferenciaForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
