@@ -14,16 +14,19 @@ namespace PagoElectronico
         DbComunicator db;
         Dictionary<object, object> FuncionalidadesDict;
         Dictionary<object, Form> FormsDict;
+        string rolSeleccionado, username;
 
-        public MenuPrincipal(string rol){
+        public MenuPrincipal(string rol, string username){
             InitializeComponent();
+            this.rolSeleccionado = rol;
+            this.username = username;
             this.db = new DbComunicator();
-            this.LoadFuncionalidades(rol);
+            this.LoadFuncionalidades();
         }
 
-        private void LoadFuncionalidades(string rol){
+        private void LoadFuncionalidades(){
             this.db.ConectarConDB();
-            this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + rol + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0", "Func_Cod", "Func_Nombre");
+            this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + this.rolSeleccionado + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0", "Func_Cod", "Func_Nombre");
             this.db.CerrarConexion();
             Funcionalidades.DataSource = new BindingSource(this.FuncionalidadesDict, null);
             Funcionalidades.DisplayMember = "Value";
@@ -33,9 +36,9 @@ namespace PagoElectronico
         private Form SearchForm(Int16 Func_Cod){
             Form form = null;
             switch (Func_Cod){
-                //case 1: 
-                    //form = new  PagoElectronico.ABM_Rol.Form1();
-                    //break;
+                case 1: 
+                    form = new  PagoElectronico.ABM_Rol.RolListado();
+                    break;
                 case 2: 
                     form = new PagoElectronico.ABM_de_Usuario.Form1();
                     break;
@@ -45,23 +48,23 @@ namespace PagoElectronico
                 case 4:
                     form = new  PagoElectronico.ABM_Cuenta.Form1();
                     break;
-                //case 5: 
+                //case 5:
                     //form = new  PagoElectronico.Tarjeta.Form1();
                     //break;
                 case 6:
-                    form = new  PagoElectronico.Depositos.DepositoForm();
+                    form = new PagoElectronico.Depositos.DepositoForm(this.username);
                     break;
                 case 7: 
-                    form = new  PagoElectronico.Retiros.Form1();
+                    form = new  PagoElectronico.Retiros.FormRetiro();
                     break;
-                case 8: 
-                    form = new  PagoElectronico.Transferencias.Form1();
+                case 8:
+                    form = new PagoElectronico.Transferencias.TransferenciaForm(this.username);
                     break;
                 case 9: 
                     form = new  PagoElectronico.Facturacion.Form1();
                     break;
                 case 10: 
-                    form = new  PagoElectronico.Consulta_Saldos.Form1();
+                    form = new  PagoElectronico.Consulta_Saldos.ConsultaForm(this.username);
                     break;
                 case 11: 
                     form = new PagoElectronico.Listados.Form1();
