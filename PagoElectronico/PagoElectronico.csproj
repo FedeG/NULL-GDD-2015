@@ -75,6 +75,30 @@
     <Compile Include="ABM Cuenta\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ABM Rol\RolCreacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolCreacion.Designer.cs">
+      <DependentUpon>RolCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Rol\RolEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolEdicion.Designer.cs">
+      <DependentUpon>RolEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Rol\RolListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolListado.Designer.cs">
+      <DependentUpon>RolListado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Rol\RolData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\RolData.Designer.cs">
+      <DependentUpon>RolData.cs</DependentUpon>
+    </Compile>
     <Compile Include="ABM Cuenta\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
@@ -146,6 +170,18 @@
     <EmbeddedResource Include="Depositos\DepositoForm.resx">
       <DependentUpon>DepositoForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolCreacion.resx">
+      <DependentUpon>RolCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolEdicion.resx">
+      <DependentUpon>RolEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolListado.resx">
+      <DependentUpon>RolListado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\RolData.resx">
+      <DependentUpon>RolData.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login\FormSeleccionRol.resx">
       <DependentUpon>FormSeleccionRol.cs</DependentUpon>
     </EmbeddedResource>
@@ -190,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ABM Rol\" />
+    <Folder Include="Depositos\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
