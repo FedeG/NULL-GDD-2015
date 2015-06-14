@@ -49,7 +49,7 @@ namespace PagoElectronico
                     //form = new  PagoElectronico.Tarjeta.Form1();
                     //break;
                 case 6:
-                    form = new  PagoElectronico.Depositos.Form1();
+                    form = new  PagoElectronico.Depositos.DepositoForm();
                     break;
                 case 7: 
                     form = new  PagoElectronico.Retiros.Form1();
