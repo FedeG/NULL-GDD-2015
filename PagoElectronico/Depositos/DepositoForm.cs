@@ -23,7 +23,7 @@ namespace PagoElectronico.Depositos
             comboMoneda.ValueMember = "Value";
             this.db.CerrarConexion();
 
-            string query = "SELECT Cli_Cod FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = " + username;
+            string query = "SELECT Cli_Cod FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = '" + username + "'";
             this.db.EjecutarQuery(query);
             this.db.getLector().Read();
             int cli_Cod = Convert.ToInt32(this.db.getLector()["Cli_Cod"]);

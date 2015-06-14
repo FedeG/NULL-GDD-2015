@@ -26,15 +26,16 @@ namespace PagoElectronico
 
         private void LoadFuncionalidades(){
             this.db.ConectarConDB();
-            this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + this.rolSeleccionado + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0", "Func_Cod", "Func_Nombre");
+            this.FuncionalidadesDict = this.db.GetQueryDictionary("SELECT Funcionalidad.Func_Cod, Func_Nombre FROM (SELECT Func_Cod FROM GD1C2015.[NULL].Rol_Funcionalidad WHERE Rol_Nombre='" + this.rolSeleccionado + "') AS Rol_Funcionalidad INNER JOIN GD1C2015.[NULL].Funcionalidad AS Funcionalidad ON Funcionalidad.Func_Cod=Rol_Funcionalidad.Func_Cod WHERE Func_Borrado=0", "Func_Nombre", "Func_Cod");
             this.db.CerrarConexion();
             Funcionalidades.DataSource = new BindingSource(this.FuncionalidadesDict, null);
-            Funcionalidades.DisplayMember = "Value";
-            Funcionalidades.ValueMember = "Key";
+            Funcionalidades.DisplayMember = "Key";
+            Funcionalidades.ValueMember = "Value";
         }
 
         private Form SearchForm(Int16 Func_Cod){
             Form form = null;
+            MessageBox.Show(Func_Cod.ToString());
             switch (Func_Cod){
                 case 1: form = new  PagoElectronico.ABM_Rol.RolListado(); break;
                 case 2: form = new PagoElectronico.ABM_de_Usuario.Form1(); break;
