@@ -52,7 +52,7 @@ namespace PagoElectronico.Depositos
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Tarjeta_Numero", comboTarjeta.SelectedValue.ToString()));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
-            spRealizarDeposito.Parameters.Add(new SqlParameter("@Fecha_Deposito", fechaDeposito.Value));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Fecha_Deposito", Properties.Settings.Default.FechaSistema));
 
             spRealizarDeposito.ExecuteNonQuery();           
             

@@ -1899,14 +1899,16 @@ BEGIN
 	BEGIN
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Deposito_Importe) FROM inserted WHERE Cuenta_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM inserted as depo, "NULL".Cuenta as c
+		WHERE depo.Cuenta_Numero = c.Cuenta_Numero
 	END
 
 	IF (SELECT COUNT(*) FROM deleted) > 0
 	BEGIN
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Deposito_Importe) FROM deleted WHERE Cuenta_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM deleted as depo, "NULL".Cuenta as c
+		WHERE depo.Cuenta_Numero = c.Cuenta_Numero
 	END
 END
 GO
@@ -1942,11 +1944,13 @@ BEGIN
 		
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Transf_Importe) FROM inserted WHERE Cuenta_Origen_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM inserted as trans, "NULL".Cuenta as c
+		WHERE trans.Cuenta_Origen_Numero = c.Cuenta_Numero
 		
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Transf_Importe) FROM inserted WHERE Cuenta_Destino_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM inserted as trans, "NULL".Cuenta as c
+		WHERE trans.Cuenta_Destino_Numero = c.Cuenta_Numero
 	END
 
 	IF (SELECT COUNT(*) FROM deleted) > 0
@@ -1954,11 +1958,13 @@ BEGIN
 		
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Transf_Importe) FROM deleted WHERE Cuenta_Origen_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM deleted as trans, "NULL".Cuenta as c
+		WHERE trans.Cuenta_Origen_Numero = c.Cuenta_Numero
 		
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Transf_Importe) FROM deleted WHERE Cuenta_Destino_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM deleted as trans, "NULL".Cuenta as c
+		WHERE trans.Cuenta_Destino_Numero = c.Cuenta_Numero
 		
 	END
 END
@@ -1983,14 +1989,16 @@ BEGIN
 	BEGIN
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Retiro_Importe) FROM inserted WHERE Cuenta_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM inserted as retiro, "NULL".Cuenta as c
+		WHERE retiro.Cuenta_Numero = c.Cuenta_Numero
 	END
 
 	IF (SELECT COUNT(*) FROM deleted) > 0
 	BEGIN
 		UPDATE "NULL".Cuenta
 		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Retiro_Importe) FROM deleted WHERE Cuenta_Numero = c.Cuenta_Numero)
-		FROM "NULL".Cuenta as c
+		FROM deleted as retiro, "NULL".Cuenta as c
+		WHERE retiro.Cuenta_Numero = c.Cuenta_Numero
 	END
 END
 GO

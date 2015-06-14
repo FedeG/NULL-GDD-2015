@@ -35,7 +35,6 @@ namespace PagoElectronico
 
         private Form SearchForm(Int16 Func_Cod){
             Form form = null;
-            MessageBox.Show(Func_Cod.ToString());
             switch (Func_Cod){
                 case 1: form = new  PagoElectronico.ABM_Rol.RolListado(); break;
                 case 2: form = new PagoElectronico.ABM_de_Usuario.Form1(); break;

@@ -36,8 +36,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.comboCuenta = new System.Windows.Forms.ComboBox();
-            this.fechaDeposito = new System.Windows.Forms.DateTimePicker();
-            this.label5 = new System.Windows.Forms.Label();
             this.importeTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
@@ -60,7 +58,7 @@
             // 
             // botonRealizar
             // 
-            this.botonRealizar.Location = new System.Drawing.Point(324, 182);
+            this.botonRealizar.Location = new System.Drawing.Point(324, 117);
             this.botonRealizar.Name = "botonRealizar";
             this.botonRealizar.Size = new System.Drawing.Size(75, 23);
             this.botonRealizar.TabIndex = 2;
@@ -111,22 +109,6 @@
             this.comboCuenta.Size = new System.Drawing.Size(121, 21);
             this.comboCuenta.TabIndex = 8;
             // 
-            // fechaDeposito
-            // 
-            this.fechaDeposito.Location = new System.Drawing.Point(106, 137);
-            this.fechaDeposito.Name = "fechaDeposito";
-            this.fechaDeposito.Size = new System.Drawing.Size(203, 20);
-            this.fechaDeposito.TabIndex = 9;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(18, 141);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(82, 13);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Fecha Deposito";
-            // 
             // importeTextBox
             // 
             this.importeTextBox.Location = new System.Drawing.Point(278, 78);
@@ -138,10 +120,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 217);
+            this.ClientSize = new System.Drawing.Size(413, 151);
             this.Controls.Add(this.importeTextBox);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.fechaDeposito);
             this.Controls.Add(this.comboCuenta);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -167,8 +147,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboCuenta;
-        private System.Windows.Forms.DateTimePicker fechaDeposito;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox importeTextBox;
     }
 }
