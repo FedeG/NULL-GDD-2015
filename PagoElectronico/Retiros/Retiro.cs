@@ -9,11 +9,12 @@ using System.Windows.Forms;
 
 namespace PagoElectronico.Retiros
 {
-    public partial class Form1 : Form
+    public partial class Retiro : Form
     {
-        public Form1()
+        public Retiro()
         {
             InitializeComponent();
         }
+
     }
 }

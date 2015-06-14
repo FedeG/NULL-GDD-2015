@@ -29,7 +29,7 @@ namespace PagoElectronico{
         {
             Dictionary<object, object> queryDictionary = new Dictionary<object, object>();
 
-            this.ObtenerQuery(query);
+            this.EjecutarQuery(query);
 
             while (this.getLector().Read())
             {
