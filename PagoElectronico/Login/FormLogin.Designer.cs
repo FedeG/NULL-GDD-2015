@@ -27,28 +27,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.InputUsername = new System.Windows.Forms.TextBox();
+            this.InputPassword = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // textBox1
+            // InputUsername
             // 
-            this.textBox1.Location = new System.Drawing.Point(118, 24);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(162, 20);
-            this.textBox1.TabIndex = 0;
+            this.InputUsername.Location = new System.Drawing.Point(118, 24);
+            this.InputUsername.Name = "InputUsername";
+            this.InputUsername.Size = new System.Drawing.Size(162, 20);
+            this.InputUsername.TabIndex = 0;
             // 
-            // textBox2
+            // InputPassword
             // 
-            this.textBox2.Location = new System.Drawing.Point(118, 58);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(159, 20);
-            this.textBox2.TabIndex = 1;
+            this.InputPassword.Location = new System.Drawing.Point(118, 58);
+            this.InputPassword.Name = "InputPassword";
+            this.InputPassword.PasswordChar = '*';
+            this.InputPassword.Size = new System.Drawing.Size(159, 20);
+            this.InputPassword.TabIndex = 1;
             // 
             // button1
             // 
@@ -90,28 +90,17 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Contraseña";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(10, 133);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(94, 12);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Texto para el SQL";
-            // 
             // FormLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 639);
-            this.Controls.Add(this.label2);
+            this.ClientSize = new System.Drawing.Size(292, 143);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.InputPassword);
+            this.Controls.Add(this.InputUsername);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FormLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -123,12 +112,11 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox InputUsername;
+        private System.Windows.Forms.TextBox InputPassword;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
     }
 }
