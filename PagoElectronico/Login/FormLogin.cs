@@ -58,8 +58,10 @@ namespace PagoElectronico.Login
             int resultado = this.LlamarProcedureLogin(username, password);
             switch (resultado){
                 case 0:
-                    FormSeleccionDeRol form = new FormSeleccionDeRol(this.GetRoles(db1, username));
-                    form.Show();
+                    FormSeleccionDeRol formRol = new FormSeleccionDeRol(this.GetRoles(db1, username));
+                    formRol.Show();
+                    PagoElectronico.MenuPrincipal formMenu = new PagoElectronico.MenuPrincipal(formRol.rolSeleccionado, username);
+                    formMenu.Show();
                     break;
                 case 1: MessageBox.Show("Login Invalido!"); break;
                 case 2: MessageBox.Show("El usuario no existe"); break;
