@@ -533,6 +533,107 @@ BEGIN
 END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarRetiro' 
+)
+   DROP FUNCTION "NULL".fnValidarRetiro
+GO
+
+CREATE FUNCTION "NULL".fnValidarRetiro(
+	@Username NVARCHAR(255), 
+	@TipoDoc_Cod Numeric(18,0), 
+	@Nro_Doc NVARCHAR(255), 
+	@Cuenta_Numero Numeric(18,0), 
+	@Importe Numeric(18,0)) 
+	RETURNS INT
+AS
+	BEGIN
+		DECLARE @Saldo int
+		IF(SELECT TOP 1 COUNT(*) 
+		FROM [GD1C2015].[NULL].[Cliente] 
+		WHERE Usr_Username = @Username AND Cli_Nro_Doc = @Nro_Doc AND TipoDoc_Cod = @TipoDoc_Cod) = 1
+		BEGIN
+			IF(SELECT TOP 1 Cuenta_Estado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 'Habilitado'
+			BEGIN
+				SET @Saldo = (SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+				IF @Saldo <= 0 
+				BEGIN
+					RETURN 2
+				END
+				ELSE
+				BEGIN
+					IF(@Saldo < @Importe)
+					BEGIN
+						RETURN 3
+					END
+					ELSE
+					BEGIN
+						RETURN 0
+					END
+				END
+			END
+			ELSE
+			BEGIN
+				RETURN 4
+			END
+		END
+		ELSE
+		BEGIN
+			RETURN 1
+		END
+		
+		RETURN 0
+	END;
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarRetiro' 
+)
+   DROP PROCEDURE "NULL".spRealizarRetiro
+GO
+
+CREATE PROCEDURE "NULL".spRealizarRetiro 
+	@Username NVARCHAR(255), 
+	@TipoDoc_Cod NUMERIC(18,0), 
+	@Nro_Doc NVARCHAR(255), 
+	@Cuenta_Numero NUMERIC(18,0), 
+	@Importe NUMERIC(18,0),
+	@Fecha_Deposito DATETIME,
+	@Banco_Cod NUMERIC(18,0),
+	@Moneda_Nombre NVARCHAR(255)
+AS
+	DECLARE @Validacion int
+	SET @Validacion = "NULL".fnValidarRetiro(@Username, @TipoDoc_Cod, @Nro_Doc, @Cuenta_Numero, @Importe)
+	IF(@Validacion = 0)
+	BEGIN
+		DECLARE @InsertedCheques TABLE(
+			Cheque_Numero Numeric(18,0)
+		);
+		DECLARE @Cheque_Nombre NVARCHAR(255)
+		
+		SET @Cheque_Nombre = (SELECT TOP 1 Cli_Apellido FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = @Username)
+		SET @Cheque_Nombre = @Cheque_Nombre + ', ' + (SELECT TOP 1 Cli_Nombre FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = @Username)
+		
+		INSERT INTO [GD1C2015].[NULL].[Cheque](Cheque_Fecha, Cheque_Importe, Cheque_Nombre, Banco_Codigo, Moneda_Nombre)
+		OUTPUT inserted.Cheque_Numero INTO @InsertedCheques
+		VALUES(@Fecha_Deposito, @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre)
+		
+		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero)
+		SELECT @Importe, @Fecha_Deposito, @Cuenta_Numero, c.Cheque_Numero
+		FROM @InsertedCheques as c
+		
+		RETURN(@Validacion)
+	END
+	ELSE
+	BEGIN
+		RETURN(@Validacion)
+	END
+GO
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
