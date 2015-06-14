@@ -12,10 +12,10 @@ namespace PagoElectronico.Consulta_Saldos
     public partial class ConsultaForm : Form
     {
         DbComunicator db;
-        public ConsultaForm(int clienteCod)
+        public ConsultaForm(string username)
         {
             InitializeComponent();
-            string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = " + clienteCod;
+            string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = " + username + ")";
             db = new DbComunicator();
             cuentaComboBox.DataSource = new BindingSource(db.GetQueryDictionary(query, "Cuenta_Numero", "Cuenta_Numero"), null);
             cuentaComboBox.DisplayMember = "Key";
