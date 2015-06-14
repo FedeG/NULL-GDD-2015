@@ -64,225 +64,6 @@ GO
 EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
 
-IF OBJECT_ID (N'NULL.spCrearCliente') IS NOT NULL
-   DROP PROCEDURE "NULL".spCrearCliente
-GO
-
-CREATE PROCEDURE "NULL".spCrearCliente
-
-  ---- Usuario ----
-  @Usr_Username varchar(255),
-	@Usr_Password varchar(255),
-	@Usr_Pregunta_Secreta varchar(255),
-	@Usr_Respuesta_Secreta varchar(255),
-
-  ---- Cliente ----
-	@Cli_Nombre varchar(255),
-	@Cli_Apellido varchar(255),
-	@Cli_Nro_Doc varchar(255),
-	@Cli_Dom_Calle varchar(255),
-	@Cli_Localidad varchar(255),
-	@Cli_Mail varchar(255),
-	@Cli_Nacionalidad varchar(255),
-	@Cli_Dom_Nro varchar(20),
-	@Cli_Dom_Piso varchar(10),
-	@Cli_Dom_Depto varchar(10),
-	@TipoDoc_Cod Numeric(18,0),
-	@Pais_Codigo Numeric(18,0),
-	@Cli_Fecha_Nac DATETIME
-
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-  INSERT INTO [GD1C2015].[NULL].[Usuario] (Usr_Username, Usr_Password, Usr_Fecha_Creacion, Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta, Usr_Intentos_Login, Usr_Borrado, Usr_Estado)
-	VALUES (@Usr_Username, @Usr_Password, GETDATE(), GETDATE(), @Usr_Pregunta_Secreta, @Usr_Respuesta_Secreta, 0, 0, 'Habilitado')
-
-	INSERT INTO [GD1C2015].[NULL].[Cliente] (Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad, Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
-	VALUES (@Usr_Username, @Cli_Nombre, @Cli_Apellido, @TipoDoc_Cod, @Cli_Nro_Doc, @Cli_Dom_Calle, @Cli_Dom_Nro, @Cli_Dom_Piso, @Cli_Dom_Depto, @Cli_Localidad, @Cli_Fecha_Nac, @Cli_Mail, @Cli_Nacionalidad, @Pais_Codigo, 0)
-
-END
-GO
-
-IF OBJECT_ID (N'NULL.spEditarCliente') IS NOT NULL
-   DROP PROCEDURE "NULL".spEditarCliente
-GO
-
-CREATE PROCEDURE "NULL".spEditarCliente
-
-  ---- Usuario ----
-  @Usr_Username varchar(255),
-	@Usr_Password varchar(255),
-	@Usr_Pregunta_Secreta varchar(255),
-	@Usr_Respuesta_Secreta varchar(255),
-
-  ---- Cliente ----
-	@Cli_Nombre varchar(255),
-	@Cli_Apellido varchar(255),
-	@Cli_Nro_Doc varchar(255),
-	@Cli_Dom_Calle varchar(255),
-	@Cli_Localidad varchar(255),
-	@Cli_Mail varchar(255),
-	@Cli_Nacionalidad varchar(255),
-	@Cli_Dom_Nro varchar(20),
-	@Cli_Dom_Piso varchar(10),
-	@Cli_Dom_Depto varchar(10),
-	@TipoDoc_Cod Numeric(18,0),
-	@Pais_Codigo Numeric(18,0),
-	@Cli_Fecha_Nac DATETIME
-
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-  UPDATE [GD1C2015].[NULL].[Usuario]
-	SET Usr_Password = @Usr_Password, Usr_Pregunta_Secreta = @Usr_Pregunta_Secreta, Usr_Respuesta_Secreta = @Usr_Respuesta_Secreta
-	WHERE Usr_Username = @Usr_Username
-
-  UPDATE [GD1C2015].[NULL].[Cliente]
-	SET Cli_Nombre = @Cli_Nombre, Cli_Apellido = @Cli_Apellido, TipoDoc_Cod = @TipoDoc_Cod, Cli_Nro_Doc = @Cli_Nro_Doc, Cli_Dom_Calle = @Cli_Dom_Calle, Cli_Dom_Nro = @Cli_Dom_Nro, Cli_Dom_Piso = @Cli_Dom_Piso, Cli_Dom_Depto = @Cli_Dom_Depto, Cli_Localidad = @Cli_Localidad, Cli_Fecha_Nac = @Cli_Fecha_Nac, Cli_Mail = @Cli_Mail, Cli_Nacionalidad = @Cli_Nacionalidad, Pais_Codigo = @Pais_Codigo
-	WHERE Usr_Username = @Usr_Username
-
-END
-GO
-
-IF OBJECT_ID (N'NULL.spHabilitarUsuario') IS NOT NULL
-   DROP PROCEDURE "NULL".spHabilitarUsuario
-GO
-
-CREATE PROCEDURE "NULL".spHabilitarUsuario
-	@Usr_Username varchar(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	UPDATE [GD1C2015].[NULL].[Usuario]
-	SET Usr_Estado = 'Habilitado'
-	WHERE Usr_Username = @Usr_Username
-
-END
-GO
-
-IF OBJECT_ID (N'NULL.spDeshabilitarUsuario') IS NOT NULL
-   DROP PROCEDURE "NULL".spDeshabilitarUsuario
-GO
-
-CREATE PROCEDURE "NULL".spDeshabilitarUsuario
-	@Usr_Username varchar(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	UPDATE [GD1C2015].[NULL].[Usuario]
-	SET Usr_Estado = 'Deshabilitado'
-	WHERE Usr_Username = @Usr_Username
-
-END
-GO
-
-IF OBJECT_ID (N'NULL.spDarDeBajaCliente') IS NOT NULL
-   DROP PROCEDURE "NULL".spDarDeBajaCliente
-GO
-
-CREATE PROCEDURE "NULL".spDarDeBajaCliente
-	@Usr_Username varchar(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	UPDATE [GD1C2015].[NULL].[Cliente]
-	SET Cli_Borrado = 1
-	WHERE Usr_Username = @Usr_Username
-
-END
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spCrearRol' 
-)
-   DROP PROCEDURE "NULL".spCrearRol
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spEditarRol' 
-)
-   DROP PROCEDURE "NULL".spEditarRol
-GO
-
-
-IF EXISTS (
-	SELECT * 
-	FROM sys.types 
-	WHERE is_table_type = 1 AND name = 'ListaNumeric'
-)
-	DROP TYPE "NULL".ListaNumeric
-GO
-
-CREATE TYPE "NULL".ListaNumeric AS Table (
-        number Numeric(18,0)
-);
-GO
-
-CREATE PROCEDURE "NULL".spCrearRol
-	@Rol_Nombre varchar(255),
-	@Rol_Estado varchar(255),
-	@Lista_Funcionalidades As ListaNumeric READONLY
-AS
-BEGIN
-	SET NOCOUNT ON;
-	
-	INSERT INTO [GD1C2015].[NULL].[Rol](Rol_Nombre, Rol_Estado)
-	VALUES (@Rol_Nombre, @Rol_Estado)
-	
-	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
-	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
-END
-GO
-
-CREATE PROCEDURE "NULL".spEditarRol
-	@Rol_Pk     varchar(255),
-	@Rol_Nombre varchar(255),
-	@Rol_Estado varchar(255),
-	@Lista_Funcionalidades As ListaNumeric READONLY
-AS
-BEGIN
-	SET NOCOUNT ON;
-	
-	DELETE [GD1C2015].[NULL].[Rol_Funcionalidad]
-	WHERE Rol_Nombre = @Rol_Pk
-	
-	UPDATE [GD1C2015].[NULL].[Rol]
-	SET Rol_Nombre = @Rol_Nombre, Rol_Estado = @Rol_Estado
-	WHERE Rol_Nombre = @Rol_Pk
-	
-	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
-	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
-END
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spDeshabilitarRol' 
-)
-   DROP PROCEDURE "NULL".spDeshabilitarRol
-GO
-
-CREATE PROCEDURE "NULL".spDeshabilitarRol
-	@Rol_Pk     varchar(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-	UPDATE [GD1C2015].[NULL].[Rol]
-	SET Rol_Estado = 'Deshabilitado'
-	WHERE Rol_Nombre = @Rol_Pk
-END
-GO
-
 /********************************** BORRADO DE TABLAS **************************************/
 IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
   DROP TABLE "NULL".Auditoria_Login
@@ -749,6 +530,393 @@ BEGIN
   END
 
   RETURN(@ValorRetorno)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarRetiro' 
+)
+   DROP FUNCTION "NULL".fnValidarRetiro
+GO
+
+CREATE FUNCTION "NULL".fnValidarRetiro(
+	@Username NVARCHAR(255), 
+	@TipoDoc_Cod Numeric(18,0), 
+	@Nro_Doc NVARCHAR(255), 
+	@Cuenta_Numero Numeric(18,0), 
+	@Importe Numeric(18,0)) 
+	RETURNS INT
+AS
+	BEGIN
+		DECLARE @Saldo int
+		IF(SELECT TOP 1 COUNT(*) 
+		FROM [GD1C2015].[NULL].[Cliente] 
+		WHERE Usr_Username = @Username AND Cli_Nro_Doc = @Nro_Doc AND TipoDoc_Cod = @TipoDoc_Cod) = 1
+		BEGIN
+			IF(SELECT TOP 1 Cuenta_Estado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 'Habilitado'
+			BEGIN
+				SET @Saldo = (SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+				IF @Saldo <= 0 
+				BEGIN
+					RETURN 2
+				END
+				ELSE
+				BEGIN
+					IF(@Saldo < @Importe)
+					BEGIN
+						RETURN 3
+					END
+					ELSE
+					BEGIN
+						RETURN 0
+					END
+				END
+			END
+			ELSE
+			BEGIN
+				RETURN 4
+			END
+		END
+		ELSE
+		BEGIN
+			RETURN 1
+		END
+		
+		RETURN 0
+	END;
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarRetiro' 
+)
+   DROP PROCEDURE "NULL".spRealizarRetiro
+GO
+
+CREATE PROCEDURE "NULL".spRealizarRetiro 
+	@Username NVARCHAR(255), 
+	@TipoDoc_Cod NUMERIC(18,0), 
+	@Nro_Doc NVARCHAR(255), 
+	@Cuenta_Numero NUMERIC(18,0), 
+	@Importe NUMERIC(18,0),
+	@Fecha_Deposito DATETIME,
+	@Banco_Cod NUMERIC(18,0),
+	@Moneda_Nombre NVARCHAR(255)
+AS
+	DECLARE @Validacion int
+	SET @Validacion = "NULL".fnValidarRetiro(@Username, @TipoDoc_Cod, @Nro_Doc, @Cuenta_Numero, @Importe)
+	IF(@Validacion = 0)
+	BEGIN
+		DECLARE @InsertedCheques TABLE(
+			Cheque_Numero Numeric(18,0)
+		);
+		DECLARE @Cheque_Nombre NVARCHAR(255)
+		
+		SET @Cheque_Nombre = (SELECT TOP 1 Cli_Apellido FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = @Username)
+		SET @Cheque_Nombre = @Cheque_Nombre + ', ' + (SELECT TOP 1 Cli_Nombre FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = @Username)
+		
+		INSERT INTO [GD1C2015].[NULL].[Cheque](Cheque_Fecha, Cheque_Importe, Cheque_Nombre, Banco_Codigo, Moneda_Nombre)
+		OUTPUT inserted.Cheque_Numero INTO @InsertedCheques
+		VALUES(@Fecha_Deposito, @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre)
+		
+		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero)
+		SELECT @Importe, @Fecha_Deposito, @Cuenta_Numero, c.Cheque_Numero
+		FROM @InsertedCheques as c
+		
+		RETURN(@Validacion)
+	END
+	ELSE
+	BEGIN
+		RETURN(@Validacion)
+	END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarTransferencia' 
+)
+   DROP FUNCTION "NULL".fnValidarTransferencia
+GO
+
+CREATE FUNCTION "NULL".fnValidarTransferencia(
+	@Cuenta_Origen NUMERIC(18,0), 
+	@Cuenta_Destino NUMERIC(18,0),
+	@Importe INT
+	)
+	RETURNS INT
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Destino AND Cuenta_Estado = 'Habilitada' AND Cuenta_Estado ='Inhabilitada') = 0
+	BEGIN
+		RETURN(1)
+	END
+	
+	IF @Importe < 0 
+	BEGIN
+		RETURN(2)
+	END
+	
+	IF(SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Origen) >= @Importe
+	BEGIN
+		RETURN(3)
+	END
+	
+	RETURN(0)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarTransferencia' 
+)
+   DROP PROCEDURE "NULL".spRealizarTransferencia
+GO
+
+CREATE PROCEDURE "NULL".spRealizarTransferencia
+	@Cuenta_Origen NUMERIC(18,0), 
+	@Cuenta_Destino NUMERIC(18,0),
+	@Fecha_Transferencia DATETIME,
+	@Importe INT
+AS
+BEGIN
+	DECLARE @Validacion INT = "NULL".fnValidarTransferencia(@Cuenta_Origen, @Cuenta_Destino, @Importe)
+	DECLARE @Transferencia_Costo INT = 0
+	IF(@Validacion = 0)
+	BEGIN
+		IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] as c1, [GD1C2015].[NULL].[Cuenta] as c2 WHERE c1.Cuenta_Numero = @Cuenta_Origen AND c2.Cuenta_Numero = @Cuenta_Destino AND c1.Cli_Cod = c2.Cli_Cod) = 0
+		BEGIN
+			SET @Importe = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
+		END
+		
+		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo)
+		VALUES(@Cuenta_Origen, @Cuenta_Destino, @Fecha_Transferencia, @Importe, @Transferencia_Costo)
+	END
+	
+	RETURN @Validacion
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spCrearRol' 
+)
+   DROP PROCEDURE "NULL".spCrearRol
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spEditarRol' 
+)
+   DROP PROCEDURE "NULL".spEditarRol
+GO
+
+
+IF EXISTS (
+	SELECT * 
+	FROM sys.types 
+	WHERE is_table_type = 1 AND name = 'ListaNumeric'
+)
+	DROP TYPE "NULL".ListaNumeric
+GO
+
+CREATE TYPE "NULL".ListaNumeric AS Table (
+        number Numeric(18,0)
+);
+GO
+
+CREATE PROCEDURE "NULL".spCrearRol
+	@Rol_Nombre varchar(255),
+	@Rol_Estado varchar(255),
+	@Lista_Funcionalidades As ListaNumeric READONLY
+AS
+BEGIN
+	SET NOCOUNT ON;
+	
+	INSERT INTO [GD1C2015].[NULL].[Rol](Rol_Nombre, Rol_Estado)
+	VALUES (@Rol_Nombre, @Rol_Estado)
+	
+	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
+	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
+END
+GO
+
+CREATE PROCEDURE "NULL".spEditarRol
+	@Rol_Pk     varchar(255),
+	@Rol_Nombre varchar(255),
+	@Rol_Estado varchar(255),
+	@Lista_Funcionalidades As ListaNumeric READONLY
+AS
+BEGIN
+	SET NOCOUNT ON;
+	
+	DELETE [GD1C2015].[NULL].[Rol_Funcionalidad]
+	WHERE Rol_Nombre = @Rol_Pk
+	
+	UPDATE [GD1C2015].[NULL].[Rol]
+	SET Rol_Nombre = @Rol_Nombre, Rol_Estado = @Rol_Estado
+	WHERE Rol_Nombre = @Rol_Pk
+	
+	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
+	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spDeshabilitarRol' 
+)
+   DROP PROCEDURE "NULL".spDeshabilitarRol
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarRol
+	@Rol_Pk     varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE [GD1C2015].[NULL].[Rol]
+	SET Rol_Estado = 'Deshabilitado'
+	WHERE Rol_Nombre = @Rol_Pk
+END
+GO
+
+IF OBJECT_ID (N'NULL.spCrearCliente') IS NOT NULL
+   DROP PROCEDURE "NULL".spCrearCliente
+GO
+
+CREATE PROCEDURE "NULL".spCrearCliente
+
+  ---- Usuario ----
+  @Usr_Username varchar(255),
+	@Usr_Password varchar(255),
+	@Usr_Pregunta_Secreta varchar(255),
+	@Usr_Respuesta_Secreta varchar(255),
+
+  ---- Cliente ----
+	@Cli_Nombre varchar(255),
+	@Cli_Apellido varchar(255),
+	@Cli_Nro_Doc varchar(255),
+	@Cli_Dom_Calle varchar(255),
+	@Cli_Localidad varchar(255),
+	@Cli_Mail varchar(255),
+	@Cli_Nacionalidad varchar(255),
+	@Cli_Dom_Nro varchar(20),
+	@Cli_Dom_Piso varchar(10),
+	@Cli_Dom_Depto varchar(10),
+	@TipoDoc_Cod Numeric(18,0),
+	@Pais_Codigo Numeric(18,0),
+	@Cli_Fecha_Nac DATETIME
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+  INSERT INTO [GD1C2015].[NULL].[Usuario] (Usr_Username, Usr_Password, Usr_Fecha_Creacion, Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta, Usr_Intentos_Login, Usr_Borrado, Usr_Estado)
+	VALUES (@Usr_Username, @Usr_Password, GETDATE(), GETDATE(), @Usr_Pregunta_Secreta, @Usr_Respuesta_Secreta, 0, 0, 'Habilitado')
+
+	INSERT INTO [GD1C2015].[NULL].[Cliente] (Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad, Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
+	VALUES (@Usr_Username, @Cli_Nombre, @Cli_Apellido, @TipoDoc_Cod, @Cli_Nro_Doc, @Cli_Dom_Calle, @Cli_Dom_Nro, @Cli_Dom_Piso, @Cli_Dom_Depto, @Cli_Localidad, @Cli_Fecha_Nac, @Cli_Mail, @Cli_Nacionalidad, @Pais_Codigo, 0)
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spEditarCliente') IS NOT NULL
+   DROP PROCEDURE "NULL".spEditarCliente
+GO
+
+CREATE PROCEDURE "NULL".spEditarCliente
+
+  ---- Usuario ----
+  @Usr_Username varchar(255),
+	@Usr_Password varchar(255),
+	@Usr_Pregunta_Secreta varchar(255),
+	@Usr_Respuesta_Secreta varchar(255),
+
+  ---- Cliente ----
+	@Cli_Nombre varchar(255),
+	@Cli_Apellido varchar(255),
+	@Cli_Nro_Doc varchar(255),
+	@Cli_Dom_Calle varchar(255),
+	@Cli_Localidad varchar(255),
+	@Cli_Mail varchar(255),
+	@Cli_Nacionalidad varchar(255),
+	@Cli_Dom_Nro varchar(20),
+	@Cli_Dom_Piso varchar(10),
+	@Cli_Dom_Depto varchar(10),
+	@TipoDoc_Cod Numeric(18,0),
+	@Pais_Codigo Numeric(18,0),
+	@Cli_Fecha_Nac DATETIME
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+  UPDATE [GD1C2015].[NULL].[Usuario]
+	SET Usr_Password = @Usr_Password, Usr_Pregunta_Secreta = @Usr_Pregunta_Secreta, Usr_Respuesta_Secreta = @Usr_Respuesta_Secreta
+	WHERE Usr_Username = @Usr_Username
+
+  UPDATE [GD1C2015].[NULL].[Cliente]
+	SET Cli_Nombre = @Cli_Nombre, Cli_Apellido = @Cli_Apellido, TipoDoc_Cod = @TipoDoc_Cod, Cli_Nro_Doc = @Cli_Nro_Doc, Cli_Dom_Calle = @Cli_Dom_Calle, Cli_Dom_Nro = @Cli_Dom_Nro, Cli_Dom_Piso = @Cli_Dom_Piso, Cli_Dom_Depto = @Cli_Dom_Depto, Cli_Localidad = @Cli_Localidad, Cli_Fecha_Nac = @Cli_Fecha_Nac, Cli_Mail = @Cli_Mail, Cli_Nacionalidad = @Cli_Nacionalidad, Pais_Codigo = @Pais_Codigo
+	WHERE Usr_Username = @Usr_Username
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spHabilitarUsuario') IS NOT NULL
+   DROP PROCEDURE "NULL".spHabilitarUsuario
+GO
+
+CREATE PROCEDURE "NULL".spHabilitarUsuario
+	@Usr_Username varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Usuario]
+	SET Usr_Estado = 'Habilitado'
+	WHERE Usr_Username = @Usr_Username
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spDeshabilitarUsuario') IS NOT NULL
+   DROP PROCEDURE "NULL".spDeshabilitarUsuario
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarUsuario
+	@Usr_Username varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Usuario]
+	SET Usr_Estado = 'Deshabilitado'
+	WHERE Usr_Username = @Usr_Username
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spDarDeBajaCliente') IS NOT NULL
+   DROP PROCEDURE "NULL".spDarDeBajaCliente
+GO
+
+CREATE PROCEDURE "NULL".spDarDeBajaCliente
+	@Usr_Username varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cliente]
+	SET Cli_Borrado = 1
+	WHERE Usr_Username = @Usr_Username
+
 END
 GO
 
