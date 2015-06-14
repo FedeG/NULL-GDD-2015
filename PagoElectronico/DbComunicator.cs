@@ -20,6 +20,7 @@ namespace PagoElectronico{
         }
 
         public void ObtenerQuery(string query){
+            this.ConectarConDB();
             Consulta = new SqlCommand(query, this.ConexionConBD);
             this.Lector = Consulta.ExecuteReader();
         }
