@@ -68,6 +68,5 @@ namespace PagoElectronico.Login
             InputPassword.Text = "";
             db1.CerrarConexion();
         }
-
     }
 }
