@@ -40,7 +40,7 @@ namespace PagoElectronico
                     form = new PagoElectronico.ABM_de_Usuario.Form1();
                     break;
                 case 3:
-                    form = new  PagoElectronico.ABM_Cliente.Form1();
+                    form = new  PagoElectronico.ABM_Cliente.ClienteListado();
                     break;
                 case 4:
                     form = new  PagoElectronico.ABM_Cuenta.Form1();
