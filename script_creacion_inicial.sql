@@ -93,12 +93,12 @@ IF OBJECT_ID('NULL.Transferencia', 'U') IS NOT NULL
   DROP TABLE "NULL".Transferencia
 GO
 
-IF OBJECT_ID('NULL.Cheque', 'U') IS NOT NULL
-  DROP TABLE "NULL".Cheque
-GO
-
 IF OBJECT_ID('NULL.Retiro', 'U') IS NOT NULL
   DROP TABLE "NULL".Retiro
+GO
+
+IF OBJECT_ID('NULL.Cheque', 'U') IS NOT NULL
+  DROP TABLE "NULL".Cheque
 GO
 
 IF OBJECT_ID('NULL.Banco', 'U') IS NOT NULL
@@ -307,15 +307,6 @@ CREATE TABLE "NULL".Transferencia
   Transf_Borrado BIT NOT NULL DEFAULT 0
 );
 
-CREATE TABLE "NULL".Retiro
-(
-  Retiro_Codigo NUMERIC(18,0) PRIMARY KEY IDENTITY(15315188277,1),
-  Retiro_Importe NUMERIC(18,2) NOT NULL,
-  Retiro_Fecha DATETIME NOT NULL,
-  Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
-  Retiro_Borrado BIT NOT NULL DEFAULT 0
-);
-
 CREATE TABLE "NULL".Banco
 (
   Banco_Codigo NUMERIC(18,0) PRIMARY KEY IDENTITY(10005,1),
@@ -326,14 +317,23 @@ CREATE TABLE "NULL".Banco
 
 CREATE TABLE "NULL".Cheque
 (
-  Retiro_Codigo NUMERIC(18,0) PRIMARY KEY REFERENCES "NULL".Retiro(Retiro_Codigo),
-  Cheque_Numero NUMERIC(18,0) NOT NULL IDENTITY (151550275,1),
+  Cheque_Numero NUMERIC(18,0) NOT NULL PRIMARY KEY IDENTITY (151550275,1),
   Cheque_Fecha DATETIME NOT NULL,
   Cheque_Importe NUMERIC(18,2) NOT NULL,
   Cheque_Nombre NVARCHAR(255) NOT NULL,
   Banco_Codigo NUMERIC(18,0) NOT NULL REFERENCES "NULL".Banco(Banco_Codigo),
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cheque_Borrado BIT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE "NULL".Retiro
+(
+  Retiro_Codigo NUMERIC(18,0) PRIMARY KEY IDENTITY(15315188277,1),
+  Retiro_Importe NUMERIC(18,2) NOT NULL,
+  Retiro_Fecha DATETIME NOT NULL,
+  Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
+  Retiro_Borrado BIT NOT NULL DEFAULT 0,
+  Cheque_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cheque(Cheque_Numero)
 );
 
 CREATE TABLE "NULL".Transaccion
@@ -1582,3 +1582,46 @@ INSERT INTO "NULL".Transferencia(Transf_Fecha, Transf_Importe, Transf_Costo, Cue
 								Cuenta_Destino_Numero, Transf_Borrado)
 SELECT DISTINCT CONVERT(DATETIME, Transf_Fecha, 121), Trans_Importe, Trans_Costo_Trans, Cuenta_Numero, Cuenta_Dest_Numero, 0
 FROM GD1C2015.gd_esquema.Maestra WHERE Transf_Fecha IS NOT NULL
+
+
+/*************************************** CHEQUES Y RETIROS *****************************************/
+IF OBJECT_ID ('NULL.trUpdateSaldoRetiro','TR') IS NOT NULL
+   DROP TRIGGER "NULL".trUpdateSaldoRetiro
+GO
+
+CREATE TRIGGER "NULL".trUpdateSaldoRetiro ON "NULL".Retiro AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM inserted) > 0
+	BEGIN
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Retiro_Importe) FROM inserted WHERE Cuenta_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+	END
+
+	IF (SELECT COUNT(*) FROM deleted) > 0
+	BEGIN
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Retiro_Importe) FROM deleted WHERE Cuenta_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+	END
+END
+GO
+
+
+SET IDENTITY_INSERT "NULL".Cheque ON
+
+INSERT INTO "NULL".Cheque(Cheque_Nombre, Cheque_Numero, Cheque_Fecha, Cheque_Importe, Banco_Codigo, Moneda_Nombre, Cheque_Borrado)
+SELECT DISTINCT Cli_Nombre + ' ' + Cli_Apellido, Cheque_Numero, CONVERT(DATETIME, Cheque_Fecha, 121), Cheque_Importe, Banco_Cogido, 'Dólares Estadounidenses', 0
+FROM GD1C2015.gd_esquema.Maestra WHERE Cheque_Numero IS NOT NULL
+
+SET IDENTITY_INSERT "NULL".Cheque OFF
+
+
+SET IDENTITY_INSERT "NULL".Retiro ON
+
+INSERT INTO "NULL".Retiro(Retiro_Codigo, Retiro_Fecha, Retiro_Importe, Cuenta_Numero, Cheque_Numero, Retiro_Borrado)
+SELECT DISTINCT Retiro_Codigo, CONVERT(DATETIME, Retiro_Fecha, 121), Retiro_Importe, Cuenta_Numero, Cheque_Numero, 0
+FROM GD1C2015.gd_esquema.Maestra WHERE Retiro_Codigo IS NOT NULL
+
+SET IDENTITY_INSERT "NULL".Retiro OFF
