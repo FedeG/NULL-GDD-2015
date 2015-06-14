@@ -11,6 +11,7 @@ namespace PagoElectronico.Login
 {
     public partial class FormSeleccionDeRol : Form
     {
+        public string rolSeleccionado;
 
         public FormSeleccionDeRol(DbComunicator db)
         {
@@ -26,8 +27,7 @@ namespace PagoElectronico.Login
         }
 
         private void button1_Click(object sender, EventArgs e){
-            PagoElectronico.MenuPrincipal form = new PagoElectronico.MenuPrincipal(comboBox1.SelectedValue.ToString());
-            form.Show();
+            this.rolSeleccionado = comboBox1.SelectedValue.ToString();
             this.Close();
         }
         
