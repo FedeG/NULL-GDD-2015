@@ -58,5 +58,13 @@ namespace PagoElectronico.Properties {
                 return ((string)(this["DbPassword"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime FechaSistema {
+            get {
+                return ((global::System.DateTime)(this["FechaSistema"]));
+            }
+        }
     }
 }
