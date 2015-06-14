@@ -46,72 +46,6 @@ AS
   END;
 GO
 
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spRealizarLogin' 
-)
-   DROP PROCEDURE "NULL".spRealizarLogin
-GO
-
-CREATE PROCEDURE "NULL".spRealizarLogin 
-  @Username NVARCHAR (255), 
-  @Password NVARCHAR (255)
-AS
-BEGIN
-  SET NOCOUNT ON;
-  DECLARE @Nro_fallo int = 0
-  DECLARE @EstadoLogin NVARCHAR(20)
-  DECLARE @ValorRetorno int
-  
-  IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username AND Usr_Password = @Password AND Usr_Estado = 'Habilitado') = 1
-    BEGIN
-       SET @Nro_fallo = 0
-       SET @EstadoLogin = 'Exitoso'
-       SET @ValorRetorno = 0
-    END
-  ELSE 
-    BEGIN
-      IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username) = 1
-      BEGIN
-        IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username AND Usr_Password = @Password AND Usr_Estado = 'Deshabilitado') = 1
-        BEGIN
-          SET @ValorRetorno = 3
-        END
-        ELSE
-        BEGIN
-          SET @Nro_fallo = (SELECT TOP 1 Usr_Intentos_Login
-            FROM [GD1C2015].[NULL].[Usuario]
-            WHERE Usr_Username = @Username) + 1
-          SET @EstadoLogin = 'No Exitoso'
-          SET @ValorRetorno = 1
-        END
-      END
-      ELSE
-      BEGIN
-        SET @ValorRetorno = 2
-      END
-      
-    END
-  
-  IF(@Nro_fallo = 3)
-    BEGIN
-      UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo, Usr_Estado = 'Deshabilitado' WHERE Usr_Username = @Username
-    END
-  ELSE
-    BEGIN
-      UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo WHERE Usr_Username = @Username
-    END
-  
-  IF(@ValorRetorno = 0 OR @ValorRetorno = 1)
-  BEGIN
-    INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Estado, Log_Nro_Fallo) VALUES
-    (@Username, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
-  END
-
-  RETURN(@ValorRetorno)
-END
-GO
 
 IF OBJECT_ID (N'NULL.fnGetFechaSistema') IS NOT NULL
    DROP FUNCTION "NULL".fnGetFechaSistema
@@ -129,79 +63,6 @@ GO
 
 EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
-)
-   DROP FUNCTION "NULL".fnValidarDeposito
-GO
-
-CREATE FUNCTION "NULL".fnValidarDeposito(
-  @Cuenta_Numero NUMERIC(18,0), 
-  @Importe INT,
-  @Fecha_Deposito DATETIME,
-  @Moneda_Nombre NVARCHAR(255),
-  @Tarjeta_Numero NVARCHAR(255))
-  RETURNS INT
-AS
-BEGIN
-  IF(@Importe <= 0)
-  /*Importe menor igual a 0*/
-  BEGIN
-    RETURN(1)
-  END
-  
-  IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero AND @Fecha_Deposito > Tarjeta_Fecha_Vencimiento) = 1)
-  BEGIN
-    /*Tarjeta Vencida*/
-    RETURN(2)
-  END
-  
-  IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 0)
-  BEGIN
-    /*Cuenta Inexistente*/
-    RETURN(3)
-  END
-  
-  IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0)
-  BEGIN
-    /*Cuenta no habilitada*/
-    RETURN(4)
-  END
-
-  RETURN(0)
-END
-GO
-
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spRealizarDeposito' 
-)
-   DROP PROCEDURE "NULL".spRealizarDeposito
-GO
-
-CREATE PROCEDURE "NULL".spRealizarDeposito
-  @Cuenta_Numero NUMERIC(18,0), 
-  @Importe INT,
-  @Fecha_Deposito DATETIME,
-  @Moneda_Nombre NVARCHAR(255),
-  @Tarjeta_Numero NVARCHAR(255)
-AS
-BEGIN
-  DECLARE @Validacion int
-  SET @Validacion = "NULL".fnValidarDeposito(@Cuenta_Numero, @Importe, @Fecha_Deposito, @Moneda_Nombre, @Tarjeta_Numero)
-  
-  IF(@Validacion = 0)
-  BEGIN
-    INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
-    VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
-  END
-  RETURN(@Validacion)
-END
-GO
 
 /********************************** BORRADO DE TABLAS **************************************/
 IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
@@ -338,18 +199,6 @@ CREATE TABLE "NULL".Rol_Usuario
   Usr_Username NVARCHAR(255) REFERENCES "NULL".Usuario(Usr_Username),
   PRIMARY KEY(Rol_Nombre, Usr_Username)
 );
-
-/**
-Para después insertar valores específicos para un identity:
-
-SET IDENTITY_INSERT Yaks ON
-
-INSERT INTO dbo.Yaks (YakID, YakName) Values(1, 'Mac the Yak')
-
-SET IDENTITY_INSERT Yaks OFF
-
- - See more at: http://www.sqlteam.com/article/understanding-identity-columns#sthash.VdvGfvjn.dpuf
-*/
 
 CREATE TABLE "NULL".TipoDoc
 (
@@ -540,30 +389,149 @@ CREATE TABLE "NULL".Auditoria_Login
   Log_Nro_Fallo NUMERIC(1,0) DEFAULT NULL
 );
 
+
+/************************************ FN Y PRODCEDURES *********************************************/
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'trDeposito' 
+   WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
 )
-   DROP TRIGGER "NULL".trDeposito
+   DROP FUNCTION "NULL".fnValidarDeposito
 GO
 
-CREATE TRIGGER "NULL".trDeposito ON "NULL".Deposito AFTER INSERT
+CREATE FUNCTION "NULL".fnValidarDeposito(
+  @Cuenta_Numero NUMERIC(18,0), 
+  @Importe INT,
+  @Fecha_Deposito DATETIME,
+  @Moneda_Nombre NVARCHAR(255),
+  @Tarjeta_Numero NVARCHAR(255))
+  RETURNS INT
 AS
 BEGIN
-  DECLARE @Importe INT
-  DECLARE @Cuenta_Numero NUMERIC(18,0)
+  IF(@Importe <= 0)
+  /*Importe menor igual a 0*/
+  BEGIN
+    RETURN(1)
+  END
   
-  SET @Importe = (SELECT TOP 1 Deposito_Importe FROM inserted)
-  SET @Cuenta_Numero = (SELECT TOP 1 Cuenta_Numero FROM inserted)
+  IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero AND @Fecha_Deposito > Tarjeta_Fecha_Vencimiento) = 1)
+  BEGIN
+    /*Tarjeta Vencida*/
+    RETURN(2)
+  END
   
-  UPDATE [GD1C2015].[NULL].[Cuenta]
-  SET Cuenta_Saldo = Cuenta_Saldo + @Importe
-  WHERE Cuenta_Numero = @Cuenta_Numero
+  IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 0)
+  BEGIN
+    /*Cuenta Inexistente*/
+    RETURN(3)
+  END
   
+  IF((SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0)
+  BEGIN
+    /*Cuenta no habilitada*/
+    RETURN(4)
+  END
+
+  RETURN(0)
 END
 GO
 
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarDeposito' 
+)
+   DROP PROCEDURE "NULL".spRealizarDeposito
+GO
+
+CREATE PROCEDURE "NULL".spRealizarDeposito
+  @Cuenta_Numero NUMERIC(18,0), 
+  @Importe INT,
+  @Fecha_Deposito DATETIME,
+  @Moneda_Nombre NVARCHAR(255),
+  @Tarjeta_Numero NVARCHAR(255)
+AS
+BEGIN
+  DECLARE @Validacion int
+  SET @Validacion = "NULL".fnValidarDeposito(@Cuenta_Numero, @Importe, @Fecha_Deposito, @Moneda_Nombre, @Tarjeta_Numero)
+  
+  IF(@Validacion = 0)
+  BEGIN
+    INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
+    VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
+  END
+  RETURN(@Validacion)
+END
+GO
+
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarLogin' 
+)
+   DROP PROCEDURE "NULL".spRealizarLogin
+GO
+
+CREATE PROCEDURE "NULL".spRealizarLogin 
+  @Username NVARCHAR (255), 
+  @Password NVARCHAR (255)
+AS
+BEGIN
+  SET NOCOUNT ON;
+  DECLARE @Nro_fallo int = 0
+  DECLARE @EstadoLogin NVARCHAR(20)
+  DECLARE @ValorRetorno int
+  
+  IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username AND Usr_Password = @Password AND Usr_Estado = 'Habilitado') = 1
+    BEGIN
+       SET @Nro_fallo = 0
+       SET @EstadoLogin = 'Exitoso'
+       SET @ValorRetorno = 0
+    END
+  ELSE 
+    BEGIN
+      IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username) = 1
+      BEGIN
+        IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Username AND Usr_Password = @Password AND Usr_Estado = 'Deshabilitado') = 1
+        BEGIN
+          SET @ValorRetorno = 3
+        END
+        ELSE
+        BEGIN
+          SET @Nro_fallo = (SELECT TOP 1 Usr_Intentos_Login
+            FROM [GD1C2015].[NULL].[Usuario]
+            WHERE Usr_Username = @Username) + 1
+          SET @EstadoLogin = 'No Exitoso'
+          SET @ValorRetorno = 1
+        END
+      END
+      ELSE
+      BEGIN
+        SET @ValorRetorno = 2
+      END
+      
+    END
+  
+  IF(@Nro_fallo = 3)
+    BEGIN
+      UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo, Usr_Estado = 'Deshabilitado' WHERE Usr_Username = @Username
+    END
+  ELSE
+    BEGIN
+      UPDATE [GD1C2015].[NULL].[Usuario] SET Usr_Intentos_Login = @Nro_fallo WHERE Usr_Username = @Username
+    END
+  
+  IF(@ValorRetorno = 0 OR @ValorRetorno = 1)
+  BEGIN
+    INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Estado, Log_Nro_Fallo) VALUES
+    (@Username, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
+  END
+
+  RETURN(@ValorRetorno)
+END
+GO
 
 /******************************* MIGRACION *********************************************/
 
@@ -1461,16 +1429,6 @@ WHERE master.Tarjeta_Numero = tarjetas_shas.Tarjeta_Numero AND
   master.Cli_Tipo_Doc_Cod = cli.TipoDoc_Cod AND master.Cli_Nro_Doc = cli.Cli_Nro_Doc AND 
   cod_shas.Tarjeta_Codigo_Seg = master.Tarjeta_Codigo_Seg;
 
-
-IF OBJECT_ID('NULL.Tarjetas_SHA_Temp', 'U') IS NOT NULL
-  DROP TABLE "NULL".Tarjetas_SHA_Temp
-GO
-
-
-IF OBJECT_ID('NULL.Tarjetas_Codigos_SHA_Temp', 'U') IS NOT NULL
-  DROP TABLE "NULL".Tarjetas_Codigos_SHA_Temp
-GO
-
 /******************************************* TIPO CUENTA ***************************************************/
 
 INSERT INTO "NULL".TipoCuenta(TipoCta_Nombre, TipoCta_Costo_Apertura, TipoCta_Duracion, TipoCta_Costo_Dia,
@@ -1540,3 +1498,87 @@ GO
 IF OBJECT_ID(N'NULL.fnGetTipoCuentaRandom') IS NOT NULL
    DROP FUNCTION "NULL".fnGetTipoCuentaRandom
 GO
+
+
+/********************************************* DEPOSITOS ********************************************/
+IF OBJECT_ID ('NULL.trUpdateSaldoDeposito','TR') IS NOT NULL
+   DROP TRIGGER "NULL".trUpdateSaldoDeposito
+GO
+
+CREATE TRIGGER "NULL".trUpdateSaldoDeposito ON "NULL".Deposito AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM inserted) > 0
+	BEGIN
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Deposito_Importe) FROM inserted WHERE Cuenta_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+	END
+
+	IF (SELECT COUNT(*) FROM deleted) > 0
+	BEGIN
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Deposito_Importe) FROM deleted WHERE Cuenta_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+	END
+END
+GO
+
+
+SET IDENTITY_INSERT "NULL".Deposito ON
+
+INSERT INTO "NULL".Deposito(Deposito_Codigo, Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero, Deposito_Borrado)
+SELECT DISTINCT m.Deposito_Codigo, m.Deposito_Importe, CONVERT(DATETIME, m.Deposito_Fecha, 121), t.Tarjeta_SHA, m.Cuenta_Numero, 0 Deposito_Borrado
+FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Tarjetas_SHA_Temp as t
+WHERE m.Deposito_Codigo IS NOT NULL AND m.Tarjeta_Numero = t.Tarjeta_Numero
+
+SET IDENTITY_INSERT "NULL".Deposito OFF
+
+IF OBJECT_ID('NULL.Tarjetas_SHA_Temp', 'U') IS NOT NULL
+  DROP TABLE "NULL".Tarjetas_SHA_Temp
+GO
+
+IF OBJECT_ID('NULL.Tarjetas_Codigos_SHA_Temp', 'U') IS NOT NULL
+  DROP TABLE "NULL".Tarjetas_Codigos_SHA_Temp
+GO
+
+/******************************************* TRANSFERENCIAS ****************************************/
+IF OBJECT_ID ('NULL.trUpdateSaldoTransferencia','TR') IS NOT NULL
+   DROP TRIGGER "NULL".trUpdateSaldoTransferencia
+GO
+
+CREATE TRIGGER "NULL".trUpdateSaldoTransferencia ON "NULL".Transferencia AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM inserted) > 0
+	BEGIN
+		
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Transf_Importe) FROM inserted WHERE Cuenta_Origen_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+		
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Transf_Importe) FROM inserted WHERE Cuenta_Destino_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+	END
+
+	IF (SELECT COUNT(*) FROM deleted) > 0
+	BEGIN
+		
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Transf_Importe) FROM deleted WHERE Cuenta_Origen_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+		
+		UPDATE "NULL".Cuenta
+		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Transf_Importe) FROM deleted WHERE Cuenta_Destino_Numero = c.Cuenta_Numero)
+		FROM "NULL".Cuenta as c
+		
+	END
+END
+GO
+
+
+INSERT INTO "NULL".Transferencia(Transf_Fecha, Transf_Importe, Transf_Costo, Cuenta_Origen_Numero,
+								Cuenta_Destino_Numero, Transf_Borrado)
+SELECT DISTINCT CONVERT(DATETIME, Transf_Fecha, 121), Trans_Importe, Trans_Costo_Trans, Cuenta_Numero, Cuenta_Dest_Numero, 0
+FROM GD1C2015.gd_esquema.Maestra WHERE Transf_Fecha IS NOT NULL
