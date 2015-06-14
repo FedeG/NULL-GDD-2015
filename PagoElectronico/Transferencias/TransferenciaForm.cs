@@ -12,8 +12,9 @@ namespace PagoElectronico.Transferencias
 {
     public partial class TransferenciaForm : Form
     {
-        public TransferenciaForm()
-        {
+        public TransferenciaForm(string username){
+            string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = " + username + ")";
+            // TODO 
             InitializeComponent();
         }
 
