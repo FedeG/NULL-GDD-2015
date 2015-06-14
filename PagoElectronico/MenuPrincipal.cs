@@ -36,39 +36,17 @@ namespace PagoElectronico
         private Form SearchForm(Int16 Func_Cod){
             Form form = null;
             switch (Func_Cod){
-                case 1: 
-                    form = new  PagoElectronico.ABM_Rol.RolListado();
-                    break;
-                case 2: 
-                    form = new PagoElectronico.ABM_de_Usuario.Form1();
-                    break;
-                case 3:
-                    form = new  PagoElectronico.ABM_Cliente.ClienteListado();
-                    break;
-                case 4:
-                    form = new  PagoElectronico.ABM_Cuenta.Form1();
-                    break;
-                //case 5:
-                    //form = new  PagoElectronico.Tarjeta.Form1();
-                    //break;
-                case 6:
-                    form = new PagoElectronico.Depositos.DepositoForm(this.username);
-                    break;
-                case 7: 
-                    form = new  PagoElectronico.Retiros.FormRetiro();
-                    break;
-                case 8:
-                    form = new PagoElectronico.Transferencias.TransferenciaForm(this.username);
-                    break;
-                case 9: 
-                    form = new  PagoElectronico.Facturacion.Form1();
-                    break;
-                case 10: 
-                    form = new  PagoElectronico.Consulta_Saldos.ConsultaForm(this.username);
-                    break;
-                case 11: 
-                    form = new PagoElectronico.Listados.Form1();
-                    break;
+                case 1: form = new  PagoElectronico.ABM_Rol.RolListado(); break;
+                case 2: form = new PagoElectronico.ABM_de_Usuario.Form1(); break;
+                case 3: form = new  PagoElectronico.ABM_Cliente.ClienteListado(); break;
+                case 4: form = new  PagoElectronico.ABM_Cuenta.Form1(); break;
+                // case 5: form = new  PagoElectronico.Tarjeta.Form1(); break;
+                case 6: form = new PagoElectronico.Depositos.DepositoForm(this.username); break;
+                case 7: form = new  PagoElectronico.Retiros.FormRetiro(); break;
+                case 8: form = new PagoElectronico.Transferencias.TransferenciaForm(this.username); break;
+                case 9: form = new  PagoElectronico.Facturacion.Form1(); break;
+                case 10: form = new  PagoElectronico.Consulta_Saldos.ConsultaForm(this.username); break;
+                case 11: form = new PagoElectronico.Listados.Form1(); break;
             }
             return form;
         }
