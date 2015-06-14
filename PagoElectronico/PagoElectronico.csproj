@@ -48,23 +48,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ABM Cliente\Form1.cs">
+    <Compile Include="ABM Cliente\ClienteCreacion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ABM Cliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ABM Cliente\ClienteCreacion.Designer.cs">
+      <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteData.Designer.cs">
+      <DependentUpon>ClienteData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteEdicion.Designer.cs">
+      <DependentUpon>ClienteEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cliente\ClienteListado.Designer.cs">
+      <DependentUpon>ClienteListado.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cuenta\Form1.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ABM Cuenta\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ABM de Usuario\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ABM de Usuario\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Rol\RolCreacion.cs">
       <SubType>Form</SubType>
@@ -90,6 +99,17 @@
     <Compile Include="ABM Rol\RolData.Designer.cs">
       <DependentUpon>RolData.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM Cuenta\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM de Usuario\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM de Usuario\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Commons\Sha256Generator.cs" />
+    <Compile Include="Commons\Validator.cs" />
     <Compile Include="Consulta Saldos\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,16 +117,16 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="DbComunicator.cs" />
+    <Compile Include="Depositos\DepositoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Depositos\DepositoForm.Designer.cs">
+      <DependentUpon>DepositoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Facturacion\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Facturacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Listados\Form1.cs">
@@ -127,8 +147,29 @@
     <Compile Include="Login\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="MenuPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuPrincipal.Designer.cs">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ABM Cliente\ClienteCreacion.resx">
+      <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteData.resx">
+      <DependentUpon>ClienteData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteEdicion.resx">
+      <DependentUpon>ClienteEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cliente\ClienteListado.resx">
+      <DependentUpon>ClienteListado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Depositos\DepositoForm.resx">
+      <DependentUpon>DepositoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolCreacion.resx">
       <DependentUpon>RolCreacion.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Login\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuPrincipal.resx">
+      <DependentUpon>MenuPrincipal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -181,6 +225,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ABM Rol\" />
     <Folder Include="Depositos\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
