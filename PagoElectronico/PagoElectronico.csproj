@@ -116,6 +116,12 @@
     <Compile Include="Consulta Saldos\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consulta Saldos\ConsultaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Consulta Saldos\ConsultaForm.Designer.cs">
+      <DependentUpon>ConsultaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DbComunicator.cs" />
     <Compile Include="Depositos\DepositoForm.cs">
       <SubType>Form</SubType>
@@ -157,6 +163,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ABM Cliente\ClienteCreacion.resx">
       <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Consulta Saldos\ConsultaForm.resx">
+      <DependentUpon>ConsultaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Cliente\ClienteData.resx">
       <DependentUpon>ClienteData.cs</DependentUpon>
