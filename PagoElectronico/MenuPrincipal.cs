@@ -44,7 +44,7 @@ namespace PagoElectronico
                 case 6: form = new PagoElectronico.Depositos.DepositoForm(this.username); break;
                 case 7: form = new  PagoElectronico.Retiros.FormRetiro(); break;
                 case 8: form = new PagoElectronico.Transferencias.TransferenciaForm(this.username); break;
-                case 9: form = new  PagoElectronico.Facturacion.Form1(); break;
+                case 9: form = new  PagoElectronico.Facturacion.FormFacturacion(this.username); break;
                 case 10: form = new  PagoElectronico.Consulta_Saldos.ConsultaForm(this.username); break;
                 case 11: form = new PagoElectronico.Listados.Form1(); break;
             }
@@ -56,9 +56,7 @@ namespace PagoElectronico
         }
 
         private void Abrir_Click(object sender, EventArgs e){
-            Form form = this.SearchForm(Convert.ToInt16(Funcionalidades.SelectedValue));
-            form.Show();
-            this.Close();
+            this.SearchForm(Convert.ToInt16(Funcionalidades.SelectedValue)).ShowDialog();
         }
     }
 }
