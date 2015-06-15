@@ -13,10 +13,23 @@ namespace PagoElectronico.Retiros
     public partial class FormRetiro : Form
     {
         string username = "";
-        public FormRetiro()
+        public FormRetiro(string username)
         {
             InitializeComponent();
+            this.username = username;
+
             DbComunicator db = new DbComunicator();
+
+            string query = "SELECT Cli_Cod FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = '" + username + "'";
+            db.EjecutarQuery(query);
+            db.getLector().Read();
+            int cli_Cod = Convert.ToInt32(db.getLector()["Cli_Cod"]);
+
+            string queryCuentas = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = " + cli_Cod;
+            cuentaComboBox.DataSource = new BindingSource(db.GetQueryDictionary(queryCuentas, "Cuenta_Numero", "Cuenta_Numero"), null);
+            cuentaComboBox.DisplayMember = "Key";
+            cuentaComboBox.ValueMember = "Value";
+            
             db.EjecutarQuery("SELECT Banco_Codigo, Banco_Nombre FROM [GD1C2015].[NULL].[Banco]");
             Dictionary<string, string> bancoDictionary = new Dictionary<string, string>();
             while (db.getLector().Read()) {
@@ -24,14 +37,16 @@ namespace PagoElectronico.Retiros
                 string nombre = db.getLector()["Banco_Nombre"].ToString();
                 bancoDictionary.Add(nombre + " (" + codigo + ") ", codigo);
             }
-            db.CerrarConexion();
-            db = new DbComunicator();
+            
             bancoComboBox.DataSource = new BindingSource(bancoDictionary, null);
             bancoComboBox.DisplayMember = "Key";
             bancoComboBox.ValueMember = "Value";
-            tipoDocComboBox.DataSource = new BindingSource(db.GetQueryDictionary("SELECT TipoDoc_Cod, TipoDoc_Desc FROM [GD1C2015].[NULL].[TipoDoc]", "TipoDoc_Cod", "TipoDoc_Desc"), null);
+            
+            tipoDocComboBox.DataSource = new BindingSource(db.GetQueryDictionary("SELECT TipoDoc_Cod, TipoDoc_Desc FROM [GD1C2015].[NULL].[TipoDoc]", "TipoDoc_Desc", "TipoDoc_Cod"), null);
             tipoDocComboBox.DisplayMember = "Key";
-            tipoDocComboBox.DisplayMember = "Value";
+            tipoDocComboBox.ValueMember = "Value";
+
+            db.CerrarConexion();
         }
 
         private void realizarButton_Click(object sender, EventArgs e)
@@ -39,13 +54,14 @@ namespace PagoElectronico.Retiros
             DbComunicator db = new DbComunicator();
             SqlCommand spRealizarRetiro = db.GetStoreProcedure("NULL.spRealizarRetiro");
             SqlParameter returnParameter = spRealizarRetiro.Parameters.Add("RetVal", SqlDbType.Int);
+            
             returnParameter.Direction = ParameterDirection.ReturnValue;
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Username", username));
-            spRealizarRetiro.Parameters.Add(new SqlParameter("@TipoDoc_Cod", tipoDocComboBox.SelectedText));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@TipoDoc_Cod", Convert.ToInt32(tipoDocComboBox.SelectedValue)));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Nro_Doc", nroDocTextBox.Text));
-            spRealizarRetiro.Parameters.Add(new SqlParameter("@Cuenta_Numero", cuentaComboBox.SelectedText));
-            spRealizarRetiro.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
-            spRealizarRetiro.Parameters.Add(new SqlParameter("@Banco_Cod", bancoComboBox.SelectedValue));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(cuentaComboBox.SelectedValue)));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Importe", Convert.ToInt32(importeTextBox.Text)));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Banco_Cod", Convert.ToInt32(bancoComboBox.SelectedValue)));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Moneda_Nombre", "Dólares Estadounidenses"));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Fecha_Deposito", Properties.Settings.Default.FechaSistema));
 
@@ -63,7 +79,7 @@ namespace PagoElectronico.Retiros
             
             if ((int)returnParameter.Value == 2)
             {
-                MessageBox.Show("La Cuenta seleccionada no tiene saldo.");
+                MessageBox.Show("El importe ingreseado debe ser mayor que 0.");
             }
             
             if ((int)returnParameter.Value == 3)

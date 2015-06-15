@@ -555,10 +555,10 @@ AS
 		FROM [GD1C2015].[NULL].[Cliente] 
 		WHERE Usr_Username = @Username AND Cli_Nro_Doc = @Nro_Doc AND TipoDoc_Cod = @TipoDoc_Cod) = 1
 		BEGIN
-			IF(SELECT TOP 1 Cuenta_Estado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 'Habilitado'
+			IF(SELECT TOP 1 Cuenta_Estado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero) = 'Habilitada'
 			BEGIN
 				SET @Saldo = (SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
-				IF @Saldo <= 0 
+				IF @Importe <= 0 
 				BEGIN
 					RETURN 2
 				END
@@ -650,7 +650,7 @@ CREATE FUNCTION "NULL".fnValidarTransferencia(
 	RETURNS INT
 AS
 BEGIN
-	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Destino AND Cuenta_Estado = 'Habilitada' AND Cuenta_Estado ='Inhabilitada') = 0
+	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Destino AND Cuenta_Estado = 'Habilitada' OR Cuenta_Estado ='Inhabilitada') = 0
 	BEGIN
 		RETURN(1)
 	END
@@ -660,7 +660,7 @@ BEGIN
 		RETURN(2)
 	END
 	
-	IF(SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Origen) >= @Importe
+	IF(SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Origen) < @Importe
 	BEGIN
 		RETURN(3)
 	END
@@ -690,7 +690,7 @@ BEGIN
 	BEGIN
 		IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] as c1, [GD1C2015].[NULL].[Cuenta] as c2 WHERE c1.Cuenta_Numero = @Cuenta_Origen AND c2.Cuenta_Numero = @Cuenta_Destino AND c1.Cli_Cod = c2.Cli_Cod) = 0
 		BEGIN
-			SET @Importe = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
+			SET @Transferencia_Costo = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
 		END
 		
 		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo)
@@ -1988,7 +1988,7 @@ BEGIN
 	IF (SELECT COUNT(*) FROM inserted) > 0
 	BEGIN
 		UPDATE "NULL".Cuenta
-		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Retiro_Importe) FROM inserted WHERE Cuenta_Numero = c.Cuenta_Numero)
+		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Retiro_Importe) FROM inserted WHERE Cuenta_Numero = c.Cuenta_Numero)
 		FROM inserted as retiro, "NULL".Cuenta as c
 		WHERE retiro.Cuenta_Numero = c.Cuenta_Numero
 	END
@@ -1996,7 +1996,7 @@ BEGIN
 	IF (SELECT COUNT(*) FROM deleted) > 0
 	BEGIN
 		UPDATE "NULL".Cuenta
-		SET Cuenta_Saldo = c.Cuenta_Saldo - (SELECT SUM(Retiro_Importe) FROM deleted WHERE Cuenta_Numero = c.Cuenta_Numero)
+		SET Cuenta_Saldo = c.Cuenta_Saldo + (SELECT SUM(Retiro_Importe) FROM deleted WHERE Cuenta_Numero = c.Cuenta_Numero)
 		FROM deleted as retiro, "NULL".Cuenta as c
 		WHERE retiro.Cuenta_Numero = c.Cuenta_Numero
 	END

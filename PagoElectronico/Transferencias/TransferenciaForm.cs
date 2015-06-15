@@ -13,9 +13,12 @@ namespace PagoElectronico.Transferencias
     public partial class TransferenciaForm : Form
     {
         public TransferenciaForm(string username){
-            string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = " + username + ")";
-            // TODO 
+            string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = '" + username + "')";
             InitializeComponent();
+            DbComunicator db = new DbComunicator();
+            cuentaOrigenComboBox.DataSource = new BindingSource(db.GetQueryDictionary(query, "Cuenta_Numero", "Cuenta_Numero"), null);
+            cuentaOrigenComboBox.DisplayMember = "Key";
+            cuentaOrigenComboBox.ValueMember = "Value";
         }
 
         private void realizarButton_Click(object sender, EventArgs e)
@@ -24,9 +27,9 @@ namespace PagoElectronico.Transferencias
             SqlCommand spRealizarTransferencia = db.GetStoreProcedure("NULL.spRealizarTransferencia");
             SqlParameter returnParameter = spRealizarTransferencia.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
-            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Origen", cuentaOrigenComboBox.SelectedValue));
-            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Destino", cuentaDestinoTextBox.Text));
-            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
+            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Origen", Convert.ToInt64(cuentaOrigenComboBox.SelectedValue)));
+            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Destino", Convert.ToInt64(cuentaDestinoTextBox.Text)));
+            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Importe", Convert.ToInt32(importeTextBox.Text)));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Fecha_Transferencia", Properties.Settings.Default.FechaSistema));
 
             //Agregar la fecha de sistema.
