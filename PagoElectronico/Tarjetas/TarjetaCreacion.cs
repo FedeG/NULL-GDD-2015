@@ -13,20 +13,36 @@ namespace PagoElectronico.Tarjetas
 {
     public partial class TarjetaCreacion : TarjetaData
     {
-        public TarjetaCreacion()
+        int cliCod;
+        public TarjetaCreacion(int cliCod)
         {
             InitializeComponent();
+            this.cliCod = cliCod;
         }
 
         private void createButton_Click(object sender, EventArgs e){
-            int cliCod = 100004;
+            DbComunicator db = new DbComunicator();
             string tarjetaNumeroVisible = numeroTextBox.Text.Substring(numeroTextBox.Text.Length - 4);
             string shaTarjetaNumero = new Sha256Generator().GetHashString(numeroTextBox.Text);
             string shaCodSeguridad = new Sha256Generator().GetHashString(seguridadTextBox.Text);
-            string insert = "INSERT INTO [GD1C2015].[NULL].[Tarjeta](Tarjeta_Numero, Tarjeta_Numero_Visible, Tarjeta_Codigo_Seg, Emisor_Cod, ";
-            insert = insert + "Cli_Cod, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento) ";
-            insert = insert + " VALUES (@ShaTarjeta, @NumeroVisible, @ShaCod, @Emisor, @Cli_cod, @Emision, @Vencimiento)";
-            this.setCommand(insert, cliCod, shaTarjetaNumero, tarjetaNumeroVisible, shaCodSeguridad).ExecuteNonQuery();
+            SqlCommand spCrearTarjeta = db.GetStoreProcedure("NULL.spCrearTarjeta");
+            SqlParameter returnParameter = spCrearTarjeta.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Tarjeta_Numero", shaTarjetaNumero));
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Tarjeta_Numero_Visible", tarjetaNumeroVisible));
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Tarjeta_Codigo_Seg", shaCodSeguridad));
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Emisor_Cod", Convert.ToInt32(emisorComboBox.SelectedValue)));
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Cli_Cod", this.cliCod));
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Tarjeta_Fecha_Vencimiento", vencimientoTimePicker.Value));
+            spCrearTarjeta.Parameters.Add(new SqlParameter("@Tarjeta_Fecha_Emision", emisionTimePicker.Value));
+            spCrearTarjeta.ExecuteNonQuery();
+            db.CerrarConexion();
+
+            if ((int)returnParameter.Value == 1) {
+                MessageBox.Show("El numero de tarjeta ingresado ya se encuentra cargado en el sistema");
+            }
+
+            this.Close();
         }
     }
 }

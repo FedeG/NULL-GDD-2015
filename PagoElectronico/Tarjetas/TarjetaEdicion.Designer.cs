@@ -56,7 +56,6 @@
             // 
             this.numeroTextBox.Location = new System.Drawing.Point(131, 14);
             this.numeroTextBox.Name = "numeroTextBox";
-            this.numeroTextBox.ReadOnly = true;
             this.numeroTextBox.Size = new System.Drawing.Size(196, 20);
             this.numeroTextBox.TabIndex = 12;
             // 
