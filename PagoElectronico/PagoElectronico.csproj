@@ -1,4 +1,4 @@
-﻿﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -208,7 +208,7 @@
     <EmbeddedResource Include="Retiros\FormRetiro.resx">
       <DependentUpon>FormRetiro.cs</DependentUpon>
     </EmbeddedResource>
-  <EmbeddedResource Include="Tarjetas\TarjetaCreacion.resx">
+    <EmbeddedResource Include="Tarjetas\TarjetaCreacion.resx">
       <DependentUpon>TarjetaCreacion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tarjetas\TarjetaData.resx">
@@ -219,8 +219,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tarjetas\TarjetaListado.resx">
       <DependentUpon>TarjetaListado.cs</DependentUpon>
-    </EmbeddedResource>    
-   <Compile Include="Properties\Resources.Designer.cs">
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
@@ -241,6 +241,30 @@
       <DependentUpon>FormRetiro.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Tarjetas\TarjetaCreacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaCreacion.Designer.cs">
+      <DependentUpon>TarjetaCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaData.Designer.cs">
+      <DependentUpon>TarjetaData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaEdicion.Designer.cs">
+      <DependentUpon>TarjetaEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaListado.Designer.cs">
+      <DependentUpon>TarjetaListado.cs</DependentUpon>
+    </Compile>
     <Compile Include="Transferencias\TransferenciaForm.cs">
       <SubType>Form</SubType>
     </Compile>
