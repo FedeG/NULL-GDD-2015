@@ -126,6 +126,12 @@ namespace PagoElectronico{
             }
         }
 
+
+        public SqlCommand GetInsert(string insert){
+            this.ConectarConDB();
+            SqlCommand cmd = new SqlCommand(insert, this.ConexionConBD);
+            return cmd;
+        }
     }
 
 }

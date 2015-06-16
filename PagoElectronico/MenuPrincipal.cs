@@ -40,7 +40,7 @@ namespace PagoElectronico
                 case 2: form = new PagoElectronico.ABM_de_Usuario.Form1(); break;
                 case 3: form = new  PagoElectronico.ABM_Cliente.ClienteListado(); break;
                 case 4: form = new  PagoElectronico.ABM_Cuenta.Form1(); break;
-                // case 5: form = new  PagoElectronico.Tarjeta.Form1(); break;
+                case 5: form = new  PagoElectronico.Tarjetas.TarjetaListado(this.username); break;
                 case 6: form = new PagoElectronico.Depositos.DepositoForm(this.username); break;
                 case 7: form = new  PagoElectronico.Retiros.FormRetiro(this.username); break;
                 case 8: form = new PagoElectronico.Transferencias.TransferenciaForm(this.username); break;

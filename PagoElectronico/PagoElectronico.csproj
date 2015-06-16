@@ -208,6 +208,18 @@
     <EmbeddedResource Include="Retiros\FormRetiro.resx">
       <DependentUpon>FormRetiro.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tarjetas\TarjetaCreacion.resx">
+      <DependentUpon>TarjetaCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tarjetas\TarjetaData.resx">
+      <DependentUpon>TarjetaData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tarjetas\TarjetaEdicion.resx">
+      <DependentUpon>TarjetaEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tarjetas\TarjetaListado.resx">
+      <DependentUpon>TarjetaListado.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -229,6 +241,30 @@
       <DependentUpon>FormRetiro.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Tarjetas\TarjetaCreacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaCreacion.Designer.cs">
+      <DependentUpon>TarjetaCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaData.Designer.cs">
+      <DependentUpon>TarjetaData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaEdicion.Designer.cs">
+      <DependentUpon>TarjetaEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetaListado.Designer.cs">
+      <DependentUpon>TarjetaListado.cs</DependentUpon>
+    </Compile>
     <Compile Include="Transferencias\TransferenciaForm.cs">
       <SubType>Form</SubType>
     </Compile>
