@@ -11,6 +11,7 @@ namespace PagoElectronico.Login
 {
     public partial class FormSeleccionDeRol : Form
     {
+        public string rolSeleccionado;
 
         public FormSeleccionDeRol(DbComunicator db)
         {
@@ -25,9 +26,9 @@ namespace PagoElectronico.Login
             comboBox1.ValueMember = "Key";
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
+        private void button1_Click(object sender, EventArgs e){
+            this.rolSeleccionado = comboBox1.SelectedValue.ToString();
+            this.Close();
         }
         
     }
