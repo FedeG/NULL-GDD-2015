@@ -283,8 +283,10 @@ CREATE TABLE "NULL".Tarjeta
   Tarjeta_Codigo_Seg NVARCHAR(255) NOT NULL,
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
   Emisor_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Emisor(Emisor_Cod),
-  Tarjeta_Borrado BIT NOT NULL DEFAULT 0
+  Tarjeta_Borrado BIT NOT NULL DEFAULT 0,
+  Tarjeta_Estado NVARCHAR(255) NOT NULL DEFAULT 'Asociada' CHECK (Tarjeta_Estado IN ('Asociada','Desasociada'))
 );
+
 
 CREATE TABLE "NULL".Deposito
 (
@@ -920,6 +922,154 @@ BEGIN
 END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spRealizarDeposito' 
+)
+   DROP PROCEDURE "NULL".spRealizarDeposito
+GO
+
+CREATE PROCEDURE "NULL".spRealizarDeposito
+  @Cuenta_Numero NUMERIC(18,0), 
+  @Importe INT,
+  @Fecha_Deposito DATETIME,
+  @Moneda_Nombre NVARCHAR(255),
+  @Tarjeta_Numero NVARCHAR(255)
+AS
+BEGIN
+  DECLARE @Validacion int
+  SET @Validacion = "NULL".fnValidarDeposito(@Cuenta_Numero, @Importe, @Fecha_Deposito, @Moneda_Nombre, @Tarjeta_Numero)
+  
+  IF(@Validacion = 0)
+  BEGIN
+    INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
+    VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
+  END
+  RETURN(@Validacion)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spCrearTarjeta' 
+)
+   DROP PROCEDURE "NULL".spCrearTarjeta
+GO
+
+CREATE PROCEDURE "NULL".spCrearTarjeta
+  @Tarjeta_Numero NVARCHAR(255), 
+  @Tarjeta_Codigo_Seg NVARCHAR(255),
+  @Tarjeta_Fecha_Emision DATETIME,
+  @Tarjeta_Fecha_Vencimiento DATETIME,
+  @Tarjeta_Numero_Visible NVARCHAR(255),
+  @Emisor_Cod NUMERIC(18,0),
+  @Cli_Cod NUMERIC(18,0)
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero) >= 1
+	BEGIN
+		RETURN(1)
+	END
+
+	INSERT INTO [GD1C2015].[NULL].[Tarjeta]
+	(Tarjeta_Numero, Tarjeta_Numero_Visible, Tarjeta_Codigo_Seg, Emisor_Cod, Cli_Cod, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento)
+	VALUES(@Tarjeta_Numero, @Tarjeta_Numero_Visible, @Tarjeta_Codigo_Seg, @Emisor_Cod, @Cli_Cod, @Tarjeta_Fecha_Emision, @Tarjeta_Fecha_Vencimiento)
+	
+	RETURN(0)
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spEditarTarjeta' 
+)
+   DROP PROCEDURE "NULL".spEditarTarjeta
+GO
+
+CREATE PROCEDURE "NULL".spEditarTarjeta
+  @Tarjeta_Pk NVARCHAR(255), 
+  @Tarjeta_Numero NVARCHAR(255), 
+  @Tarjeta_Codigo_Seg NVARCHAR(255),
+  @Tarjeta_Fecha_Emision DATETIME,
+  @Tarjeta_Fecha_Vencimiento DATETIME,
+  @Tarjeta_Numero_Visible NVARCHAR(255),
+  @Emisor_Cod NUMERIC(18,0),
+  @Cambio_Pk BIT
+AS
+BEGIN
+	IF @Cambio_Pk = 1
+	BEGIN
+		IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Numero = @Tarjeta_Numero) >= 1
+		BEGIN
+			RETURN(1)
+		END
+	END
+
+	UPDATE [GD1C2015].[NULL].[Tarjeta]
+	SET Tarjeta_Numero = @Tarjeta_Numero, Tarjeta_Numero_Visible = @Tarjeta_Numero_Visible, Tarjeta_Codigo_Seg = @Tarjeta_Codigo_Seg,
+	Emisor_Cod = @Emisor_Cod, Tarjeta_Fecha_Emision = @Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento = @Tarjeta_Fecha_Vencimiento
+	WHERE Tarjeta_Numero = @Tarjeta_Pk
+	
+	RETURN 0
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spAsociarTarjeta' 
+)
+   DROP PROCEDURE "NULL".spAsociarTarjeta
+GO
+
+CREATE PROCEDURE "NULL".spAsociarTarjeta
+  @Tarjeta_Pk NVARCHAR(255)
+AS
+BEGIN
+	UPDATE [GD1C2015].[NULL].[Tarjeta]
+	SET Tarjeta_Estado = 'Asociada'
+	WHERE Tarjeta_Numero = @Tarjeta_Pk
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spDesasociarTarjeta' 
+)
+   DROP PROCEDURE "NULL".spDesasociarTarjeta
+GO
+
+CREATE PROCEDURE "NULL".spDesasociarTarjeta
+  @Tarjeta_Pk NVARCHAR(255)
+AS
+BEGIN
+	UPDATE [GD1C2015].[NULL].[Tarjeta]
+	SET Tarjeta_Estado = 'Desasociada'
+	WHERE Tarjeta_Numero = @Tarjeta_Pk
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spEliminarTarjeta' 
+)
+   DROP PROCEDURE "NULL".spEliminarTarjeta
+GO
+
+CREATE PROCEDURE "NULL".spEliminarTarjeta
+  @Tarjeta_Pk NVARCHAR(255)
+AS
+BEGIN
+	UPDATE [GD1C2015].[NULL].[Tarjeta]
+	SET Tarjeta_Borrado = 1
+	WHERE Tarjeta_Numero = @Tarjeta_Pk
+END
+GO
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
