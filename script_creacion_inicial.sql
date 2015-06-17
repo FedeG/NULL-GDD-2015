@@ -1088,21 +1088,21 @@ IF EXISTS (
 GO
 
 CREATE PROCEDURE "NULL".spConsultaCambioTipoCuenta
-  @Cuenta_Pk Numeric(18,0),
+  @Cuenta_Numero Numeric(18,0),
   @Hoy DATETIME		
 AS
 BEGIN
-	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Pk AND Cuenta_Estado = 'Habilitada') = 0
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0
 	BEGIN
 		RETURN(-1)
 	END
 	
 	DECLARE @Importe INT  = (SELECT TOP 1 t.TipoCta_Costo_Dia 
 	FROM [GD1C2015].[NULL].[Cuenta] as c, [GD1C2015].[NULL].[TipoCuenta] as t
-	WHERE c.Cuenta_Numero = @Cuenta_Pk AND t.TipoCta_Nombre = c.TipoCta_Nombre)
+	WHERE c.Cuenta_Numero = @Cuenta_Numero AND t.TipoCta_Nombre = c.TipoCta_Nombre)
 	DECLARE @Fecha_Vencimiento DATETIME = (SELECT TOP 1 Cuenta_Fecha_Vencimiento 
 	FROM [GD1C2015].[NULL].[Cuenta] 
-	WHERE Cuenta_Numero = @Cuenta_Pk) 
+	WHERE Cuenta_Numero = @Cuenta_Numero) 
 	RETURN(@Importe *  DATEDIFF(DAY, @Fecha_Vencimiento, @Hoy))
 END
 GO
@@ -1116,29 +1116,29 @@ IF EXISTS (
 GO
 
 CREATE PROCEDURE "NULL".spCambiarTipoCuenta
-  @Cuenta_Pk Numeric(18,0),
+  @Cuenta_Numero Numeric(18,0),
   @TipoCta_Nombre NVARCHAR(255),
   @Hoy DATETIME		
 AS
 BEGIN
-	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Pk AND Cuenta_Estado = 'Habilitada') = 0
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero AND Cuenta_Estado = 'Habilitada') = 0
 	BEGIN
 		RETURN(-1)
 	END
 	
 	DECLARE @Importe INT  = (SELECT TOP 1 t.TipoCta_Costo_Dia 
 	FROM [GD1C2015].[NULL].[Cuenta] as c, [GD1C2015].[NULL].[TipoCuenta] as t
-	WHERE c.Cuenta_Numero = @Cuenta_Pk AND t.TipoCta_Nombre = c.TipoCta_Nombre)
+	WHERE c.Cuenta_Numero = @Cuenta_Numero AND t.TipoCta_Nombre = c.TipoCta_Nombre)
 	
 	DECLARE @Fecha_Vencimiento DATETIME = (SELECT TOP 1 Cuenta_Fecha_Vencimiento 
 	FROM [GD1C2015].[NULL].[Cuenta] 
-	WHERE Cuenta_Numero = @Cuenta_Pk) 
+	WHERE Cuenta_Numero = @Cuenta_Numero) 
 	
 	SET @Importe = (@Importe *  DATEDIFF(DAY, @Fecha_Vencimiento, @Hoy))
 	
 	UPDATE [GD1C2015].[NULL].[Cuenta]
 	SET TipoCta_Nombre = @TipoCta_Nombre, Cuenta_Saldo = Cuenta_Saldo + @Importe
-	WHERE Cuenta_Numero = @Cuenta_Pk
+	WHERE Cuenta_Numero = @Cuenta_Numero
 
 	/*Generar factura*/	
 END
@@ -1219,7 +1219,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	UPDATE [GD1C2015].[NULL].[Cuenta]
-	SET Cuenta_Estado = 'Deshabilitada'
+	SET Cuenta_Estado = 'Inhabilitada'
 	WHERE Cuenta_Numero = @Cuenta_Numero
 
 END
@@ -2457,24 +2457,24 @@ IF EXISTS (
 GO
 
 CREATE PROCEDURE "NULL".spGenerarFactura 
-  @username NVARCHAR(255),
-  @fecha DATETIME
+  @Usr_Username NVARCHAR(255),
+  @Hoy DATETIME
   
 AS
 BEGIN
 	DECLARE @Cli_Cod NUMERIC(18,0)
-	DECLARE @Facura_Numero NUMERIC(18,0)
+	DECLARE @Factura_Numero NUMERIC(18,0)
 	
-	SELECT @Cli_Cod = Cli_Cod FROM "NULL".Cliente as cli WHERE cli.Usr_Username = @username
+	SELECT @Cli_Cod = Cli_Cod FROM "NULL".Cliente as cli WHERE cli.Usr_Username = @Usr_Username
 	
 	INSERT INTO "NULL".Factura_Cabecera(Cli_Cod,Fact_Fecha,Fact_Tipo,Fact_Borrado)
-	VALUES (@Cli_Cod, CONVERT(DATETIME, @fecha, 121), 'A', 0)
+	VALUES (@Cli_Cod, CONVERT(DATETIME, @Hoy, 121), 'A', 0)
 	
-	SELECT @Facura_Numero = SCOPE_IDENTITY()
+	SELECT @Factura_Numero = SCOPE_IDENTITY()
 	
 	INSERT INTO "NULL".Factura_Item(Transacc_Codigo,Fact_Numero,Fact_Tipo,F_Item_Cantidad,
-				F_Item_Desc,F_Item_Precio_Unitario,F_Item_Borrado)
-	SELECT Transacc_Codigo, @Facura_Numero, 'A', 1, Transacc_Detalle, Transacc_Importe, 0
+				F_Item_Desc,F_Item_Precio_Unitario,Moneda_Nombre, F_Item_Borrado)
+	SELECT Transacc_Codigo, @Factura_Numero, 'A', Transacc_Cantidad, Transacc_Detalle, Transacc_Importe, 'Dólares Estadounidenses', 0
 	FROM "NULL".Transaccion
 	WHERE Cli_Cod = @Cli_Cod AND Transacc_Facturada = 0
 	
@@ -2483,8 +2483,8 @@ BEGIN
 	WHERE Cli_Cod = @Cli_Cod AND Transacc_Facturada = 0
 	
 	UPDATE "NULL".Factura_Cabecera
-	SET Fact_Total = (SELECT SUM(F_Item_Precio_Unitario*F_Item_Cantidad) FROM "NULL".Factura_Item WHERE Fact_Numero = @Facura_Numero)
-	WHERE Fact_Numero = @Facura_Numero
+	SET Fact_Total = (SELECT SUM(F_Item_Precio_Unitario*F_Item_Cantidad) FROM "NULL".Factura_Item WHERE Fact_Numero = @Factura_Numero)
+	WHERE Fact_Numero = @Factura_Numero
 		
 END;
 GO
