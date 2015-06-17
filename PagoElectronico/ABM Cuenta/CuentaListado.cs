@@ -95,8 +95,7 @@ namespace PagoElectronico.ABM_Cuenta
         }
 
         private void LoadDarDeBajaButton(){
-            if ((Boolean) cuentaTable.SelectedRows[0].Cells["Cuenta_Borrado"].Value)
-                BorrarButton.Enabled = false;
+            BorrarButton.Enabled = !(Boolean) cuentaTable.SelectedRows[0].Cells["Cuenta_Borrado"].Value;
         }
 
         private void DesactivarAcciones(object sender, EventArgs e){

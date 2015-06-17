@@ -58,7 +58,7 @@ namespace PagoElectronico.ABM_Cuenta
 
         public void ExecStoredProcedure(string sp_name){
             SqlCommand sp = this.db.GetStoreProcedure(sp_name);
-            sp.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt32(InputNumeroCuenta.Text)));
+            sp.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(InputNumeroCuenta.Text)));
             sp.Parameters.Add(new SqlParameter("@Pais_Codigo", InputPaisCuenta.SelectedValue));
             sp.Parameters.Add(new SqlParameter("@Moneda_Nombre", InputTipoMoneda.SelectedValue));
             sp.Parameters.Add(new SqlParameter("@TipoCta_Nombre", InputTipoCuenta.SelectedValue));
