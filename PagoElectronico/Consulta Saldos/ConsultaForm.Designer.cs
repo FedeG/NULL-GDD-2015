@@ -107,6 +107,11 @@
             // 
             // depositosGridView
             // 
+            this.depositosGridView.AllowUserToAddRows = false;
+            this.depositosGridView.AllowUserToDeleteRows = false;
+            this.depositosGridView.AllowUserToResizeColumns = false;
+            this.depositosGridView.AllowUserToResizeRows = false;
+            this.depositosGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.depositosGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.depositosGridView.Location = new System.Drawing.Point(25, 52);
             this.depositosGridView.Name = "depositosGridView";
@@ -115,6 +120,11 @@
             // 
             // retirosGridView
             // 
+            this.retirosGridView.AllowUserToAddRows = false;
+            this.retirosGridView.AllowUserToDeleteRows = false;
+            this.retirosGridView.AllowUserToResizeColumns = false;
+            this.retirosGridView.AllowUserToResizeRows = false;
+            this.retirosGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.retirosGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.retirosGridView.Location = new System.Drawing.Point(25, 52);
             this.retirosGridView.Name = "retirosGridView";
@@ -123,6 +133,11 @@
             // 
             // transferenciasGridView
             // 
+            this.transferenciasGridView.AllowUserToAddRows = false;
+            this.transferenciasGridView.AllowUserToDeleteRows = false;
+            this.transferenciasGridView.AllowUserToResizeColumns = false;
+            this.transferenciasGridView.AllowUserToResizeRows = false;
+            this.transferenciasGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.transferenciasGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.transferenciasGridView.Location = new System.Drawing.Point(25, 52);
             this.transferenciasGridView.Name = "transferenciasGridView";
@@ -159,7 +174,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(472, 351);
+            this.tabPage2.Size = new System.Drawing.Size(472, 348);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Retiros";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -170,7 +185,7 @@
             this.tabPage3.Controls.Add(this.transferenciasGridView);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(472, 351);
+            this.tabPage3.Size = new System.Drawing.Size(472, 348);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Transferencias";
             this.tabPage3.UseVisualStyleBackColor = true;

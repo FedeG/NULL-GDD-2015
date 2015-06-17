@@ -40,10 +40,16 @@
             // 
             // rolTable
             // 
+            this.rolTable.AllowUserToAddRows = false;
+            this.rolTable.AllowUserToDeleteRows = false;
+            this.rolTable.AllowUserToResizeColumns = false;
+            this.rolTable.AllowUserToResizeRows = false;
+            this.rolTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.rolTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.rolTable.Location = new System.Drawing.Point(12, 64);
             this.rolTable.Name = "rolTable";
             this.rolTable.ReadOnly = true;
+            this.rolTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.rolTable.Size = new System.Drawing.Size(330, 150);
             this.rolTable.TabIndex = 0;
             // 
