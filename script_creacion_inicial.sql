@@ -1139,6 +1139,35 @@ BEGIN
 END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spAgregarSuscripcion' 
+)
+   DROP PROCEDURE "NULL".spAgregarSuscripcion
+GO
+
+CREATE PROCEDURE "NULL".spAgregarSuscripcion
+  @Cuenta_Numero Numeric(18,0),
+  @TipoCta_Nombre NVARCHAR(255),
+  @Cantidad INT		
+AS
+BEGIN
+	DECLARE @Cantidad_Dias INT = (SELECT TOP 1 TipoCta_Duracion FROM "NULL".[TipoCuenta] WHERE TipoCta_Nombre = @TipoCta_Nombre) *  @Cantidad
+	DECLARE @Moneda_Nombre NVARCHAR(255) = (SELECT TOP 1 Moneda_Nombre FROM "NULL".[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+	DECLARE @Importe INT = (SELECT TOP 1 TipoCta_Costo_Apertura FROM "NULL".[TipoCuenta] WHERE TipoCta_Nombre = @TipoCta_Nombre)
+	DECLARE @Cli_Cod NUMERIC(18,0) = (SELECT TOP 1 Cli_Cod FROM "NULL".[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+	
+	UPDATE "NULL".Cuenta
+	SET Cuenta_Fecha_Vencimiento = DATEADD(DAY, @Cantidad_Dias,Cuenta_Fecha_Vencimiento)
+	WHERE Cuenta_Numero = @Cuenta_Numero
+	
+	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe)
+	VALUES(@Cli_Cod , @Moneda_Nombre, @Cantidad, 'Suscripcion de tipo de cuenta.', @Importe)
+END
+GO
+
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
