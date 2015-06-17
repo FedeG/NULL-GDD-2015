@@ -3,7 +3,7 @@ GO
 
 SET LANGUAGE Spanish
 
-/********************************** CREACIÓN DEL SCHEMA **************************************/
+/*********************************** CREACIÓN DEL SCHEMA **************************************/
 IF NOT EXISTS 
 (
   SELECT  schema_name
