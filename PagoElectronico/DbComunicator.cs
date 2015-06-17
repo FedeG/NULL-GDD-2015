@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace PagoElectronico{
 
@@ -63,6 +64,14 @@ namespace PagoElectronico{
 
             // Abrir la base de datos
             this.ConexionConBD.Open();
+        }
+
+        public void CargarAutocomplete(AutoCompleteStringCollection col, string query, string name) {
+            this.EjecutarQuery(query);
+            while (this.getLector().Read())
+            {
+                col.Add(this.getLector()[name].ToString());
+            }        
         }
 
         public void CerrarConexion(){
