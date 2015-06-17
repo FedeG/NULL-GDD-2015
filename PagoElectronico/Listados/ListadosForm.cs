@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace PagoElectronico.Listados
 {
-    public partial class Form1 : Form
+    public partial class ListadosForm : Form
     {
-        public Form1()
+        public ListadosForm()
         {
             InitializeComponent();
         }
