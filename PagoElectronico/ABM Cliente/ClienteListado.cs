@@ -89,7 +89,7 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void LoadDarDeBajaButton(){
-            if (clienteTable.SelectedRows[0].Cells["Cli_Borrado"].Value.Equals(1))
+            if ((Boolean) clienteTable.SelectedRows[0].Cells["Cli_Borrado"].Value)
                 BorrarButton.Enabled = false;
         }
 
