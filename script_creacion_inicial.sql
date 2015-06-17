@@ -2347,3 +2347,45 @@ BEGIN
 	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
 END
 GO
+
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spGenerarFactura' 
+)
+   DROP PROCEDURE "NULL".spGenerarFactura
+GO
+
+CREATE PROCEDURE "NULL".spGenerarFactura 
+  @username NVARCHAR(255),
+  @fecha DATETIME
+  
+AS
+BEGIN
+	DECLARE @Cli_Cod NUMERIC(18,0)
+	DECLARE @Facura_Numero NUMERIC(18,0)
+	
+	SELECT @Cli_Cod = Cli_Cod FROM "NULL".Cliente as cli WHERE cli.Usr_Username = @username
+	
+	INSERT INTO "NULL".Factura_Cabecera(Cli_Cod,Fact_Fecha,Fact_Tipo,Fact_Borrado)
+	VALUES (@Cli_Cod, CONVERT(DATETIME, @fecha, 121), 'A', 0)
+	
+	SELECT @Facura_Numero = SCOPE_IDENTITY()
+	
+	INSERT INTO "NULL".Factura_Item(Transacc_Codigo,Fact_Numero,Fact_Tipo,F_Item_Cantidad,
+				F_Item_Desc,F_Item_Precio_Unitario,F_Item_Borrado)
+	SELECT Transacc_Codigo, @Facura_Numero, 'A', 1, Transacc_Detalle, Transacc_Importe, 0
+	FROM "NULL".Transaccion
+	WHERE Cli_Cod = @Cli_Cod AND Transacc_Facturada = 0
+	
+	UPDATE "NULL".Transaccion
+	SET Transacc_Facturada = 1
+	WHERE Cli_Cod = @Cli_Cod AND Transacc_Facturada = 0
+	
+	UPDATE "NULL".Factura_Cabecera
+	SET Fact_Total = (SELECT SUM(F_Item_Precio_Unitario*F_Item_Cantidad) FROM "NULL".Factura_Item WHERE Fact_Numero = @Facura_Numero)
+	WHERE Fact_Numero = @Facura_Numero
+		
+END;
+GO
