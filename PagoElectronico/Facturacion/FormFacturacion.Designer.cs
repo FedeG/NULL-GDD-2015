@@ -37,8 +37,14 @@
             // 
             // transaccTable
             // 
+            this.transaccTable.AllowUserToAddRows = false;
+            this.transaccTable.AllowUserToDeleteRows = false;
+            this.transaccTable.AllowUserToResizeColumns = false;
+            this.transaccTable.AllowUserToResizeRows = false;
+            this.transaccTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.transaccTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.transaccTable.Location = new System.Drawing.Point(12, 25);
+            this.transaccTable.MultiSelect = false;
             this.transaccTable.Name = "transaccTable";
             this.transaccTable.ReadOnly = true;
             this.transaccTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;

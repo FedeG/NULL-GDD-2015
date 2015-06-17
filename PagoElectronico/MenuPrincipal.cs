@@ -39,20 +39,25 @@ namespace PagoElectronico
                 case 2: form = new PagoElectronico.ABM_de_Usuario.Form1(); break;
                 case 3: form = new  PagoElectronico.ABM_Cliente.ClienteListado(); break;
                 case 4: {
-                    if (this.rolSeleccionado.Equals("Admin"))
+                    if (this.rolSeleccionado.Equals("Administrador"))
                         form = new PagoElectronico.ABM_Cuenta.CuentaListado();
                     else form = new PagoElectronico.ABM_Cuenta.CuentaListado(this.username);
                     break;
                 }
-                // case 5: form = new  PagoElectronico.Tarjeta.Form1(); break;
+                case 5: form = new  PagoElectronico.Tarjetas.TarjetaListado(this.username); break;
                 case 6: form = new PagoElectronico.Depositos.DepositoForm(this.username); break;
                 case 7: form = new  PagoElectronico.Retiros.FormRetiro(this.username); break;
                 case 8: form = new PagoElectronico.Transferencias.TransferenciaForm(this.username); break;
-                case 9: form = new  PagoElectronico.Facturacion.FormFacturacion(this.username); break;
+                case 9:{
+                        if (this.rolSeleccionado.Equals("Administrador"))
+                            form = new PagoElectronico.Facturacion.FormFacturacion();
+                        else form = new PagoElectronico.Facturacion.FormFacturacion(this.username);
+                        break;
+                }
                 case 10: {
-                    //if (this.rolSeleccionado.Equals("Admin"))
-                        //form = new PagoElectronico.Consulta_Saldos.ConsultaForm();
-                    //else form = new PagoElectronico.Consulta_Saldos.ConsultaForm(this.username);
+                    if (this.rolSeleccionado.Equals("Administrador"))
+                        form = new PagoElectronico.Consulta_Saldos.ConsultaForm();
+                    else form = new PagoElectronico.Consulta_Saldos.ConsultaForm(this.username);
                     break;
                 }
                 case 11: form = new PagoElectronico.Listados.Form1(); break;

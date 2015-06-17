@@ -8,19 +8,27 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 
-namespace PagoElectronico.Facturacion
-{
+namespace PagoElectronico.Facturacion {
+
     public partial class FormFacturacion : Form
     {
         DbComunicator db;
         string username;
+
+        public FormFacturacion(){
+            InitializeComponent();
+            this.db = new DbComunicator();
+            string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Transacc_Borrado = 0 AND Transacc_Facturada = 0";
+            transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
+            btnFacturar.Enabled = false;
+        }
 
         public FormFacturacion(string username){
             InitializeComponent();
             this.db = new DbComunicator();
             this.username = username;
             string queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + username + "%'";
-            string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cli_Cod = (" + queryGetCliCod + ") AND Transacc_Borrado = 0";
+            string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cli_Cod = (" + queryGetCliCod + ") AND Transacc_Borrado = 0 AND Transacc_Facturada = 0";
             transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
         }
 

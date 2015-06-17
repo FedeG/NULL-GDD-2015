@@ -42,8 +42,9 @@ namespace PagoElectronico.ABM_Cuenta
             SqlParameter returnParameter = spAgregarSuscripcion.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
             spAgregarSuscripcion.ExecuteNonQuery();
-            if (Convert.ToInt64(returnParameter.Value) >= 0) MessageBox.Show("Su cuenta sue actualizada correctamente");
+            if (Convert.ToInt64(returnParameter.Value) >= 0) MessageBox.Show("Su cuenta fue actualizada correctamente");
             else MessageBox.Show("Su cuenta no puede ser modificada");
+            this.Close();
         }
     }
 }

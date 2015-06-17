@@ -134,7 +134,7 @@
             this.InputNumeroCuenta.Name = "InputNumeroCuenta";
             this.InputNumeroCuenta.Size = new System.Drawing.Size(257, 20);
             this.InputNumeroCuenta.TabIndex = 11;
-            this.InputNumeroCuenta.KeyPress += this.InputNumeroCuenta_KeyPress;
+            this.InputNumeroCuenta.Text = "0";
             // 
             // label11
             // 

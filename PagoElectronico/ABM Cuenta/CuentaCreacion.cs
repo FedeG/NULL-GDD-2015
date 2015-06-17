@@ -14,6 +14,7 @@ namespace PagoElectronico.ABM_Cuenta
     {
         public CuentaCreacion(){
             InitializeComponent();
+            InputNumeroCuenta.Enabled = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
