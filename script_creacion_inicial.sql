@@ -530,7 +530,7 @@ BEGIN
   IF(@ValorRetorno = 0 OR @ValorRetorno = 1)
   BEGIN
     INSERT INTO [GD1C2015].[NULL].[Auditoria_Login](Usr_Username, Log_Fecha, Log_Estado, Log_Nro_Fallo) VALUES
-    (@Username, "NULL".fnGetFechaSistema(), @EstadoLogin, @Nro_fallo)
+    (@Username, CONVERT(DATETIME, GETDATE(), 121), @EstadoLogin, @Nro_fallo)
   END
 
   RETURN(@ValorRetorno)
@@ -624,10 +624,10 @@ AS
 		
 		INSERT INTO [GD1C2015].[NULL].[Cheque](Cheque_Fecha, Cheque_Importe, Cheque_Nombre, Banco_Codigo, Moneda_Nombre)
 		OUTPUT inserted.Cheque_Numero INTO @InsertedCheques
-		VALUES(@Fecha_Deposito, @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre)
+		VALUES(CONVERT(DATETIME, @Fecha_Deposito, 121), @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre)
 		
 		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero)
-		SELECT @Importe, @Fecha_Deposito, @Cuenta_Numero, c.Cheque_Numero
+		SELECT @Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Cuenta_Numero, c.Cheque_Numero
 		FROM @InsertedCheques as c
 		
 		RETURN(@Validacion)
@@ -698,7 +698,7 @@ BEGIN
 		END
 		
 		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo)
-		VALUES(@Cuenta_Origen, @Cuenta_Destino, @Fecha_Transferencia, @Importe, @Transferencia_Costo)
+		VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo)
 	END
 	
 	RETURN @Validacion
@@ -816,14 +816,15 @@ CREATE PROCEDURE "NULL".spCrearCliente
 	@Cli_Dom_Depto varchar(10),
 	@TipoDoc_Cod Numeric(18,0),
 	@Pais_Codigo Numeric(18,0),
-	@Cli_Fecha_Nac DATETIME
+	@Cli_Fecha_Nac DATETIME,
+	@Fecha_Sistema DATETIME
 
 AS
 BEGIN
 	SET NOCOUNT ON;
 
   INSERT INTO [GD1C2015].[NULL].[Usuario] (Usr_Username, Usr_Password, Usr_Fecha_Creacion, Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta, Usr_Intentos_Login, Usr_Borrado, Usr_Estado)
-	VALUES (@Usr_Username, @Usr_Password, GETDATE(), GETDATE(), @Usr_Pregunta_Secreta, @Usr_Respuesta_Secreta, 0, 0, 'Habilitado')
+	VALUES (@Usr_Username, @Usr_Password, CONVERT(DATETIME, @Fecha_Sistema, 121), CONVERT(DATETIME, @Fecha_Sistema, 121), @Usr_Pregunta_Secreta, @Usr_Respuesta_Secreta, 0, 0, 'Habilitado')
 
 	INSERT INTO [GD1C2015].[NULL].[Cliente] (Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad, Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
 	VALUES (@Usr_Username, @Cli_Nombre, @Cli_Apellido, @TipoDoc_Cod, @Cli_Nro_Doc, @Cli_Dom_Calle, @Cli_Dom_Nro, @Cli_Dom_Piso, @Cli_Dom_Depto, @Cli_Localidad, @Cli_Fecha_Nac, @Cli_Mail, @Cli_Nacionalidad, @Pais_Codigo, 0)
@@ -946,7 +947,7 @@ BEGIN
   IF(@Validacion = 0)
   BEGIN
     INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
-    VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
+    VALUES (@Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Tarjeta_Numero, @Cuenta_Numero)
   END
   RETURN(@Validacion)
 END
@@ -977,7 +978,7 @@ BEGIN
 
 	INSERT INTO [GD1C2015].[NULL].[Tarjeta]
 	(Tarjeta_Numero, Tarjeta_Numero_Visible, Tarjeta_Codigo_Seg, Emisor_Cod, Cli_Cod, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento)
-	VALUES(@Tarjeta_Numero, @Tarjeta_Numero_Visible, @Tarjeta_Codigo_Seg, @Emisor_Cod, @Cli_Cod, @Tarjeta_Fecha_Emision, @Tarjeta_Fecha_Vencimiento)
+	VALUES(@Tarjeta_Numero, @Tarjeta_Numero_Visible, @Tarjeta_Codigo_Seg, @Emisor_Cod, @Cli_Cod, CONVERT(DATETIME, @Tarjeta_Fecha_Emision, 121), CONVERT(DATETIME, @Tarjeta_Fecha_Vencimiento, 121))
 	
 	RETURN(0)
 END
@@ -1012,7 +1013,7 @@ BEGIN
 
 	UPDATE [GD1C2015].[NULL].[Tarjeta]
 	SET Tarjeta_Numero = @Tarjeta_Numero, Tarjeta_Numero_Visible = @Tarjeta_Numero_Visible, Tarjeta_Codigo_Seg = @Tarjeta_Codigo_Seg,
-	Emisor_Cod = @Emisor_Cod, Tarjeta_Fecha_Emision = @Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento = @Tarjeta_Fecha_Vencimiento
+	Emisor_Cod = @Emisor_Cod, Tarjeta_Fecha_Emision = CONVERT(DATETIME, @Tarjeta_Fecha_Emision, 121), Tarjeta_Fecha_Vencimiento = CONVERT(DATETIME, @Tarjeta_Fecha_Vencimiento, 121)
 	WHERE Tarjeta_Numero = @Tarjeta_Pk
 	
 	RETURN 0
