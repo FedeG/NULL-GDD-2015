@@ -357,6 +357,7 @@ CREATE TABLE "NULL".Factura_Cabecera
   Fact_Fecha DATETIME NOT NULL,
   Fact_Total NUMERIC(18,2),
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
+  Fact_Borrado BIT NOT NULL DEFAULT 0,
   PRIMARY KEY(Fact_Numero, Fact_Tipo)
 );
 
@@ -369,6 +370,7 @@ CREATE TABLE "NULL".Factura_Item
   F_Item_Cantidad NUMERIC(18,0) NOT NULL,
   F_Item_Precio_Unitario NUMERIC(18,2) NOT NULL,
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
+  F_Item_Borrado BIT NOT NULL DEFAULT 0,
   
   CONSTRAINT FK_Fact_Item_Cabecer FOREIGN KEY (Fact_Numero, Fact_Tipo)
   REFERENCES "NULL".Factura_Cabecera (Fact_Numero, Fact_Tipo),
@@ -2170,3 +2172,64 @@ SELECT DISTINCT Retiro_Codigo, CONVERT(DATETIME, Retiro_Fecha, 121), Retiro_Impo
 FROM GD1C2015.gd_esquema.Maestra WHERE Retiro_Codigo IS NOT NULL
 
 SET IDENTITY_INSERT "NULL".Retiro OFF
+
+
+/*********************************** FACTURAS Y TRANSACCIONES **************************/
+
+
+SET IDENTITY_INSERT "NULL".Factura_Cabecera ON
+
+INSERT INTO "NULL".Factura_Cabecera(Fact_Numero, Fact_Tipo,Fact_Fecha, Fact_Total, Cli_Cod, Fact_Borrado)
+SELECT DISTINCT Factura_Numero, 'A', CONVERT(DATETIME, Factura_Fecha, 121), 0, Cli_Cod, 0
+FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Cliente as cli
+WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Factura_Numero IS NOT NULL
+
+SET IDENTITY_INSERT "NULL".Factura_Cabecera OFF
+
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spMigrarFacturas' 
+)
+   DROP PROCEDURE "NULL".spMigrarFacturas
+GO
+
+CREATE PROCEDURE "NULL".spMigrarFacturas
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @Factura_Numero NUMERIC(18,0),
+			@Factura_Fecha DATETIME,
+			@Cli_Cod NUMERIC(18,0),
+			@Importe NUMERIC(18,2),
+			@Descripcion NVARCHAR(255),
+			@InsertedTransaccion NUMERIC(18,0)
+	
+	DECLARE facturas CURSOR FOR
+		SELECT Item_Factura_Importe,Item_Factura_Descr,Cli_Cod,Factura_Numero
+		FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Cliente as cli
+		WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Item_Factura_Importe IS NOT NULL
+	
+	OPEN facturas
+	FETCH NEXT FROM facturas INTO @Importe, @Descripcion, @Cli_Cod, @Factura_Numero
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado) VALUES
+			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0);
+		
+		SELECT @InsertedTransaccion = SCOPE_IDENTITY()
+		
+		INSERT INTO "NULL".Factura_Item(F_Item_Cantidad,F_Item_Desc,F_Item_Precio_Unitario,Fact_Numero,Fact_Tipo,Moneda_Nombre,Transacc_Codigo,F_Item_Borrado) VALUES
+			(1, @Descripcion, @Importe, @Factura_Numero, 'A', 'Dólares Estadounidenses',@InsertedTransaccion, 0);
+		
+		FETCH NEXT FROM facturas INTO @Importe, @Descripcion, @Cli_Cod, @Factura_Numero
+	END
+	CLOSE facturas
+	DEALLOCATE facturas
+END
+GO
+
+EXEC [NULL].[spMigrarFacturas]
+GO
