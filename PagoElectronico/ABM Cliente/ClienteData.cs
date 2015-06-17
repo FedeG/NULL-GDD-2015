@@ -64,6 +64,7 @@ namespace PagoElectronico.ABM_Cliente
             sp.Parameters.Add(new SqlParameter("@TipoDoc_Cod", InputTipoDocCliente.SelectedValue));
             sp.Parameters.Add(new SqlParameter("@Pais_Codigo", InputNacCliente.SelectedValue));
             sp.Parameters.Add(new SqlParameter("@Cli_Fecha_Nac", InputFechaNacimiento.Value.Date));
+            sp.Parameters.Add(new SqlParameter("@Fecha_Sistema", Properties.Settings.Default.FechaSistema));
             sp.ExecuteNonQuery();
         }
 

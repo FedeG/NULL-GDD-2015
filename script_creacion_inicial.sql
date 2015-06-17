@@ -861,14 +861,15 @@ CREATE PROCEDURE "NULL".spEditarCliente
 	@Cli_Dom_Depto varchar(10),
 	@TipoDoc_Cod Numeric(18,0),
 	@Pais_Codigo Numeric(18,0),
-	@Cli_Fecha_Nac DATETIME
+	@Cli_Fecha_Nac DATETIME,
+	@Fecha_Sistema DATETIME
 
 AS
 BEGIN
 	SET NOCOUNT ON;
 
   UPDATE [GD1C2015].[NULL].[Usuario]
-	SET Usr_Password = @Usr_Password, Usr_Pregunta_Secreta = @Usr_Pregunta_Secreta, Usr_Respuesta_Secreta = @Usr_Respuesta_Secreta
+	SET Usr_Password = @Usr_Password, Usr_Pregunta_Secreta = @Usr_Pregunta_Secreta, Usr_Respuesta_Secreta = @Usr_Respuesta_Secreta, Usr_Fecha_Ultima_Modificacion = CONVERT(DATETIME, @Fecha_Sistema, 121)
 	WHERE Usr_Username = @Usr_Username
 
   UPDATE [GD1C2015].[NULL].[Cliente]
@@ -1143,6 +1144,104 @@ BEGIN
 END
 GO
 
+IF OBJECT_ID (N'NULL.spCrearCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spCrearCuenta
+GO
+
+CREATE PROCEDURE "NULL".spCrearCuenta
+
+  @Cuenta_Numero numeric(18,0),
+  @Cuenta_Fecha_Creacion DATETIME,
+  @Pais_Codigo varchar(255),
+  @TipoCta_Nombre varchar(255),
+  @Cli_Cod varchar(255),
+  @Moneda_Nombre varchar(255)
+
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  INSERT INTO [GD1C2015].[NULL].[Cuenta] (Cuenta_Estado, Cuenta_Fecha_Vencimiento, Cuenta_Fecha_Cierre, Cuenta_Fecha_Creacion, Cuenta_Saldo, Pais_Codigo, TipoCta_Nombre, Cli_Cod, Moneda_Nombre, Cuenta_Borrado)
+  VALUES ('Pendiente de Activación', NULL, NULL, @Cuenta_Fecha_Creacion, 0, @Pais_Codigo, @TipoCta_Nombre, @Cli_Cod, @Moneda_Nombre, 0)
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spEditarCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spEditarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spEditarCuenta
+
+  @Cuenta_Numero numeric(18,0),
+  @Cuenta_Fecha_Creacion DATETIME,
+  @Pais_Codigo varchar(255),
+  @TipoCta_Nombre varchar(255),
+  @Cli_Cod varchar(255),
+  @Moneda_Nombre varchar(255)
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+  UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Pais_Codigo = @Pais_Codigo, TipoCta_Nombre = @TipoCta_Nombre, Moneda_Nombre = @Moneda_Nombre
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spHabilitarCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spHabilitarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spHabilitarCuenta
+	@Cuenta_Numero varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Estado = 'Habilitada'
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spDeshabilitarCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spDeshabilitarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarCuenta
+	@Cuenta_Numero varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Estado = 'Deshabilitada'
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spDarDeBajaCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spDarDeBajaCuenta
+GO
+
+CREATE PROCEDURE "NULL".spDarDeBajaCuenta
+	@Cuenta_Numero varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Borrado = 1
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
@@ -1163,7 +1262,7 @@ BEGIN
 	DECLARE @Cli_Cod NUMERIC(18,0) = (SELECT TOP 1 Cli_Cod FROM "NULL".[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
 	
 	UPDATE "NULL".Cuenta
-	SET Cuenta_Fecha_Vencimiento = DATEADD(DAY, @Cantidad_Dias,Cuenta_Fecha_Vencimiento)
+	SET Cuenta_Fecha_Vencimiento = DATEADD(DAY, @Cantidad_Dias, Cuenta_Fecha_Vencimiento), TipoCta_Nombre = @TipoCta_Nombre
 	WHERE Cuenta_Numero = @Cuenta_Numero
 	
 	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe)
