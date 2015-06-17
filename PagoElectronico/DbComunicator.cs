@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace PagoElectronico{
 
@@ -65,6 +66,14 @@ namespace PagoElectronico{
             this.ConexionConBD.Open();
         }
 
+        public void CargarAutocomplete(AutoCompleteStringCollection col, string query, string name) {
+            this.EjecutarQuery(query);
+            while (this.getLector().Read())
+            {
+                col.Add(this.getLector()[name].ToString());
+            }        
+        }
+
         public void CerrarConexion(){
             // Cerrar la conexión cuando ya no sea necesaria
             if (Lector != null)
@@ -126,6 +135,12 @@ namespace PagoElectronico{
             }
         }
 
+
+        public SqlCommand GetInsert(string insert){
+            this.ConectarConDB();
+            SqlCommand cmd = new SqlCommand(insert, this.ConexionConBD);
+            return cmd;
+        }
     }
 
 }

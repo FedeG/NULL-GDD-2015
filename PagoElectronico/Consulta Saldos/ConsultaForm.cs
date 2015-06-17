@@ -12,19 +12,38 @@ namespace PagoElectronico.Consulta_Saldos
     public partial class ConsultaForm : Form
     {
         DbComunicator db;
+        public ConsultaForm()
+        {
+            InitializeComponent();
+            db = new DbComunicator();
+            cuentaComboBox.Visible = false;
+            consultarClienteButton.Visible = false;
+            autocomplete.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            autocomplete.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            AutoCompleteStringCollection col = new AutoCompleteStringCollection();
+            string queryCuentas = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta]";
+            db.CargarAutocomplete(col, queryCuentas, "Cuenta_Numero");
+            autocomplete.AutoCompleteCustomSource = col;
+            db.CerrarConexion();
+        }
+
         public ConsultaForm(string username)
         {
             InitializeComponent();
+            autocomplete.Visible = false;
+            consultarAdminButton.Visible = false;
             string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = '" + username + "')";
             db = new DbComunicator();
             cuentaComboBox.DataSource = new BindingSource(db.GetQueryDictionary(query, "Cuenta_Numero", "Cuenta_Numero"), null);
+            cuentaComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            autocomplete.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            AutoCompleteStringCollection col = new AutoCompleteStringCollection();
             cuentaComboBox.DisplayMember = "Key";
             cuentaComboBox.ValueMember = "Value";
+            db.CerrarConexion();
         }
 
-        private void consultaButton_Click(object sender, EventArgs e)
-        {
-            string cuentaNumero = cuentaComboBox.SelectedValue.ToString();
+        private void RealizarQuery(string cuentaNumero){
             string querySaldo = "SELECT Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = " + cuentaNumero;
             db.EjecutarQuery(querySaldo);
             db.getLector().Read();
@@ -45,8 +64,19 @@ namespace PagoElectronico.Consulta_Saldos
             queryTransferencias = queryTransferencias + " OR Cuenta_Destino_Numero = " + cuentaNumero;
             queryTransferencias = queryTransferencias + " ORDER BY Transf_Fecha DESC";
             transferenciasGridView.DataSource = db.GetDataAdapter(queryTransferencias).Tables[0];
-
-
         }
+
+        private void consultaButton_Click(object sender, EventArgs e)
+        {
+            string cuentaNumero = cuentaComboBox.SelectedValue.ToString();
+            this.RealizarQuery(cuentaNumero); 
+        }
+
+        private void consultarAdminButton_Click(object sender, EventArgs e)
+        {
+            string cuentaNumero = autocomplete.Text;
+            this.RealizarQuery(cuentaNumero);       
+        }
+
     }
 }

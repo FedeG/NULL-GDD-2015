@@ -30,7 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.cuentaComboBox = new System.Windows.Forms.ComboBox();
-            this.consultaButton = new System.Windows.Forms.Button();
+            this.consultarClienteButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -42,6 +42,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.saldoLabel = new System.Windows.Forms.Label();
+            this.autocomplete = new System.Windows.Forms.TextBox();
+            this.consultarAdminButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.depositosGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.retirosGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.transferenciasGridView)).BeginInit();
@@ -68,15 +70,15 @@
             this.cuentaComboBox.Size = new System.Drawing.Size(121, 21);
             this.cuentaComboBox.TabIndex = 1;
             // 
-            // consultaButton
+            // consultarClienteButton
             // 
-            this.consultaButton.Location = new System.Drawing.Point(374, 441);
-            this.consultaButton.Name = "consultaButton";
-            this.consultaButton.Size = new System.Drawing.Size(125, 23);
-            this.consultaButton.TabIndex = 2;
-            this.consultaButton.Text = "Consultar Saldo";
-            this.consultaButton.UseVisualStyleBackColor = true;
-            this.consultaButton.Click += new System.EventHandler(this.consultaButton_Click);
+            this.consultarClienteButton.Location = new System.Drawing.Point(374, 441);
+            this.consultarClienteButton.Name = "consultarClienteButton";
+            this.consultarClienteButton.Size = new System.Drawing.Size(125, 23);
+            this.consultarClienteButton.TabIndex = 2;
+            this.consultarClienteButton.Text = "Consultar Saldo";
+            this.consultarClienteButton.UseVisualStyleBackColor = true;
+            this.consultarClienteButton.Click += new System.EventHandler(this.consultaButton_Click);
             // 
             // label2
             // 
@@ -199,13 +201,32 @@
             this.saldoLabel.Size = new System.Drawing.Size(0, 13);
             this.saldoLabel.TabIndex = 12;
             // 
+            // autocomplete
+            // 
+            this.autocomplete.Location = new System.Drawing.Point(85, 10);
+            this.autocomplete.Name = "autocomplete";
+            this.autocomplete.Size = new System.Drawing.Size(137, 20);
+            this.autocomplete.TabIndex = 13;
+            // 
+            // consultarAdminButton
+            // 
+            this.consultarAdminButton.Location = new System.Drawing.Point(374, 441);
+            this.consultarAdminButton.Name = "consultarAdminButton";
+            this.consultarAdminButton.Size = new System.Drawing.Size(125, 23);
+            this.consultarAdminButton.TabIndex = 14;
+            this.consultarAdminButton.Text = "Consultar Saldo";
+            this.consultarAdminButton.UseVisualStyleBackColor = true;
+            this.consultarAdminButton.Click += new System.EventHandler(this.consultarAdminButton_Click);
+            // 
             // ConsultaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(511, 476);
+            this.Controls.Add(this.consultarAdminButton);
+            this.Controls.Add(this.autocomplete);
             this.Controls.Add(this.saldoLabel);
-            this.Controls.Add(this.consultaButton);
+            this.Controls.Add(this.consultarClienteButton);
             this.Controls.Add(this.cuentaComboBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tabControl1);
@@ -230,7 +251,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cuentaComboBox;
-        private System.Windows.Forms.Button consultaButton;
+        private System.Windows.Forms.Button consultarClienteButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -242,5 +263,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label saldoLabel;
+        private System.Windows.Forms.TextBox autocomplete;
+        private System.Windows.Forms.Button consultarAdminButton;
     }
 }
