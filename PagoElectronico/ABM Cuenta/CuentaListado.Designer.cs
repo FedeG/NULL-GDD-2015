@@ -34,6 +34,7 @@
             this.BorrarButton = new System.Windows.Forms.Button();
             this.HabilitarButton = new System.Windows.Forms.Button();
             this.Acciones = new System.Windows.Forms.GroupBox();
+            this.btnSuscripcion = new System.Windows.Forms.Button();
             this.cambiarTipo = new System.Windows.Forms.Button();
             this.DeshabilitarButton = new System.Windows.Forms.Button();
             this.TipoDoc = new System.Windows.Forms.ComboBox();
@@ -46,7 +47,6 @@
             this.ClienteUsername = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.searchUsernameButton = new System.Windows.Forms.Button();
-            this.btnSuscripcion = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.cuentaTable)).BeginInit();
             this.Acciones.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -55,8 +55,14 @@
             // 
             // cuentaTable
             // 
+            this.cuentaTable.AllowUserToAddRows = false;
+            this.cuentaTable.AllowUserToDeleteRows = false;
+            this.cuentaTable.AllowUserToResizeColumns = false;
+            this.cuentaTable.AllowUserToResizeRows = false;
+            this.cuentaTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.cuentaTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.cuentaTable.Location = new System.Drawing.Point(12, 118);
+            this.cuentaTable.MultiSelect = false;
             this.cuentaTable.Name = "cuentaTable";
             this.cuentaTable.ReadOnly = true;
             this.cuentaTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -120,6 +126,16 @@
             this.Acciones.TabStop = false;
             this.Acciones.Text = "Acciones";
             // 
+            // btnSuscripcion
+            // 
+            this.btnSuscripcion.Location = new System.Drawing.Point(358, 19);
+            this.btnSuscripcion.Name = "btnSuscripcion";
+            this.btnSuscripcion.Size = new System.Drawing.Size(133, 23);
+            this.btnSuscripcion.TabIndex = 14;
+            this.btnSuscripcion.Text = "Agregar Suscripciones";
+            this.btnSuscripcion.UseVisualStyleBackColor = true;
+            this.btnSuscripcion.Click += new System.EventHandler(this.btnSuscripcion_Click);
+            // 
             // cambiarTipo
             // 
             this.cambiarTipo.Location = new System.Drawing.Point(103, 19);
@@ -170,6 +186,7 @@
             // DocCliente
             // 
             this.DocCliente.Location = new System.Drawing.Point(226, 26);
+            this.DocCliente.MaxLength = 20;
             this.DocCliente.Name = "DocCliente";
             this.DocCliente.Size = new System.Drawing.Size(214, 20);
             this.DocCliente.TabIndex = 2;
@@ -210,6 +227,7 @@
             // ClienteUsername
             // 
             this.ClienteUsername.Location = new System.Drawing.Point(67, 26);
+            this.ClienteUsername.MaxLength = 255;
             this.ClienteUsername.Name = "ClienteUsername";
             this.ClienteUsername.Size = new System.Drawing.Size(295, 20);
             this.ClienteUsername.TabIndex = 2;
@@ -235,16 +253,6 @@
             this.searchUsernameButton.Text = "Buscar";
             this.searchUsernameButton.UseVisualStyleBackColor = true;
             this.searchUsernameButton.Click += new System.EventHandler(this.searchUsernameButton_Click);
-            // 
-            // btnSuscripcion
-            // 
-            this.btnSuscripcion.Location = new System.Drawing.Point(358, 19);
-            this.btnSuscripcion.Name = "btnSuscripcion";
-            this.btnSuscripcion.Size = new System.Drawing.Size(133, 23);
-            this.btnSuscripcion.TabIndex = 14;
-            this.btnSuscripcion.Text = "Agregar Suscripciones";
-            this.btnSuscripcion.UseVisualStyleBackColor = true;
-            this.btnSuscripcion.Click += new System.EventHandler(this.btnSuscripcion_Click);
             // 
             // CuentaListado
             // 

@@ -172,7 +172,7 @@ namespace PagoElectronico.ABM_Cuenta
         }
 
         private void btnSuscripcion_Click(object sender, EventArgs e){
-            FormSuscripcion formSuscripcion = new FormSuscripcion();
+            FormSuscripcion formSuscripcion = new FormSuscripcion(Convert.ToInt64(cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value));
             formSuscripcion.ShowDialog();
             this.SearchCuentaPorUsername();
         }

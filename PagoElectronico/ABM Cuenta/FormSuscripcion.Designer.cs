@@ -32,12 +32,17 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.Cantidad = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.tiposTable)).BeginInit();
             this.SuspendLayout();
             // 
             // tiposTable
             // 
+            this.tiposTable.AllowUserToAddRows = false;
+            this.tiposTable.AllowUserToDeleteRows = false;
+            this.tiposTable.AllowUserToResizeColumns = false;
+            this.tiposTable.AllowUserToResizeRows = false;
+            this.tiposTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.tiposTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tiposTable.Location = new System.Drawing.Point(13, 41);
             this.tiposTable.MultiSelect = false;
@@ -49,21 +54,23 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(330, 246);
+            this.button1.Location = new System.Drawing.Point(330, 253);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
             this.button1.Text = "Agregar";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 246);
+            this.button2.Location = new System.Drawing.Point(12, 253);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
             this.button2.Text = "Cancelar";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label1
             // 
@@ -74,20 +81,20 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Cantidad";
             // 
-            // comboBox1
+            // Cantidad
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(68, 10);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 4;
+            this.Cantidad.Location = new System.Drawing.Point(68, 10);
+            this.Cantidad.MaxLength = 5;
+            this.Cantidad.Name = "Cantidad";
+            this.Cantidad.Size = new System.Drawing.Size(117, 20);
+            this.Cantidad.TabIndex = 4;
             // 
             // FormSuscripcion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 275);
-            this.Controls.Add(this.comboBox1);
+            this.ClientSize = new System.Drawing.Size(417, 288);
+            this.Controls.Add(this.Cantidad);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -106,6 +113,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox Cantidad;
     }
 }
