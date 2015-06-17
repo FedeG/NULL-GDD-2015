@@ -1070,6 +1070,72 @@ BEGIN
 	WHERE Tarjeta_Numero = @Tarjeta_Pk
 END
 GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spConsultaCambioTipoCuenta' 
+)
+   DROP PROCEDURE "NULL".spConsultaCambioTipoCuenta
+GO
+
+CREATE PROCEDURE "NULL".spConsultaCambioTipoCuenta
+  @Cuenta_Pk Numeric(18,0),
+  @Hoy DATETIME		
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Pk AND Cuenta_Estado = 'Habilitada') = 0
+	BEGIN
+		RETURN(-1)
+	END
+	
+	DECLARE @Importe INT  = (SELECT TOP 1 t.TipoCta_Costo_Dia 
+	FROM [GD1C2015].[NULL].[Cuenta] as c, [GD1C2015].[NULL].[TipoCuenta] as t
+	WHERE c.Cuenta_Numero = @Cuenta_Pk AND t.TipoCta_Nombre = c.TipoCta_Nombre)
+	DECLARE @Fecha_Vencimiento DATETIME = (SELECT TOP 1 Cuenta_Fecha_Vencimiento 
+	FROM [GD1C2015].[NULL].[Cuenta] 
+	WHERE Cuenta_Numero = @Cuenta_Pk) 
+	RETURN(@Importe *  DATEDIFF(DAY, @Fecha_Vencimiento, @Hoy))
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spCambiarTipoCuenta' 
+)
+   DROP PROCEDURE "NULL".spCambiarTipoCuenta
+GO
+
+CREATE PROCEDURE "NULL".spCambiarTipoCuenta
+  @Cuenta_Pk Numeric(18,0),
+  @TipoCta_Nombre NVARCHAR(255),
+  @Hoy DATETIME		
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Pk AND Cuenta_Estado = 'Habilitada') = 0
+	BEGIN
+		RETURN(-1)
+	END
+	
+	DECLARE @Importe INT  = (SELECT TOP 1 t.TipoCta_Costo_Dia 
+	FROM [GD1C2015].[NULL].[Cuenta] as c, [GD1C2015].[NULL].[TipoCuenta] as t
+	WHERE c.Cuenta_Numero = @Cuenta_Pk AND t.TipoCta_Nombre = c.TipoCta_Nombre)
+	
+	DECLARE @Fecha_Vencimiento DATETIME = (SELECT TOP 1 Cuenta_Fecha_Vencimiento 
+	FROM [GD1C2015].[NULL].[Cuenta] 
+	WHERE Cuenta_Numero = @Cuenta_Pk) 
+	
+	SET @Importe = (@Importe *  DATEDIFF(DAY, @Fecha_Vencimiento, @Hoy))
+	
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET TipoCta_Nombre = @TipoCta_Nombre, Cuenta_Saldo = Cuenta_Saldo + @Importe
+	WHERE Cuenta_Numero = @Cuenta_Pk
+
+	/*Generar factura*/	
+END
+GO
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
