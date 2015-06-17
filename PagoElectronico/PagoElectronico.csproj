@@ -72,8 +72,41 @@
     <Compile Include="ABM Cliente\ClienteListado.Designer.cs">
       <DependentUpon>ClienteListado.cs</DependentUpon>
     </Compile>
-    <Compile Include="ABM Cuenta\Form1.cs">
+    <Compile Include="ABM Cuenta\CuentaCreacion.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaCreacion.Designer.cs">
+      <DependentUpon>CuentaCreacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaData.Designer.cs">
+      <DependentUpon>CuentaData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaEdicion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaEdicion.Designer.cs">
+      <DependentUpon>CuentaEdicion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaListado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaListado.Designer.cs">
+      <DependentUpon>CuentaListado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cuenta\FormSeleccionTipo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\FormSeleccionTipo.Designer.cs">
+      <DependentUpon>FormSeleccionTipo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cuenta\FormSuscripcion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\FormSuscripcion.Designer.cs">
+      <DependentUpon>FormSuscripcion.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Rol\RolCreacion.cs">
       <SubType>Form</SubType>
@@ -98,9 +131,6 @@
     </Compile>
     <Compile Include="ABM Rol\RolData.Designer.cs">
       <DependentUpon>RolData.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ABM Cuenta\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM de Usuario\Form1.cs">
       <SubType>Form</SubType>
@@ -157,6 +187,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ABM Cliente\ClienteCreacion.resx">
       <DependentUpon>ClienteCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\CuentaCreacion.resx">
+      <DependentUpon>CuentaCreacion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\CuentaData.resx">
+      <DependentUpon>CuentaData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\CuentaEdicion.resx">
+      <DependentUpon>CuentaEdicion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\CuentaListado.resx">
+      <DependentUpon>CuentaListado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\FormSeleccionTipo.resx">
+      <DependentUpon>FormSeleccionTipo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\FormSuscripcion.resx">
+      <DependentUpon>FormSuscripcion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Consulta Saldos\ConsultaForm.resx">
       <DependentUpon>ConsultaForm.cs</DependentUpon>

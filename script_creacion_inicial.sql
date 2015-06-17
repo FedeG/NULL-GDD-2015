@@ -65,6 +65,10 @@ EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
 
 /********************************** BORRADO DE TABLAS **************************************/
+IF OBJECT_ID ('NULL.trGenerarTransaccionTransferencia','TR') IS NOT NULL
+   DROP TRIGGER "NULL".trGenerarTransaccionTransferencia
+GO
+
 IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
   DROP TABLE "NULL".Auditoria_Login
 GO
@@ -357,6 +361,7 @@ CREATE TABLE "NULL".Factura_Cabecera
   Fact_Fecha DATETIME NOT NULL,
   Fact_Total NUMERIC(18,2),
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
+  Fact_Borrado BIT NOT NULL DEFAULT 0,
   PRIMARY KEY(Fact_Numero, Fact_Tipo)
 );
 
@@ -369,6 +374,7 @@ CREATE TABLE "NULL".Factura_Item
   F_Item_Cantidad NUMERIC(18,0) NOT NULL,
   F_Item_Precio_Unitario NUMERIC(18,2) NOT NULL,
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
+  F_Item_Borrado BIT NOT NULL DEFAULT 0,
   
   CONSTRAINT FK_Fact_Item_Cabecer FOREIGN KEY (Fact_Numero, Fact_Tipo)
   REFERENCES "NULL".Factura_Cabecera (Fact_Numero, Fact_Tipo),
@@ -855,14 +861,15 @@ CREATE PROCEDURE "NULL".spEditarCliente
 	@Cli_Dom_Depto varchar(10),
 	@TipoDoc_Cod Numeric(18,0),
 	@Pais_Codigo Numeric(18,0),
-	@Cli_Fecha_Nac DATETIME
+	@Cli_Fecha_Nac DATETIME,
+	@Fecha_Sistema DATETIME
 
 AS
 BEGIN
 	SET NOCOUNT ON;
 
   UPDATE [GD1C2015].[NULL].[Usuario]
-	SET Usr_Password = @Usr_Password, Usr_Pregunta_Secreta = @Usr_Pregunta_Secreta, Usr_Respuesta_Secreta = @Usr_Respuesta_Secreta
+	SET Usr_Password = @Usr_Password, Usr_Pregunta_Secreta = @Usr_Pregunta_Secreta, Usr_Respuesta_Secreta = @Usr_Respuesta_Secreta, Usr_Fecha_Ultima_Modificacion = CONVERT(DATETIME, @Fecha_Sistema, 121)
 	WHERE Usr_Username = @Usr_Username
 
   UPDATE [GD1C2015].[NULL].[Cliente]
@@ -1137,6 +1144,133 @@ BEGIN
 END
 GO
 
+IF OBJECT_ID (N'NULL.spCrearCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spCrearCuenta
+GO
+
+CREATE PROCEDURE "NULL".spCrearCuenta
+
+  @Cuenta_Numero numeric(18,0),
+  @Cuenta_Fecha_Creacion DATETIME,
+  @Pais_Codigo varchar(255),
+  @TipoCta_Nombre varchar(255),
+  @Cli_Cod varchar(255),
+  @Moneda_Nombre varchar(255)
+
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  INSERT INTO [GD1C2015].[NULL].[Cuenta] (Cuenta_Estado, Cuenta_Fecha_Vencimiento, Cuenta_Fecha_Cierre, Cuenta_Fecha_Creacion, Cuenta_Saldo, Pais_Codigo, TipoCta_Nombre, Cli_Cod, Moneda_Nombre, Cuenta_Borrado)
+  VALUES ('Pendiente de Activación', NULL, NULL, @Cuenta_Fecha_Creacion, 0, @Pais_Codigo, @TipoCta_Nombre, @Cli_Cod, @Moneda_Nombre, 0)
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spEditarCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spEditarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spEditarCuenta
+
+  @Cuenta_Numero numeric(18,0),
+  @Cuenta_Fecha_Creacion DATETIME,
+  @Pais_Codigo varchar(255),
+  @TipoCta_Nombre varchar(255),
+  @Cli_Cod varchar(255),
+  @Moneda_Nombre varchar(255)
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+  UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Pais_Codigo = @Pais_Codigo, TipoCta_Nombre = @TipoCta_Nombre, Moneda_Nombre = @Moneda_Nombre
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spHabilitarCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spHabilitarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spHabilitarCuenta
+	@Cuenta_Numero varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Estado = 'Habilitada'
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spDeshabilitarCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spDeshabilitarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spDeshabilitarCuenta
+	@Cuenta_Numero varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Estado = 'Deshabilitada'
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF OBJECT_ID (N'NULL.spDarDeBajaCuenta') IS NOT NULL
+   DROP PROCEDURE "NULL".spDarDeBajaCuenta
+GO
+
+CREATE PROCEDURE "NULL".spDarDeBajaCuenta
+	@Cuenta_Numero varchar(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [GD1C2015].[NULL].[Cuenta]
+	SET Cuenta_Borrado = 1
+	WHERE Cuenta_Numero = @Cuenta_Numero
+
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spAgregarSuscripcion' 
+)
+   DROP PROCEDURE "NULL".spAgregarSuscripcion
+GO
+
+CREATE PROCEDURE "NULL".spAgregarSuscripcion
+  @Cuenta_Numero Numeric(18,0),
+  @TipoCta_Nombre NVARCHAR(255),
+  @Cantidad INT		
+AS
+BEGIN
+	DECLARE @Cantidad_Dias INT = (SELECT TOP 1 TipoCta_Duracion FROM "NULL".[TipoCuenta] WHERE TipoCta_Nombre = @TipoCta_Nombre) *  @Cantidad
+	DECLARE @Moneda_Nombre NVARCHAR(255) = (SELECT TOP 1 Moneda_Nombre FROM "NULL".[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+	DECLARE @Importe INT = (SELECT TOP 1 TipoCta_Costo_Apertura FROM "NULL".[TipoCuenta] WHERE TipoCta_Nombre = @TipoCta_Nombre)
+	DECLARE @Cli_Cod NUMERIC(18,0) = (SELECT TOP 1 Cli_Cod FROM "NULL".[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
+	
+	UPDATE "NULL".Cuenta
+	SET Cuenta_Fecha_Vencimiento = DATEADD(DAY, @Cantidad_Dias, Cuenta_Fecha_Vencimiento), TipoCta_Nombre = @TipoCta_Nombre
+	WHERE Cuenta_Numero = @Cuenta_Numero
+	
+	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe)
+	VALUES(@Cli_Cod , @Moneda_Nombre, @Cantidad, 'Suscripcion de tipo de cuenta.', @Importe)
+END
+GO
+
+
 /******************************* MIGRACION *********************************************/
 
 SET IDENTITY_INSERT "NULL".Funcionalidad ON
@@ -1165,6 +1299,7 @@ INSERT INTO "NULL".Rol_Funcionalidad(Func_Cod, Rol_Nombre) VALUES
   (2, 'Administrador'),
   (3, 'Administrador'),
   (4, 'Administrador'),
+  (4, 'Cliente'),
   (5, 'Cliente'),
   (6, 'Cliente'),
   (7, 'Cliente'),
@@ -2237,3 +2372,77 @@ SELECT DISTINCT Retiro_Codigo, CONVERT(DATETIME, Retiro_Fecha, 121), Retiro_Impo
 FROM GD1C2015.gd_esquema.Maestra WHERE Retiro_Codigo IS NOT NULL
 
 SET IDENTITY_INSERT "NULL".Retiro OFF
+
+
+/*********************************** FACTURAS Y TRANSACCIONES **************************/
+
+
+SET IDENTITY_INSERT "NULL".Factura_Cabecera ON
+
+INSERT INTO "NULL".Factura_Cabecera(Fact_Numero, Fact_Tipo,Fact_Fecha, Fact_Total, Cli_Cod, Fact_Borrado)
+SELECT DISTINCT Factura_Numero, 'A', CONVERT(DATETIME, Factura_Fecha, 121), 0, Cli_Cod, 0
+FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Cliente as cli
+WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Factura_Numero IS NOT NULL
+
+SET IDENTITY_INSERT "NULL".Factura_Cabecera OFF
+
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spMigrarFacturas' 
+)
+   DROP PROCEDURE "NULL".spMigrarFacturas
+GO
+
+CREATE PROCEDURE "NULL".spMigrarFacturas
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @Factura_Numero NUMERIC(18,0),
+			@Factura_Fecha DATETIME,
+			@Cli_Cod NUMERIC(18,0),
+			@Importe NUMERIC(18,2),
+			@Descripcion NVARCHAR(255),
+			@InsertedTransaccion NUMERIC(18,0)
+	
+	DECLARE facturas CURSOR FOR
+		SELECT Item_Factura_Importe,Item_Factura_Descr,Cli_Cod,Factura_Numero
+		FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Cliente as cli
+		WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Item_Factura_Importe IS NOT NULL
+	
+	OPEN facturas
+	FETCH NEXT FROM facturas INTO @Importe, @Descripcion, @Cli_Cod, @Factura_Numero
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado) VALUES
+			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0);
+		
+		SELECT @InsertedTransaccion = SCOPE_IDENTITY()
+		
+		INSERT INTO "NULL".Factura_Item(F_Item_Cantidad,F_Item_Desc,F_Item_Precio_Unitario,Fact_Numero,Fact_Tipo,Moneda_Nombre,Transacc_Codigo,F_Item_Borrado) VALUES
+			(1, @Descripcion, @Importe, @Factura_Numero, 'A', 'Dólares Estadounidenses',@InsertedTransaccion, 0);
+		
+		FETCH NEXT FROM facturas INTO @Importe, @Descripcion, @Cli_Cod, @Factura_Numero
+	END
+	CLOSE facturas
+	DEALLOCATE facturas
+END
+GO
+
+EXEC [NULL].[spMigrarFacturas]
+GO
+
+
+CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia AFTER INSERT
+AS
+BEGIN
+	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
+				Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
+	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.',
+			0, i.Transf_Costo, 0
+	FROM inserted as i, "NULL".Cuenta as cta
+	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
+END
+GO
