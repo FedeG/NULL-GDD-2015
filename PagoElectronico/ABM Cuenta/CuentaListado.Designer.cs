@@ -46,6 +46,7 @@
             this.ClienteUsername = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.searchUsernameButton = new System.Windows.Forms.Button();
+            this.btnSuscripcion = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.cuentaTable)).BeginInit();
             this.Acciones.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -105,15 +106,16 @@
             // 
             // Acciones
             // 
+            this.Acciones.Controls.Add(this.btnSuscripcion);
             this.Acciones.Controls.Add(this.cambiarTipo);
             this.Acciones.Controls.Add(this.DeshabilitarButton);
             this.Acciones.Controls.Add(this.BorrarButton);
             this.Acciones.Controls.Add(this.HabilitarButton);
             this.Acciones.Controls.Add(this.editarCuentaButton);
             this.Acciones.Enabled = false;
-            this.Acciones.Location = new System.Drawing.Point(489, 349);
+            this.Acciones.Location = new System.Drawing.Point(341, 349);
             this.Acciones.Name = "Acciones";
-            this.Acciones.Size = new System.Drawing.Size(368, 56);
+            this.Acciones.Size = new System.Drawing.Size(516, 56);
             this.Acciones.TabIndex = 10;
             this.Acciones.TabStop = false;
             this.Acciones.Text = "Acciones";
@@ -234,6 +236,16 @@
             this.searchUsernameButton.UseVisualStyleBackColor = true;
             this.searchUsernameButton.Click += new System.EventHandler(this.searchUsernameButton_Click);
             // 
+            // btnSuscripcion
+            // 
+            this.btnSuscripcion.Location = new System.Drawing.Point(358, 19);
+            this.btnSuscripcion.Name = "btnSuscripcion";
+            this.btnSuscripcion.Size = new System.Drawing.Size(133, 23);
+            this.btnSuscripcion.TabIndex = 14;
+            this.btnSuscripcion.Text = "Agregar Suscripciones";
+            this.btnSuscripcion.UseVisualStyleBackColor = true;
+            this.btnSuscripcion.Click += new System.EventHandler(this.btnSuscripcion_Click);
+            // 
             // CuentaListado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,5 +289,6 @@
         private System.Windows.Forms.TextBox ClienteUsername;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button searchUsernameButton;
+        private System.Windows.Forms.Button btnSuscripcion;
     }
 }

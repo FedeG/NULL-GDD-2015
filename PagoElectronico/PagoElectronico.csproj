@@ -102,6 +102,12 @@
     <Compile Include="ABM Cuenta\FormSeleccionTipo.Designer.cs">
       <DependentUpon>FormSeleccionTipo.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM Cuenta\FormSuscripcion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\FormSuscripcion.Designer.cs">
+      <DependentUpon>FormSuscripcion.cs</DependentUpon>
+    </Compile>
     <Compile Include="ABM Rol\RolCreacion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -196,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Cuenta\FormSeleccionTipo.resx">
       <DependentUpon>FormSeleccionTipo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\FormSuscripcion.resx">
+      <DependentUpon>FormSuscripcion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Consulta Saldos\ConsultaForm.resx">
       <DependentUpon>ConsultaForm.cs</DependentUpon>

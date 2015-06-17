@@ -127,10 +127,25 @@ namespace PagoElectronico.ABM_Cuenta
         private void cambiarTipo_Click(object sender, EventArgs e){
             FormSeleccionTipo formTipo = new FormSeleccionTipo();
             formTipo.ShowDialog();
-            SqlCommand spCambiarTipoCuenta = this.db.GetStoreProcedure("NULL.spCambiarTipoCuenta");
-            spCambiarTipoCuenta.Parameters.Add(new SqlParameter("@Cuenta_Numero", cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value.ToString()));
-            spCambiarTipoCuenta.Parameters.Add(new SqlParameter("@TipoCta_Nombre", formTipo.tipoSeleccionado));
-            spCambiarTipoCuenta.ExecuteNonQuery();
+            // spConsultaCambioTipoCuenta
+            SqlCommand spConsultaCambioTipoCuenta = this.db.GetStoreProcedure("NULL.spConsultaCambioTipoCuenta");
+            spConsultaCambioTipoCuenta.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value)));
+            spConsultaCambioTipoCuenta.Parameters.Add(new SqlParameter("@Hoy", Properties.Settings.Default.FechaSistema.Date));
+            SqlParameter returnParameter = spConsultaCambioTipoCuenta.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+            spConsultaCambioTipoCuenta.ExecuteNonQuery();
+            if (Convert.ToInt64(returnParameter.Value) >= 0){
+                int dinero = Convert.ToInt32(returnParameter.Value);
+                DialogResult dialogResult = MessageBox.Show("¿Usted esta seguro de cambiar el tipo de cuenta (en el caso de que usted confirme se se le acreditaran " + dinero.ToString() + ")?", "Confirmación", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes){
+                    SqlCommand spCambiarTipoCuenta = this.db.GetStoreProcedure("NULL.spCambiarTipoCuenta");
+                    spCambiarTipoCuenta.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value)));
+                    spCambiarTipoCuenta.Parameters.Add(new SqlParameter("@TipoCta_Nombre", formTipo.tipoSeleccionado));
+                    spCambiarTipoCuenta.Parameters.Add(new SqlParameter("@Hoy", Properties.Settings.Default.FechaSistema));
+                    spCambiarTipoCuenta.ExecuteNonQuery();
+                }
+            }
+            else MessageBox.Show("Su cuenta no puede ser modificada");
             this.SearchCuentaPorUsername();
         }
 
@@ -154,6 +169,12 @@ namespace PagoElectronico.ABM_Cuenta
 
         private void searchDocumentoButton_Click_1(object sender, EventArgs e){
             this.SearchCuentaPorDocumento();
+        }
+
+        private void btnSuscripcion_Click(object sender, EventArgs e){
+            FormSuscripcion formSuscripcion = new FormSuscripcion();
+            formSuscripcion.ShowDialog();
+            this.SearchCuentaPorUsername();
         }
 
     }
