@@ -1171,6 +1171,7 @@ INSERT INTO "NULL".Rol_Funcionalidad(Func_Cod, Rol_Nombre) VALUES
   (2, 'Administrador'),
   (3, 'Administrador'),
   (4, 'Administrador'),
+  (4, 'Cliente'),
   (5, 'Cliente'),
   (6, 'Cliente'),
   (7, 'Cliente'),
