@@ -27,7 +27,11 @@ namespace PagoElectronico.Facturacion {
             InitializeComponent();
             this.db = new DbComunicator();
             this.username = username;
-            string queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + username + "%'";
+            this.loadTransaccTable();
+        }
+
+        private void loadTransaccTable(){
+            string queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + this.username + "%'";
             string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cli_Cod = (" + queryGetCliCod + ") AND Transacc_Borrado = 0 AND Transacc_Facturada = 0";
             transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
         }
@@ -41,6 +45,8 @@ namespace PagoElectronico.Facturacion {
             sp.Parameters.Add(new SqlParameter("@Usr_Username", this.username));
             sp.Parameters.Add(new SqlParameter("@Hoy", Properties.Settings.Default.FechaSistema));
             sp.ExecuteNonQuery();
+            MessageBox.Show("Factura generada exitosamente");
+            this.loadTransaccTable();
         }
     }
 }
