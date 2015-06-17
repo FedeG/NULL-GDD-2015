@@ -65,6 +65,10 @@ EXEC "NULL".spSetFechaSistema '2016-01-01 00:00:00.000'
 
 
 /********************************** BORRADO DE TABLAS **************************************/
+IF OBJECT_ID ('NULL.trGenerarTransaccionTransferencia','TR') IS NOT NULL
+   DROP TRIGGER "NULL".trGenerarTransaccionTransferencia
+GO
+
 IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
   DROP TABLE "NULL".Auditoria_Login
 GO
@@ -2299,4 +2303,17 @@ END
 GO
 
 EXEC [NULL].[spMigrarFacturas]
+GO
+
+
+CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia AFTER INSERT
+AS
+BEGIN
+	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
+				Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
+	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.',
+			0, i.Transf_Costo, 0
+	FROM inserted as i, "NULL".Cuenta as cta
+	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
+END
 GO
