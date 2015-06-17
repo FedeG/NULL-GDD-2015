@@ -60,7 +60,7 @@ namespace PagoElectronico
                     else form = new PagoElectronico.Consulta_Saldos.ConsultaForm(this.username);
                     break;
                 }
-                case 11: form = new PagoElectronico.Listados.Form1(); break;
+                case 11: form = new PagoElectronico.Listados.ListadosForm(); break;
             }
             return form;
         }
