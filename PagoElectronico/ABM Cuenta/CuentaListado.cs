@@ -29,7 +29,8 @@ namespace PagoElectronico.ABM_Cuenta
             this.validator = new Commons.Validator();
             this.username = username;
             ClienteUsername.Text = username;
-            this.SearchCuentaPorUsername();
+            string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Cli_Cod, Usr_Username FROM GD1C2015.[NULL].Cliente WHERE Usr_Username='" + ClienteUsername.Text + "') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
+            this.loadCuentaTable(queryGetCliCod);
             groupBox1.Visible = false;
             groupBox2.Visible = false;
             cuentaTable.Location = new System.Drawing.Point(12, 12);
