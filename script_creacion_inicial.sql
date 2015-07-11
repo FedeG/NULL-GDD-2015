@@ -833,6 +833,9 @@ BEGIN
 	INSERT INTO [GD1C2015].[NULL].[Cliente] (Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad, Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
 	VALUES (@Usr_Username, @Cli_Nombre, @Cli_Apellido, @TipoDoc_Cod, @Cli_Nro_Doc, @Cli_Dom_Calle, @Cli_Dom_Nro, @Cli_Dom_Piso, @Cli_Dom_Depto, @Cli_Localidad, @Cli_Fecha_Nac, @Cli_Mail, @Cli_Nacionalidad, @Pais_Codigo, 0)
 
+  INSERT INTO [GD1C2015].[NULL].[Rol_Usuario] (Rol_Nombre, Usr_Username)
+  VALUES ('Cliente', @Usr_Username)
+
 END
 GO
 
