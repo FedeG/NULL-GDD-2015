@@ -634,8 +634,8 @@ AS
 		OUTPUT inserted.Cheque_Numero INTO @InsertedCheques
 		VALUES(CONVERT(DATETIME, @Fecha_Deposito, 121), @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre)
 		
-		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero)
-		SELECT @Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Cuenta_Numero, c.Cheque_Numero
+		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero, Moneda_Nombre)
+		SELECT @Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Cuenta_Numero, c.Cheque_Numero, @Moneda_Nombre
 		FROM @InsertedCheques as c
 		
 		RETURN(@Validacion)
@@ -693,7 +693,8 @@ CREATE PROCEDURE "NULL".spRealizarTransferencia
 	@Cuenta_Origen NUMERIC(18,0), 
 	@Cuenta_Destino NUMERIC(18,0),
 	@Fecha_Transferencia DATETIME,
-	@Importe INT
+	@Importe INT,
+	@Moneda_Nombre NVARCHAR(255)
 AS
 BEGIN
 	DECLARE @Validacion INT = "NULL".fnValidarTransferencia(@Cuenta_Origen, @Cuenta_Destino, @Importe)
@@ -705,8 +706,8 @@ BEGIN
 			SET @Transferencia_Costo = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
 		END
 		
-		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo)
-		VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo)
+		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo, Moneda_Nombre)
+		VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo, @Moneda_Nombre)
 	END
 	
 	RETURN @Validacion

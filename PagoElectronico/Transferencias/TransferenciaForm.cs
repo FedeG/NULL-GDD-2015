@@ -16,9 +16,17 @@ namespace PagoElectronico.Transferencias
             string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = '" + username + "')";
             InitializeComponent();
             DbComunicator db = new DbComunicator();
+            
             cuentaOrigenComboBox.DataSource = new BindingSource(db.GetQueryDictionary(query, "Cuenta_Numero", "Cuenta_Numero"), null);
             cuentaOrigenComboBox.DisplayMember = "Key";
             cuentaOrigenComboBox.ValueMember = "Value";
+            
+            string queryMonedas = "SELECT Moneda_Nombre, Moneda_Simbolo FROM [GD1C2015].[NULL].[Moneda]";
+            comboMoneda.DataSource = new BindingSource(db.GetQueryDictionary(queryMonedas, "Moneda_Simbolo", "Moneda_Nombre"), null);
+            comboMoneda.DisplayMember = "Key";
+            comboMoneda.ValueMember = "Value";
+
+            db.CerrarConexion();
         }
 
         private void realizarButton_Click(object sender, EventArgs e)
@@ -31,6 +39,7 @@ namespace PagoElectronico.Transferencias
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Destino", Convert.ToInt64(cuentaDestinoTextBox.Text)));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Importe", Convert.ToInt32(importeTextBox.Text)));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Fecha_Transferencia", Properties.Settings.Default.FechaSistema));
+            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
 
             //Agregar la fecha de sistema.
             spRealizarTransferencia.ExecuteNonQuery();
