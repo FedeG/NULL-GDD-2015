@@ -296,6 +296,7 @@ CREATE TABLE "NULL".Deposito
 (
   Deposito_Codigo NUMERIC(18,0) PRIMARY KEY IDENTITY(35135160440,1),
   Deposito_Importe NUMERIC(18,2) NOT NULL,
+  Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Deposito_Fecha DATETIME NOT NULL,
   Tarjeta_Numero NVARCHAR(255) NOT NULL REFERENCES "NULL".Tarjeta(Tarjeta_Numero),
   Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
@@ -307,6 +308,7 @@ CREATE TABLE "NULL".Transferencia
   Transf_Codigo NUMERIC(18,0) PRIMARY KEY IDENTITY(10000000001,1),
   Transf_Fecha DATETIME NOT NULL,
   Transf_Importe NUMERIC(18,2) NOT NULL,
+  Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Transf_Costo NUMERIC(18,2) NOT NULL,
   Cuenta_Origen_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
   Cuenta_Destino_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
@@ -339,7 +341,8 @@ CREATE TABLE "NULL".Retiro
   Retiro_Fecha DATETIME NOT NULL,
   Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
   Retiro_Borrado BIT NOT NULL DEFAULT 0,
-  Cheque_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cheque(Cheque_Numero)
+  Cheque_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cheque(Cheque_Numero),
+  Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre)
 );
 
 CREATE TABLE "NULL".Transaccion
@@ -360,6 +363,7 @@ CREATE TABLE "NULL".Factura_Cabecera
   Fact_Tipo NVARCHAR(10) NOT NULL,
   Fact_Fecha DATETIME NOT NULL,
   Fact_Total NUMERIC(18,2),
+  Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
   Fact_Borrado BIT NOT NULL DEFAULT 0,
   PRIMARY KEY(Fact_Numero, Fact_Tipo)
@@ -630,8 +634,8 @@ AS
 		OUTPUT inserted.Cheque_Numero INTO @InsertedCheques
 		VALUES(CONVERT(DATETIME, @Fecha_Deposito, 121), @Importe, @Cheque_Nombre, @Banco_Cod, @Moneda_Nombre)
 		
-		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero)
-		SELECT @Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Cuenta_Numero, c.Cheque_Numero
+		INSERT INTO [GD1C2015].[NULL].[Retiro](Retiro_Importe, Retiro_Fecha, Cuenta_Numero, Cheque_Numero, Moneda_Nombre)
+		SELECT @Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Cuenta_Numero, c.Cheque_Numero, @Moneda_Nombre
 		FROM @InsertedCheques as c
 		
 		RETURN(@Validacion)
@@ -689,7 +693,8 @@ CREATE PROCEDURE "NULL".spRealizarTransferencia
 	@Cuenta_Origen NUMERIC(18,0), 
 	@Cuenta_Destino NUMERIC(18,0),
 	@Fecha_Transferencia DATETIME,
-	@Importe INT
+	@Importe INT,
+	@Moneda_Nombre NVARCHAR(255)
 AS
 BEGIN
 	DECLARE @Validacion INT = "NULL".fnValidarTransferencia(@Cuenta_Origen, @Cuenta_Destino, @Importe)
@@ -701,8 +706,8 @@ BEGIN
 			SET @Transferencia_Costo = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
 		END
 		
-		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo)
-		VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo)
+		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo, Moneda_Nombre)
+		VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo, @Moneda_Nombre)
 	END
 	
 	RETURN @Validacion
@@ -2271,8 +2276,8 @@ GO
 
 SET IDENTITY_INSERT "NULL".Deposito ON
 
-INSERT INTO "NULL".Deposito(Deposito_Codigo, Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero, Deposito_Borrado)
-SELECT DISTINCT m.Deposito_Codigo, m.Deposito_Importe, CONVERT(DATETIME, m.Deposito_Fecha, 121), t.Tarjeta_SHA, m.Cuenta_Numero, 0 Deposito_Borrado
+INSERT INTO "NULL".Deposito(Deposito_Codigo, Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero, Deposito_Borrado, Moneda_Nombre)
+SELECT DISTINCT m.Deposito_Codigo, m.Deposito_Importe, CONVERT(DATETIME, m.Deposito_Fecha, 121), t.Tarjeta_SHA, m.Cuenta_Numero, 0 Deposito_Borrado, 'Dólares Estadounidenses'
 FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Tarjetas_SHA_Temp as t
 WHERE m.Deposito_Codigo IS NOT NULL AND m.Tarjeta_Numero = t.Tarjeta_Numero
 
@@ -2327,8 +2332,8 @@ GO
 
 
 INSERT INTO "NULL".Transferencia(Transf_Fecha, Transf_Importe, Transf_Costo, Cuenta_Origen_Numero,
-								Cuenta_Destino_Numero, Transf_Borrado)
-SELECT DISTINCT CONVERT(DATETIME, Transf_Fecha, 121), Trans_Importe, Trans_Costo_Trans, Cuenta_Numero, Cuenta_Dest_Numero, 0
+								Cuenta_Destino_Numero, Transf_Borrado, Moneda_Nombre)
+SELECT DISTINCT CONVERT(DATETIME, Transf_Fecha, 121), Trans_Importe, Trans_Costo_Trans, Cuenta_Numero, Cuenta_Dest_Numero, 0, 'Dólares Estadounidenses'
 FROM GD1C2015.gd_esquema.Maestra WHERE Transf_Fecha IS NOT NULL
 
 
@@ -2370,8 +2375,8 @@ SET IDENTITY_INSERT "NULL".Cheque OFF
 
 SET IDENTITY_INSERT "NULL".Retiro ON
 
-INSERT INTO "NULL".Retiro(Retiro_Codigo, Retiro_Fecha, Retiro_Importe, Cuenta_Numero, Cheque_Numero, Retiro_Borrado)
-SELECT DISTINCT Retiro_Codigo, CONVERT(DATETIME, Retiro_Fecha, 121), Retiro_Importe, Cuenta_Numero, Cheque_Numero, 0
+INSERT INTO "NULL".Retiro(Retiro_Codigo, Retiro_Fecha, Retiro_Importe, Cuenta_Numero, Cheque_Numero, Retiro_Borrado, Moneda_Nombre)
+SELECT DISTINCT Retiro_Codigo, CONVERT(DATETIME, Retiro_Fecha, 121), Retiro_Importe, Cuenta_Numero, Cheque_Numero, 0, 'Dólares Estadounidenses'
 FROM GD1C2015.gd_esquema.Maestra WHERE Retiro_Codigo IS NOT NULL
 
 SET IDENTITY_INSERT "NULL".Retiro OFF
@@ -2382,8 +2387,8 @@ SET IDENTITY_INSERT "NULL".Retiro OFF
 
 SET IDENTITY_INSERT "NULL".Factura_Cabecera ON
 
-INSERT INTO "NULL".Factura_Cabecera(Fact_Numero, Fact_Tipo,Fact_Fecha, Fact_Total, Cli_Cod, Fact_Borrado)
-SELECT DISTINCT Factura_Numero, 'A', CONVERT(DATETIME, Factura_Fecha, 121), 0, Cli_Cod, 0
+INSERT INTO "NULL".Factura_Cabecera(Fact_Numero, Fact_Tipo,Fact_Fecha, Fact_Total, Cli_Cod, Fact_Borrado, Moneda_Nombre)
+SELECT DISTINCT Factura_Numero, 'A', CONVERT(DATETIME, Factura_Fecha, 121), 0, Cli_Cod, 0, 'Dólares Estadounidenses'
 FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Cliente as cli
 WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Factura_Numero IS NOT NULL
 
@@ -2470,8 +2475,8 @@ BEGIN
 	
 	SELECT @Cli_Cod = Cli_Cod FROM "NULL".Cliente as cli WHERE cli.Usr_Username = @Usr_Username
 	
-	INSERT INTO "NULL".Factura_Cabecera(Cli_Cod,Fact_Fecha,Fact_Tipo,Fact_Borrado)
-	VALUES (@Cli_Cod, CONVERT(DATETIME, @Hoy, 121), 'A', 0)
+	INSERT INTO "NULL".Factura_Cabecera(Cli_Cod,Fact_Fecha,Fact_Tipo,Fact_Borrado, Moneda_Nombre)
+	VALUES (@Cli_Cod, CONVERT(DATETIME, @Hoy, 121), 'A', 0, 'Dólares Estadounidenses')
 	
 	SELECT @Factura_Numero = SCOPE_IDENTITY()
 	
