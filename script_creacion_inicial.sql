@@ -69,6 +69,10 @@ IF OBJECT_ID ('NULL.trGenerarTransaccionTransferencia','TR') IS NOT NULL
    DROP TRIGGER "NULL".trGenerarTransaccionTransferencia
 GO
 
+IF OBJECT_ID ('NULL.trGenerarTransaccionCreacionCuenta','TR') IS NOT NULL
+   DROP TRIGGER "NULL".trGenerarTransaccionCreacionCuenta
+GO
+
 IF OBJECT_ID('NULL.Auditoria_Login', 'U') IS NOT NULL
   DROP TABLE "NULL".Auditoria_Login
 GO
@@ -2482,6 +2486,18 @@ GO
 EXEC [NULL].[spMigrarFacturas]
 GO
 
+CREATE TRIGGER "NULL".trGenerarTransaccionCreacionCuenta ON "NULL".Cuenta AFTER INSERT
+AS
+BEGIN
+	DECLARE @Importe INT  = (SELECT TOP 1 tc.TipoCta_Costo_Apertura
+	FROM [GD1C2015].[NULL].[TipoCuenta] as tc, inserted as cta
+	WHERE tc.TipoCta_Nombre = cta.TipoCta_Nombre)
+
+	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
+	SELECT cta.Cli_Cod, cta.Moneda_Nombre, 1, 'Apertura de Cuenta.',0, @Importe, 0
+	FROM inserted as cta
+END
+GO
 
 CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia AFTER INSERT
 AS
