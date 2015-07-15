@@ -16,11 +16,13 @@ namespace PagoElectronico.ABM_Cuenta
         DbComunicator db;
         Commons.Validator validator;
         string username, cliCod;
+        Boolean is_admin;
 
         public CuentaListado(){
             InitializeComponent();
             this.db = new DbComunicator();
             this.validator = new Commons.Validator();
+            this.is_admin = true;
         }
 
         public CuentaListado(string username){
@@ -28,6 +30,11 @@ namespace PagoElectronico.ABM_Cuenta
             this.db = new DbComunicator();
             this.validator = new Commons.Validator();
             this.username = username;
+            this.is_admin = false;
+            HabilitarButton.Visible = false;
+            DeshabilitarButton.Visible = false;
+            BorrarButton.Visible = false;
+            CerrarButton.Visible = true;
             ClienteUsername.Text = username;
             string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Cli_Cod, Usr_Username FROM GD1C2015.[NULL].Cliente WHERE Usr_Username='" + ClienteUsername.Text + "') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
             this.loadCuentaTable(queryGetCliCod);
@@ -81,22 +88,24 @@ namespace PagoElectronico.ABM_Cuenta
         }
 
         private void LoadHabilitacionButton(){
-            if (cuentaTable.SelectedRows[0].Cells["Cuenta_Estado"].Value.ToString().Equals("Habilitada"))
-            {
-                HabilitarButton.Enabled = false;
-                HabilitarButton.Visible = false;
-                DeshabilitarButton.Visible = true;
-                DeshabilitarButton.Enabled = true;
-            } else {
-                DeshabilitarButton.Visible = false;
-                DeshabilitarButton.Enabled = false;
-                HabilitarButton.Visible = true;
-                HabilitarButton.Enabled = true;
+            if (this.is_admin){
+                if (cuentaTable.SelectedRows[0].Cells["Cuenta_Estado"].Value.ToString().Equals("Habilitada")){
+                    HabilitarButton.Enabled = false;
+                    HabilitarButton.Visible = false;
+                    DeshabilitarButton.Visible = true;
+                    DeshabilitarButton.Enabled = true;
+                } else {
+                    DeshabilitarButton.Visible = false;
+                    DeshabilitarButton.Enabled = false;
+                    HabilitarButton.Visible = true;
+                    HabilitarButton.Enabled = true;
+                }
             }
         }
 
         private void LoadDarDeBajaButton(){
-            BorrarButton.Enabled = !(Boolean) cuentaTable.SelectedRows[0].Cells["Cuenta_Borrado"].Value;
+            BorrarButton.Enabled = !(Boolean)cuentaTable.SelectedRows[0].Cells["Cuenta_Borrado"].Value;
+            CerrarButton.Enabled = true;
         }
 
         private void DesactivarAcciones(object sender, EventArgs e){
@@ -175,6 +184,27 @@ namespace PagoElectronico.ABM_Cuenta
         private void btnSuscripcion_Click(object sender, EventArgs e){
             FormSuscripcion formSuscripcion = new FormSuscripcion(Convert.ToInt64(cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value));
             formSuscripcion.ShowDialog();
+            this.SearchCuentaPorUsername();
+        }
+
+        private void CerrarButton_Click(object sender, EventArgs e)
+        {
+            SqlCommand spConsultaCierreCuenta = this.db.GetStoreProcedure("NULL.spConsultaCierreCuenta");
+            spConsultaCierreCuenta.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value)));
+            SqlParameter returnParameter = spConsultaCierreCuenta.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+            spConsultaCierreCuenta.ExecuteNonQuery();
+            if (Convert.ToInt64(returnParameter.Value) == 1){
+                DialogResult dialogResult = MessageBox.Show("¿Usted esta seguro de cerrar su cuenta?", "Confirmación", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    SqlCommand spCerrarCuenta = this.db.GetStoreProcedure("NULL.spCerrarCuenta");
+                    spCerrarCuenta.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value)));
+                    spCerrarCuenta.Parameters.Add(new SqlParameter("@Hoy", Properties.Settings.Default.FechaSistema));
+                    spCerrarCuenta.ExecuteNonQuery();
+                }
+            }
+            else MessageBox.Show("Su cuenta no se puede cerrar porque hay deudas pendientes");
             this.SearchCuentaPorUsername();
         }
 

@@ -47,6 +47,7 @@
             this.ClienteUsername = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.searchUsernameButton = new System.Windows.Forms.Button();
+            this.CerrarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.cuentaTable)).BeginInit();
             this.Acciones.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -112,6 +113,7 @@
             // 
             // Acciones
             // 
+            this.Acciones.Controls.Add(this.CerrarButton);
             this.Acciones.Controls.Add(this.btnSuscripcion);
             this.Acciones.Controls.Add(this.cambiarTipo);
             this.Acciones.Controls.Add(this.DeshabilitarButton);
@@ -254,6 +256,17 @@
             this.searchUsernameButton.UseVisualStyleBackColor = true;
             this.searchUsernameButton.Click += new System.EventHandler(this.searchUsernameButton_Click);
             // 
+            // CerrarButton
+            // 
+            this.CerrarButton.Location = new System.Drawing.Point(196, 19);
+            this.CerrarButton.Name = "CerrarButton";
+            this.CerrarButton.Size = new System.Drawing.Size(156, 23);
+            this.CerrarButton.TabIndex = 15;
+            this.CerrarButton.Text = "Cerrar Cuenta";
+            this.CerrarButton.UseVisualStyleBackColor = true;
+            this.CerrarButton.Visible = false;
+            this.CerrarButton.Click += new System.EventHandler(this.CerrarButton_Click);
+            // 
             // CuentaListado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,5 +311,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button searchUsernameButton;
         private System.Windows.Forms.Button btnSuscripcion;
+        private System.Windows.Forms.Button CerrarButton;
     }
 }

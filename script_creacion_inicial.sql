@@ -1113,6 +1113,25 @@ GO
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spCerrarCuenta' 
+)
+   DROP PROCEDURE "NULL".spCerrarCuenta
+GO
+
+CREATE PROCEDURE "NULL".spCerrarCuenta
+  @Cuenta_Numero Numeric(18,0),
+  @Hoy DATETIME
+AS
+BEGIN
+  UPDATE [GD1C2015].[NULL].[Cuenta]
+  SET Cuenta_Fecha_Cierre = @Hoy, Cuenta_Estado = 'Cerrada'
+  WHERE Cuenta_Numero = @Cuenta_Numero
+END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
    WHERE SPECIFIC_NAME = N'spCambiarTipoCuenta' 
 )
    DROP PROCEDURE "NULL".spCambiarTipoCuenta
@@ -1244,6 +1263,27 @@ BEGIN
 
 END
 GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spConsultaCierreCuenta' 
+)
+   DROP PROCEDURE "NULL".spConsultaCierreCuenta
+GO
+
+CREATE PROCEDURE "NULL".spConsultaCierreCuenta
+  @Cuenta_Numero Numeric(18,0)
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Transaccion] WHERE Cuenta_Numero = @Cuenta_Numero AND Transacc_Facturada=0) = 0
+	BEGIN
+		RETURN(1)
+	END
+	RETURN(0)
+END
+GO
+
 
 IF EXISTS (
   SELECT * 
