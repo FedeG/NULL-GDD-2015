@@ -53,8 +53,14 @@
             // 
             // clienteTable
             // 
+            this.clienteTable.AllowUserToAddRows = false;
+            this.clienteTable.AllowUserToDeleteRows = false;
+            this.clienteTable.AllowUserToResizeColumns = false;
+            this.clienteTable.AllowUserToResizeRows = false;
+            this.clienteTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.clienteTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.clienteTable.Location = new System.Drawing.Point(12, 119);
+            this.clienteTable.MultiSelect = false;
             this.clienteTable.Name = "clienteTable";
             this.clienteTable.ReadOnly = true;
             this.clienteTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -73,6 +79,7 @@
             // ClienteUsername
             // 
             this.ClienteUsername.Location = new System.Drawing.Point(67, 26);
+            this.ClienteUsername.MaxLength = 255;
             this.ClienteUsername.Name = "ClienteUsername";
             this.ClienteUsername.Size = new System.Drawing.Size(295, 20);
             this.ClienteUsername.TabIndex = 2;
@@ -172,10 +179,10 @@
             // DocCliente
             // 
             this.DocCliente.Location = new System.Drawing.Point(226, 26);
+            this.DocCliente.MaxLength = 20;
             this.DocCliente.Name = "DocCliente";
             this.DocCliente.Size = new System.Drawing.Size(214, 20);
             this.DocCliente.TabIndex = 2;
-            this.DocCliente.KeyPress += this.DocCliente_KeyPress;
             // 
             // searchDocumentoButton
             // 

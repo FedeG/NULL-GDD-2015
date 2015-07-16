@@ -46,7 +46,7 @@
             // 
             // Salir
             // 
-            this.Salir.Location = new System.Drawing.Point(172, 66);
+            this.Salir.Location = new System.Drawing.Point(13, 66);
             this.Salir.Name = "Salir";
             this.Salir.Size = new System.Drawing.Size(75, 23);
             this.Salir.TabIndex = 9;
@@ -56,7 +56,7 @@
             // 
             // Abrir
             // 
-            this.Abrir.Location = new System.Drawing.Point(12, 66);
+            this.Abrir.Location = new System.Drawing.Point(172, 66);
             this.Abrir.Name = "Abrir";
             this.Abrir.Size = new System.Drawing.Size(75, 23);
             this.Abrir.TabIndex = 10;

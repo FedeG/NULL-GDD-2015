@@ -20,6 +20,11 @@ namespace PagoElectronico.Retiros
 
             DbComunicator db = new DbComunicator();
 
+            string queryMonedas = "SELECT Moneda_Nombre, Moneda_Simbolo FROM [GD1C2015].[NULL].[Moneda]";
+            comboMoneda.DataSource = new BindingSource(db.GetQueryDictionary(queryMonedas, "Moneda_Simbolo", "Moneda_Nombre"), null);
+            comboMoneda.DisplayMember = "Key";
+            comboMoneda.ValueMember = "Value";
+
             string query = "SELECT Cli_Cod FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = '" + username + "'";
             db.EjecutarQuery(query);
             db.getLector().Read();
@@ -62,7 +67,7 @@ namespace PagoElectronico.Retiros
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Cuenta_Numero", Convert.ToInt64(cuentaComboBox.SelectedValue)));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Importe", Convert.ToInt32(importeTextBox.Text)));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Banco_Cod", Convert.ToInt32(bancoComboBox.SelectedValue)));
-            spRealizarRetiro.Parameters.Add(new SqlParameter("@Moneda_Nombre", "Dólares Estadounidenses"));
+            spRealizarRetiro.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Fecha_Deposito", Properties.Settings.Default.FechaSistema));
 
             //Agregar la fecha de sistema.

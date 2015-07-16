@@ -39,6 +39,8 @@
             this.realizarButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.bancoComboBox = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboMoneda = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // cuentaComboBox
@@ -94,7 +96,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(18, 149);
+            this.label4.Location = new System.Drawing.Point(18, 192);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(42, 13);
             this.label4.TabIndex = 6;
@@ -102,14 +104,14 @@
             // 
             // importeTextBox
             // 
-            this.importeTextBox.Location = new System.Drawing.Point(143, 146);
+            this.importeTextBox.Location = new System.Drawing.Point(143, 189);
             this.importeTextBox.Name = "importeTextBox";
             this.importeTextBox.Size = new System.Drawing.Size(134, 20);
             this.importeTextBox.TabIndex = 7;
             // 
             // realizarButton
             // 
-            this.realizarButton.Location = new System.Drawing.Point(202, 238);
+            this.realizarButton.Location = new System.Drawing.Point(202, 279);
             this.realizarButton.Name = "realizarButton";
             this.realizarButton.Size = new System.Drawing.Size(75, 23);
             this.realizarButton.TabIndex = 8;
@@ -120,7 +122,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(21, 199);
+            this.label5.Location = new System.Drawing.Point(18, 235);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(38, 13);
             this.label5.TabIndex = 9;
@@ -129,16 +131,35 @@
             // bancoComboBox
             // 
             this.bancoComboBox.FormattingEnabled = true;
-            this.bancoComboBox.Location = new System.Drawing.Point(143, 190);
+            this.bancoComboBox.Location = new System.Drawing.Point(143, 232);
             this.bancoComboBox.Name = "bancoComboBox";
             this.bancoComboBox.Size = new System.Drawing.Size(134, 21);
             this.bancoComboBox.TabIndex = 10;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(18, 145);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(70, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Tipo Moneda";
+            // 
+            // comboMoneda
+            // 
+            this.comboMoneda.FormattingEnabled = true;
+            this.comboMoneda.Location = new System.Drawing.Point(143, 142);
+            this.comboMoneda.Name = "comboMoneda";
+            this.comboMoneda.Size = new System.Drawing.Size(134, 21);
+            this.comboMoneda.TabIndex = 12;
             // 
             // FormRetiro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(309, 273);
+            this.ClientSize = new System.Drawing.Size(304, 314);
+            this.Controls.Add(this.comboMoneda);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.bancoComboBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.realizarButton);
@@ -170,5 +191,7 @@
         private System.Windows.Forms.Button realizarButton;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox bancoComboBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboMoneda;
     }
 }

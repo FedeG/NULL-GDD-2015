@@ -32,11 +32,12 @@ namespace PagoElectronico{
 
             this.EjecutarQuery(query);
 
-            while (this.getLector().Read())
-            {
+            while (this.getLector().Read()){
                 queryDictionary.Add(this.getLector()[keyName], this.getLector()[valueName]);
             }
-
+            if (queryDictionary.Values.Count == 0){
+                queryDictionary.Add("No hay elementos para listar", "No hay elementos para listar");
+            }
             return queryDictionary;
         }
 

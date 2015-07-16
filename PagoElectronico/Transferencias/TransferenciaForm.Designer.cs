@@ -35,6 +35,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.importeTextBox = new System.Windows.Forms.TextBox();
             this.realizarButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboMoneda = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -73,7 +75,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 98);
+            this.label3.Location = new System.Drawing.Point(12, 137);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 4;
@@ -81,14 +83,14 @@
             // 
             // importeTextBox
             // 
-            this.importeTextBox.Location = new System.Drawing.Point(159, 98);
+            this.importeTextBox.Location = new System.Drawing.Point(159, 134);
             this.importeTextBox.Name = "importeTextBox";
             this.importeTextBox.Size = new System.Drawing.Size(121, 20);
             this.importeTextBox.TabIndex = 5;
             // 
             // realizarButton
             // 
-            this.realizarButton.Location = new System.Drawing.Point(205, 140);
+            this.realizarButton.Location = new System.Drawing.Point(205, 171);
             this.realizarButton.Name = "realizarButton";
             this.realizarButton.Size = new System.Drawing.Size(75, 23);
             this.realizarButton.TabIndex = 6;
@@ -96,11 +98,30 @@
             this.realizarButton.UseVisualStyleBackColor = true;
             this.realizarButton.Click += new System.EventHandler(this.realizarButton_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 100);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(70, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Tipo Moneda";
+            // 
+            // comboMoneda
+            // 
+            this.comboMoneda.FormattingEnabled = true;
+            this.comboMoneda.Location = new System.Drawing.Point(159, 97);
+            this.comboMoneda.Name = "comboMoneda";
+            this.comboMoneda.Size = new System.Drawing.Size(121, 21);
+            this.comboMoneda.TabIndex = 8;
+            // 
             // TransferenciaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 176);
+            this.ClientSize = new System.Drawing.Size(292, 206);
+            this.Controls.Add(this.comboMoneda);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.realizarButton);
             this.Controls.Add(this.importeTextBox);
             this.Controls.Add(this.label3);
@@ -124,5 +145,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox importeTextBox;
         private System.Windows.Forms.Button realizarButton;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboMoneda;
     }
 }
