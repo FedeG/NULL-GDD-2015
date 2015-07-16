@@ -22,9 +22,27 @@ namespace PagoElectronico.Tarjetas
 
         private void createButton_Click(object sender, EventArgs e){
             DbComunicator db = new DbComunicator();
+
+            int comparacionFechaVencimiento = DateTime.Compare(vencimientoTimePicker.Value, Properties.Settings.Default.FechaSistema);
+
+            if (comparacionFechaVencimiento < 0)
+            {
+                MessageBox.Show("La fecha de vencimiento de la tarjeta debe ser posterior a la fecha actual del sistema: " + Properties.Settings.Default.FechaSistema.ToString());
+                return ;
+            }
+
+            int comparacionFechaEmision = DateTime.Compare(emisionTimePicker.Value, Properties.Settings.Default.FechaSistema);
+
+            if (comparacionFechaEmision > 0)
+            {
+                MessageBox.Show("La fecha de emision de la tarjeta debe ser anterior a la fecha actual del sistema: " + Properties.Settings.Default.FechaSistema.ToString());
+                return;
+            }
+
             string tarjetaNumeroVisible = numeroTextBox.Text.Substring(numeroTextBox.Text.Length - 4);
             string shaTarjetaNumero = new Sha256Generator().GetHashString(numeroTextBox.Text);
             string shaCodSeguridad = new Sha256Generator().GetHashString(seguridadTextBox.Text);
+                
             SqlCommand spCrearTarjeta = db.GetStoreProcedure("NULL.spCrearTarjeta");
             SqlParameter returnParameter = spCrearTarjeta.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
