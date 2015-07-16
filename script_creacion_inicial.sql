@@ -97,10 +97,6 @@ IF OBJECT_ID('NULL.Deposito', 'U') IS NOT NULL
   DROP TABLE "NULL".Deposito
 GO
 
-IF OBJECT_ID('NULL.Transferencia', 'U') IS NOT NULL
-  DROP TABLE "NULL".Transferencia
-GO
-
 IF OBJECT_ID('NULL.Retiro', 'U') IS NOT NULL
   DROP TABLE "NULL".Retiro
 GO
@@ -111,10 +107,6 @@ GO
 
 IF OBJECT_ID('NULL.Banco', 'U') IS NOT NULL
   DROP TABLE "NULL".Banco
-GO
-
-IF OBJECT_ID('NULL.Cuenta', 'U') IS NOT NULL
-  DROP TABLE "NULL".Cuenta
 GO
 
 IF OBJECT_ID('NULL.Tarjeta', 'U') IS NOT NULL
@@ -135,6 +127,14 @@ GO
 
 IF OBJECT_ID('NULL.Transaccion', 'U') IS NOT NULL
   DROP TABLE "NULL".Transaccion
+GO
+
+IF OBJECT_ID('NULL.Transferencia', 'U') IS NOT NULL
+  DROP TABLE "NULL".Transferencia
+GO
+
+IF OBJECT_ID('NULL.Cuenta', 'U') IS NOT NULL
+  DROP TABLE "NULL".Cuenta
 GO
 
 IF OBJECT_ID('NULL.Cliente', 'U') IS NOT NULL
@@ -356,6 +356,7 @@ CREATE TABLE "NULL".Transaccion
   Transacc_Importe NUMERIC(18,2) NOT NULL,
   Transacc_Facturada BIT NOT NULL DEFAULT 0,
   Transacc_Detalle NVARCHAR(255) NOT NULL,
+  Transacc_Transf_Codigo NUMERIC(18,0) REFERENCES "NULL".Transferencia(Transf_Codigo),
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
   Transacc_Borrado BIT NOT NULL DEFAULT 0
@@ -2375,12 +2376,6 @@ END
 GO
 
 
-INSERT INTO "NULL".Transferencia(Transf_Fecha, Transf_Importe, Transf_Costo, Cuenta_Origen_Numero,
-								Cuenta_Destino_Numero, Transf_Borrado, Moneda_Nombre)
-SELECT DISTINCT CONVERT(DATETIME, Transf_Fecha, 121), Trans_Importe, Trans_Costo_Trans, Cuenta_Numero, Cuenta_Dest_Numero, 0, 'Dólares Estadounidenses'
-FROM GD1C2015.gd_esquema.Maestra WHERE Transf_Fecha IS NOT NULL
-
-
 /*************************************** CHEQUES Y RETIROS *****************************************/
 IF OBJECT_ID ('NULL.trUpdateSaldoRetiro','TR') IS NOT NULL
    DROP TRIGGER "NULL".trUpdateSaldoRetiro
@@ -2456,27 +2451,43 @@ BEGIN
 			@Cli_Cod NUMERIC(18,0),
 			@Importe NUMERIC(18,2),
 			@Descripcion NVARCHAR(255),
-			@InsertedTransaccion NUMERIC(18,0)
+			@InsertedTransaccion NUMERIC(18,0),
+			@InsertedTransferencia NUMERIC(18,0),
+			@Transf_Fecha DATETIME,
+			@Transf_Importe NUMERIC(18,2),
+			@Trans_Costo_Trans NUMERIC(18,2),
+			@Cuenta_Numero NUMERIC(18,0),
+			@Cuenta_Dest_Numero NUMERIC(18,0)
 	
 	DECLARE facturas CURSOR FOR
-		SELECT Item_Factura_Importe,Item_Factura_Descr,Cli_Cod,Factura_Numero
+		SELECT DISTINCT CONVERT(DATETIME, Transf_Fecha, 121), Trans_Importe, Trans_Costo_Trans, Cuenta_Numero, Cuenta_Dest_Numero, 
+			Item_Factura_Importe,Item_Factura_Descr,Cli_Cod,Factura_Numero
 		FROM GD1C2015.gd_esquema.Maestra as m, "NULL".Cliente as cli
-		WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Item_Factura_Importe IS NOT NULL
+		WHERE m.Cli_Nombre = cli.Cli_Nombre AND m.Cli_Apellido = cli.Cli_Apellido AND m.Item_Factura_Importe IS NOT NULL AND Transf_Fecha IS NOT NULL
+	
 	
 	OPEN facturas
-	FETCH NEXT FROM facturas INTO @Importe, @Descripcion, @Cli_Cod, @Factura_Numero
+	FETCH NEXT FROM facturas INTO @Transf_Fecha, @Transf_Importe, @Trans_Costo_Trans, @Cuenta_Numero, @Cuenta_Dest_Numero, @Importe,
+				@Descripcion, @Cli_Cod, @Factura_Numero
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
+	
+		INSERT INTO "NULL".Transferencia(Transf_Fecha, Transf_Importe, Transf_Costo, Cuenta_Origen_Numero,
+								Cuenta_Destino_Numero, Transf_Borrado, Moneda_Nombre) VALUES
+			(@Transf_Fecha, @Transf_Importe, @Trans_Costo_Trans, @Cuenta_Numero, @Cuenta_Dest_Numero, 0, 'Dólares Estadounidenses');
 		
-		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado) VALUES
-			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0);
+		SELECT @InsertedTransferencia = SCOPE_IDENTITY()
+
+		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado, Transacc_Transf_Codigo) VALUES
+			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0, @InsertedTransferencia);
 		
 		SELECT @InsertedTransaccion = SCOPE_IDENTITY()
 		
 		INSERT INTO "NULL".Factura_Item(F_Item_Cantidad,F_Item_Desc,F_Item_Precio_Unitario,Fact_Numero,Fact_Tipo,Moneda_Nombre,Transacc_Codigo,F_Item_Borrado) VALUES
 			(1, @Descripcion, @Importe, @Factura_Numero, 'A', 'Dólares Estadounidenses',@InsertedTransaccion, 0);
 		
-		FETCH NEXT FROM facturas INTO @Importe, @Descripcion, @Cli_Cod, @Factura_Numero
+		FETCH NEXT FROM facturas INTO @Transf_Fecha, @Transf_Importe, @Trans_Costo_Trans, @Cuenta_Numero, @Cuenta_Dest_Numero, @Importe,
+				@Descripcion, @Cli_Cod, @Factura_Numero
 	END
 	CLOSE facturas
 	DEALLOCATE facturas
@@ -2503,8 +2514,8 @@ CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia 
 AS
 BEGIN
 	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
-				Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
-	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.',
+				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
+	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.', i.Transf_Codigo,
 			0, i.Transf_Costo, 0
 	FROM inserted as i, "NULL".Cuenta as cta
 	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
