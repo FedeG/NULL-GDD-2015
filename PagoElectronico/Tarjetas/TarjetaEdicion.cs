@@ -34,8 +34,24 @@ namespace PagoElectronico.Tarjetas
             string shaNumero = tarjetaNumero;
             string shaCod = tarjetaCodigo;
             string numeroVisible = tarjetaNumeroVisible;
-            int cambioPk = 0;           
+            int cambioPk = 0;
 
+            int comparacionFechaVencimiento = DateTime.Compare(vencimientoTimePicker.Value, Properties.Settings.Default.FechaSistema);
+
+            if (comparacionFechaVencimiento < 0)
+            {
+                MessageBox.Show("La fecha de vencimiento de la tarjeta debe ser posterior a la fecha actual del sistema: " + Properties.Settings.Default.FechaSistema.ToString());
+                return;
+            }
+
+            int comparacionFechaEmision = DateTime.Compare(emisionTimePicker.Value, Properties.Settings.Default.FechaSistema);
+
+            if (comparacionFechaEmision > 0)
+            {
+                MessageBox.Show("La fecha de emision de la tarjeta debe ser anterior a la fecha actual del sistema: " + Properties.Settings.Default.FechaSistema.ToString());
+                return;
+            }
+            
             if (numeroTextBox.Text.Length > 0) {
                 shaNumero = new Sha256Generator().GetHashString(numeroTextBox.Text);
                 numeroVisible = numeroTextBox.Text.Substring(numeroTextBox.Text.Length - 4);
@@ -45,7 +61,7 @@ namespace PagoElectronico.Tarjetas
             if (seguridadTextBox.Text.Length > 0) {
                 shaCod = new Sha256Generator().GetHashString(seguridadTextBox.Text);
             }
-
+            
             SqlCommand spEditarTarjeta = db.GetStoreProcedure("NULL.spEditarTarjeta");
             SqlParameter returnParameter = spEditarTarjeta.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
