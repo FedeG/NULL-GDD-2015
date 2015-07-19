@@ -359,6 +359,7 @@ CREATE TABLE "NULL".Transaccion
   Transacc_Transf_Codigo NUMERIC(18,0) REFERENCES "NULL".Transferencia(Transf_Codigo),
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
+  Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
   Transacc_Borrado BIT NOT NULL DEFAULT 0
 );
 
@@ -2478,8 +2479,8 @@ BEGIN
 		
 		SELECT @InsertedTransferencia = SCOPE_IDENTITY()
 
-		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado, Transacc_Transf_Codigo) VALUES
-			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0, @InsertedTransferencia);
+		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado, Transacc_Transf_Codigo, Cuenta_Numero) VALUES
+			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0, @InsertedTransferencia, @Cuenta_Numero);
 		
 		SELECT @InsertedTransaccion = SCOPE_IDENTITY()
 		
