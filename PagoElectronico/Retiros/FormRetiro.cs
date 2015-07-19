@@ -70,31 +70,15 @@ namespace PagoElectronico.Retiros
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
             spRealizarRetiro.Parameters.Add(new SqlParameter("@Fecha_Deposito", Properties.Settings.Default.FechaSistema));
 
-            //Agregar la fecha de sistema.
             spRealizarRetiro.ExecuteNonQuery();
 
-            if ((int)returnParameter.Value == 0) {
-                this.Close();
-            }
-
-            if ((int)returnParameter.Value == 1)
+            switch ((int)returnParameter.Value)
             {
-                MessageBox.Show("El Tipo y/o Numero de Documento no coinciden con los del usuario logeado.");
-            }
-            
-            if ((int)returnParameter.Value == 2)
-            {
-                MessageBox.Show("El importe ingreseado debe ser mayor que 0.");
-            }
-            
-            if ((int)returnParameter.Value == 3)
-            {
-                MessageBox.Show("El saldo disponible es insuficiente para realizar el retiro.");
-            }
-
-            if ((int)returnParameter.Value == 4)
-            {
-                MessageBox.Show("La cuenta no se encuentra Habilitada.");
+                case 0: MessageBox.Show("Retiro realizado."); break;
+                case 1: MessageBox.Show("El Tipo y/o Numero de Documento no coinciden con los del usuario logeado."); break;
+                case 2: MessageBox.Show("El importe ingreseado debe ser mayor que 0."); break;
+                case 3: MessageBox.Show("l saldo disponible es insuficiente para realizar el retiro."); break;
+                case 4: MessageBox.Show("La cuenta no se encuentra Habilitada."); break;
             }
         }
 

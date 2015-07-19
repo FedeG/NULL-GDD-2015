@@ -476,8 +476,8 @@ BEGIN
   
   IF(@Validacion = 0)
   BEGIN
-    INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
-    VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero)
+    INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero, Moneda_Nombre)
+    VALUES (@Importe, @Fecha_Deposito, @Tarjeta_Numero, @Cuenta_Numero, @Moneda_Nombre)
   END
   RETURN(@Validacion)
 END
@@ -941,34 +941,6 @@ BEGIN
 	SET Cli_Borrado = 1
 	WHERE Usr_Username = @Usr_Username
 
-END
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spRealizarDeposito' 
-)
-   DROP PROCEDURE "NULL".spRealizarDeposito
-GO
-
-CREATE PROCEDURE "NULL".spRealizarDeposito
-  @Cuenta_Numero NUMERIC(18,0), 
-  @Importe INT,
-  @Fecha_Deposito DATETIME,
-  @Moneda_Nombre NVARCHAR(255),
-  @Tarjeta_Numero NVARCHAR(255)
-AS
-BEGIN
-  DECLARE @Validacion int
-  SET @Validacion = "NULL".fnValidarDeposito(@Cuenta_Numero, @Importe, @Fecha_Deposito, @Moneda_Nombre, @Tarjeta_Numero)
-  
-  IF(@Validacion = 0)
-  BEGIN
-    INSERT INTO [GD1C2015].[NULL].[Deposito](Deposito_Importe, Deposito_Fecha, Tarjeta_Numero, Cuenta_Numero)
-    VALUES (@Importe, CONVERT(DATETIME, @Fecha_Deposito, 121), @Tarjeta_Numero, @Cuenta_Numero)
-  END
-  RETURN(@Validacion)
 END
 GO
 

@@ -41,7 +41,6 @@ namespace PagoElectronico.Transferencias
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Fecha_Transferencia", Properties.Settings.Default.FechaSistema));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
 
-            //Agregar la fecha de sistema.
             spRealizarTransferencia.ExecuteNonQuery();
 
             if ((int)returnParameter.Value == 0)

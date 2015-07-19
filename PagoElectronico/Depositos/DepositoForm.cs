@@ -49,10 +49,10 @@ namespace PagoElectronico.Depositos
             SqlParameter returnParameter = spRealizarDeposito.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Cuenta_Numero", comboCuenta.SelectedValue));
-            spRealizarDeposito.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
-            spRealizarDeposito.Parameters.Add(new SqlParameter("@Tarjeta_Numero", comboTarjeta.SelectedValue.ToString()));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Importe", importeTextBox.Text));
             spRealizarDeposito.Parameters.Add(new SqlParameter("@Fecha_Deposito", Properties.Settings.Default.FechaSistema));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
+            spRealizarDeposito.Parameters.Add(new SqlParameter("@Tarjeta_Numero", comboTarjeta.SelectedValue.ToString()));            
 
             spRealizarDeposito.ExecuteNonQuery();           
             
