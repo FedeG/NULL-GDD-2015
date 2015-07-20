@@ -28,6 +28,21 @@ namespace PagoElectronico.Facturacion {
             this.db = new DbComunicator();
             this.username = username;
             this.loadTransaccTable();
+
+            string query = "SELECT Cli_Cod FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = '" + username + "'";
+            this.db.EjecutarQuery(query);
+            this.db.getLector().Read();
+            int cli_Cod = Convert.ToInt32(this.db.getLector()["Cli_Cod"]);
+            this.db.CerrarConexion();
+
+            string queryCuentas = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = " + cli_Cod;
+            Dictionary<object, object> cuentas = this.db.GetQueryDictionary(queryCuentas, "Cuenta_Numero", "Cuenta_Numero");
+            cuentas.Add("Todas las cuentas", "Todas las cuentas");
+            comboCuenta.DataSource = new BindingSource(cuentas, null);
+            comboCuenta.DisplayMember = "Key";
+            comboCuenta.ValueMember = "Value";
+                       
+            this.db.CerrarConexion();
         }
 
         private void loadTransaccTable(){
@@ -47,6 +62,17 @@ namespace PagoElectronico.Facturacion {
             sp.ExecuteNonQuery();
             MessageBox.Show("Factura generada exitosamente");
             this.loadTransaccTable();
+        }
+
+        private void btnConsultar_Click(object sender, EventArgs e)
+        {
+            if (comboCuenta.SelectedValue.ToString() == "Todas las cuentas") {
+                this.loadTransaccTable();
+                return;
+            }
+            
+            string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cuenta_Numero = " + comboCuenta.SelectedValue + " AND Transacc_Borrado = 0 AND Transacc_Facturada = 0";
+            transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
         }
     }
 }

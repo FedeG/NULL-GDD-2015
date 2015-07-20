@@ -2542,3 +2542,48 @@ BEGIN
 		
 END;
 GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'spGenerarFacturaCuenta' 
+)
+   DROP PROCEDURE "NULL".spGenerarFacturaCuenta
+GO
+
+CREATE PROCEDURE "NULL".spGenerarFacturaCuenta 
+  @Usr_Username NVARCHAR(255),
+  @Hoy DATETIME,
+  @Cuenta_Numero NUMERIC(18,0)
+AS
+BEGIN
+	DECLARE @Cli_Cod NUMERIC(18,0)
+	DECLARE @Factura_Numero NUMERIC(18,0)
+	
+	SELECT @Cli_Cod = Cli_Cod FROM "NULL".Cliente as cli WHERE cli.Usr_Username = @Usr_Username
+	
+	INSERT INTO "NULL".Factura_Cabecera(Cli_Cod,Fact_Fecha,Fact_Tipo,Fact_Borrado, Moneda_Nombre)
+	VALUES (@Cli_Cod, CONVERT(DATETIME, @Hoy, 121), 'A', 0, 'Dólares Estadounidenses')
+	
+	SELECT @Factura_Numero = SCOPE_IDENTITY()
+	
+	INSERT INTO "NULL".Factura_Item(Transacc_Codigo,Fact_Numero,Fact_Tipo,F_Item_Cantidad,
+				F_Item_Desc,F_Item_Precio_Unitario,Moneda_Nombre, F_Item_Borrado)
+	SELECT Transacc_Codigo, @Factura_Numero, 'A', Transacc_Cantidad, Transacc_Detalle, Transacc_Importe, 'Dólares Estadounidenses', 0
+	FROM "NULL".Transaccion
+	WHERE Cli_Cod = @Cli_Cod AND Cuenta_Numero = @Cuenta_Numero AND Transacc_Facturada = 0
+	
+	UPDATE "NULL".Transaccion
+	SET Transacc_Facturada = 1
+	WHERE Cli_Cod = @Cli_Cod AND Cuenta_Numero = @Cuenta_Numero AND Transacc_Facturada = 0
+	
+	UPDATE "NULL".Factura_Cabecera
+	SET Fact_Total = (SELECT SUM(F_Item_Precio_Unitario*F_Item_Cantidad) FROM "NULL".Factura_Item WHERE Fact_Numero = @Factura_Numero)
+	WHERE Fact_Numero = @Factura_Numero
+	
+	UPDATE "NULL".Cuenta
+	SET Cuenta_Estado = 'Habilitada'
+	WHERE Cli_Cod = @Cli_Cod AND Cuenta_Numero = @Cuenta_Numero
+		
+END;
+GO
