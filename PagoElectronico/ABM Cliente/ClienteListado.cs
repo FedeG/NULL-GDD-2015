@@ -27,11 +27,11 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         void SearchClientePorUsername() {
-            clienteTable.DataSource = db.GetDataAdapter("SELECT Cliente.Usr_Username, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado, Usr_Estado FROM (SELECT Usr_Username, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + ClienteUsername.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username").Tables[0];
+            clienteTable.DataSource = db.GetDataAdapter("SELECT Cliente.Usr_Username, Cli_Cod, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado, Usr_Estado FROM (SELECT Usr_Username, Cli_Nombre, Cli_Cod ,Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + ClienteUsername.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username").Tables[0];
         }
 
         void SearchClientePorDocumento(){
-            clienteTable.DataSource = db.GetDataAdapter("SELECT Cliente.Usr_Username, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado, Usr_Estado FROM (SELECT Usr_Username, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado FROM GD1C2015.[NULL].Cliente WHERE Cli_Nro_Doc LIKE '%" + DocCliente.Text + "%' AND TipoDoc_Cod LIKE '%" + TipoDocCliente.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username").Tables[0];
+            clienteTable.DataSource = db.GetDataAdapter("SELECT Cliente.Usr_Username, Cli_Cod, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado, Usr_Estado FROM (SELECT Usr_Username, Cli_Nombre, Cli_Cod ,Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado FROM GD1C2015.[NULL].Cliente WHERE Cli_Nro_Doc LIKE '%" + DocCliente.Text + "%' AND TipoDoc_Cod LIKE '%" + TipoDocCliente.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username").Tables[0];
         }
 
         void SearchClientePorUsername(object sender, FormClosedEventArgs e){

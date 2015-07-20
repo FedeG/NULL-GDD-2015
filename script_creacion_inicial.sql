@@ -1145,7 +1145,9 @@ BEGIN
 	SET TipoCta_Nombre = @TipoCta_Nombre, Cuenta_Saldo = Cuenta_Saldo + @Importe
 	WHERE Cuenta_Numero = @Cuenta_Numero
 
-	/*Generar factura*/	
+	/*INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe)
+	VALUES(12321, @Cuenta_Numero, , 1, )*/
+
 END
 GO
 
@@ -1291,8 +1293,8 @@ BEGIN
 	SET Cuenta_Fecha_Vencimiento = DATEADD(DAY, @Cantidad_Dias, Cuenta_Fecha_Vencimiento), TipoCta_Nombre = @TipoCta_Nombre
 	WHERE Cuenta_Numero = @Cuenta_Numero
 	
-	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe)
-	VALUES(@Cli_Cod , @Moneda_Nombre, @Cantidad, 'Suscripcion de tipo de cuenta.', @Importe)
+	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe, Cuenta_Numero)
+	VALUES(@Cli_Cod , @Moneda_Nombre, @Cantidad, 'Suscripcion de tipo de cuenta.', @Importe, @Cuenta_Numero)
 END
 GO
 
@@ -2477,8 +2479,8 @@ BEGIN
 	FROM [GD1C2015].[NULL].[TipoCuenta] as tc, inserted as cta
 	WHERE tc.TipoCta_Nombre = cta.TipoCta_Nombre)
 
-	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
-	SELECT cta.Cli_Cod, cta.Moneda_Nombre, 1, 'Apertura de Cuenta.',0, @Importe, 0
+	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero)
+	SELECT cta.Cli_Cod, cta.Moneda_Nombre, 1, 'Apertura de Cuenta.',0, @Importe, 0, cta.Cuenta_Numero
 	FROM inserted as cta
 END
 GO
@@ -2487,9 +2489,9 @@ CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia 
 AS
 BEGIN
 	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
-				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado)
+				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero)
 	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.', i.Transf_Codigo,
-			0, i.Transf_Costo, 0
+			0, i.Transf_Costo, 0, i.Cuenta_Origen_Numero
 	FROM inserted as i, "NULL".Cuenta as cta
 	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
 END
@@ -2533,6 +2535,10 @@ BEGIN
 	UPDATE "NULL".Factura_Cabecera
 	SET Fact_Total = (SELECT SUM(F_Item_Precio_Unitario*F_Item_Cantidad) FROM "NULL".Factura_Item WHERE Fact_Numero = @Factura_Numero)
 	WHERE Fact_Numero = @Factura_Numero
+	
+	UPDATE "NULL".Cuenta
+	SET Cuenta_Estado = 'Habilitada'
+	WHERE Cli_Cod = @Cli_Cod
 		
 END;
 GO

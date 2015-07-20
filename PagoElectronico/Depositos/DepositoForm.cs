@@ -45,6 +45,11 @@ namespace PagoElectronico.Depositos
   
 
         private void botonRealizar_Click(object sender, EventArgs e){
+            if (comboTarjeta.SelectedValue.ToString() == "No hay elementos para listar"){
+                MessageBox.Show("Debe registrar una tarjeta para poder realizar depositos");
+                return;
+            }
+            
             SqlCommand spRealizarDeposito = this.db.GetStoreProcedure("NULL.spRealizarDeposito");
             SqlParameter returnParameter = spRealizarDeposito.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
