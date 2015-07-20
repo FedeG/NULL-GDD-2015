@@ -133,6 +133,10 @@ IF OBJECT_ID('NULL.Transferencia', 'U') IS NOT NULL
   DROP TABLE "NULL".Transferencia
 GO
 
+IF OBJECT_ID('NULL.CuentaInhabilitadaLogeo', 'U') IS NOT NULL
+  DROP TABLE "NULL".CuentaInhabilitadaLogeo
+GO
+
 IF OBJECT_ID('NULL.Cuenta', 'U') IS NOT NULL
   DROP TABLE "NULL".Cuenta
 GO
@@ -273,6 +277,13 @@ CREATE TABLE "NULL".Cuenta
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cuenta_Borrado BIT NOT NULL  DEFAULT 0
+);
+
+CREATE TABLE "NULL".CuentaInhabilitadaLogeo
+(
+  Log_Cod NUMERIC(18,0) PRIMARY KEY IDENTITY(0,1),
+  Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
+  Inhabilitada_Fecha DATETIME NOT NULL
 );
 
 CREATE TABLE "NULL".Emisor
@@ -1220,7 +1231,8 @@ IF OBJECT_ID (N'NULL.spDeshabilitarCuenta') IS NOT NULL
 GO
 
 CREATE PROCEDURE "NULL".spDeshabilitarCuenta
-	@Cuenta_Numero varchar(255)
+	@Cuenta_Numero varchar(255),
+	@Hoy DATETIME
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1228,6 +1240,9 @@ BEGIN
 	UPDATE [GD1C2015].[NULL].[Cuenta]
 	SET Cuenta_Estado = 'Inhabilitada'
 	WHERE Cuenta_Numero = @Cuenta_Numero
+
+	INSERT INTO "NULL".CuentaInhabilitadaLogeo(Cuenta_Numero, Inhabilitada_Fecha)
+	VALUES (@Cuenta_Numero, @Hoy)
 
 END
 GO
@@ -2228,6 +2243,42 @@ AS
     SELECT @TipoCta_Nombre = TipoCta_Nombre FROM "NULL".TipoCuentaRandom;
     RETURN @TipoCta_Nombre;
   END
+GO
+
+IF EXISTS (
+  SELECT *
+    FROM INFORMATION_SCHEMA.ROUTINES
+   WHERE SPECIFIC_NAME = N'fnCantidadMovimientos'
+)
+   DROP FUNCTION "NULL".fnCantidadMovimientos
+GO
+
+CREATE FUNCTION "NULL".fnCantidadMovimientos(
+	@pais Numeric(18,0),
+	@year Numeric(18,0),
+	@mesi Numeric(18,0),
+	@mesf Numeric(18,0))
+	RETURNS INT
+AS
+	BEGIN
+		DECLARE @suma INT = 0
+		SET @suma = @suma + (SELECT COUNT(*)
+		FROM [GD1C2015].[NULL].[Retiro] AS re, [GD1C2015].[NULL].[Cuenta] AS cu
+		WHERE re.Cuenta_Numero=cu.Cuenta_Numero AND cu.Pais_Codigo=@Pais
+			AND YEAR(re.Retiro_Fecha) = @year AND MONTH(re.Retiro_Fecha) BETWEEN @mesi AND @mesf)
+
+		SET @suma = @suma + (SELECT COUNT(*)
+		FROM [GD1C2015].[NULL].[Deposito] AS de, [GD1C2015].[NULL].[Cuenta] AS cu
+		WHERE de.Cuenta_Numero=cu.Cuenta_Numero AND cu.Pais_Codigo=@Pais
+			AND YEAR(de.Deposito_Fecha) = @year AND MONTH(de.Deposito_Fecha) BETWEEN @mesi AND @mesf)
+
+		SET @suma = @suma + (SELECT COUNT(*)
+		FROM [GD1C2015].[NULL].[Transferencia] AS tra, [GD1C2015].[NULL].[Cuenta] AS cu, [GD1C2015].[NULL].[Cuenta] AS cud
+		WHERE tra.Cuenta_Origen_Numero=cu.Cuenta_Numero AND tra.Cuenta_Destino_Numero=cud.Cuenta_Numero AND (cu.Pais_Codigo=@Pais or cud.Pais_Codigo=@Pais
+			AND YEAR(tra.Transf_Fecha) = @year AND MONTH(tra.Transf_Fecha) BETWEEN @mesi AND @mesf))
+
+		RETURN @suma
+	END;
 GO
 
 SET IDENTITY_INSERT "NULL".Cuenta ON
