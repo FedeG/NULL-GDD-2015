@@ -123,6 +123,7 @@ namespace PagoElectronico.ABM_Cuenta
         private void DeshabilitarButton_Click(object sender, EventArgs e){
             SqlCommand spDeshabilitarUsuario = this.db.GetStoreProcedure("NULL.spDeshabilitarCuenta");
             spDeshabilitarUsuario.Parameters.Add(new SqlParameter("@Cuenta_Numero", cuentaTable.SelectedRows[0].Cells["Cuenta_Numero"].Value.ToString()));
+            spDeshabilitarUsuario.Parameters.Add(new SqlParameter("@Hoy", PagoElectronico.Properties.Settings.Default.FechaSistema));
             spDeshabilitarUsuario.ExecuteNonQuery();
             this.SearchCuentaPorUsername();
         }
