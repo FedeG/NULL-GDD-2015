@@ -16,10 +16,16 @@ namespace PagoElectronico.Tarjetas
         string tarjetaNumero;
         string tarjetaCodigo;
         string tarjetaNumeroVisible;
+        Commons.Validator validator;
 
         public TarjetaEdicion(DataGridViewRow selected)
         {
             InitializeComponent();
+            this.validator = new Commons.Validator();
+            this.seguridadTextBox.KeyPress += this.Number_KeyPress;
+            this.numeroTextBox.KeyPress += this.Number_KeyPress;
+            this.enabledButtons.RegisterTextBox(this.numeroTextBox);
+            this.enabledButtons.RegisterButton(this.editarButton);
             tarjetaNumero = selected.Cells["Tarjeta_Numero"].Value.ToString();
             tarjetaCodigo = selected.Cells["Tarjeta_Codigo_Seg"].Value.ToString();
             tarjetaNumeroVisible = selected.Cells["Numero"].Value.ToString();
@@ -81,6 +87,10 @@ namespace PagoElectronico.Tarjetas
             }
             
             this.Close();
+        }
+
+        private void Number_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
         }
     }
 }

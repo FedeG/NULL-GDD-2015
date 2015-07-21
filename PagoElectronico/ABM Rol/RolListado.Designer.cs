@@ -35,6 +35,7 @@
             this.searchButton = new System.Windows.Forms.Button();
             this.editarRolButton = new System.Windows.Forms.Button();
             this.deshabilitarButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.rolTable)).BeginInit();
             this.SuspendLayout();
             // 
@@ -81,9 +82,9 @@
             // 
             // searchButton
             // 
-            this.searchButton.Location = new System.Drawing.Point(267, 17);
+            this.searchButton.Location = new System.Drawing.Point(199, 16);
             this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.Size = new System.Drawing.Size(49, 23);
             this.searchButton.TabIndex = 4;
             this.searchButton.Text = "Buscar";
             this.searchButton.UseVisualStyleBackColor = true;
@@ -109,11 +110,22 @@
             this.deshabilitarButton.UseVisualStyleBackColor = true;
             this.deshabilitarButton.Click += new System.EventHandler(this.deshabilitarButton_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(254, 16);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Mostrar Todos";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // RolListado
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(354, 273);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.deshabilitarButton);
             this.Controls.Add(this.editarRolButton);
             this.Controls.Add(this.searchButton);
@@ -138,5 +150,6 @@
         private System.Windows.Forms.Button searchButton;
         private System.Windows.Forms.Button editarRolButton;
         private System.Windows.Forms.Button deshabilitarButton;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -6,9 +6,9 @@ using System.Windows.Forms;
 
 namespace PagoElectronico.Commons{
 
-    class EnabledButtons{
-        private List<TextBox> texts = new List<TextBox>();
-        private List<Button> buttons = new List<Button>();
+    public class EnabledButtons{
+        public List<TextBox> texts = new List<TextBox>();
+        public List<Button> buttons = new List<Button>();
         
         public void RegisterTextBox(TextBox tb){
             tb.TextChanged += (s, e) => this.ValidateMethod();

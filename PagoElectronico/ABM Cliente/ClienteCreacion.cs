@@ -14,15 +14,15 @@ namespace PagoElectronico.ABM_Cliente
     {
         public ClienteCreacion(){
             InitializeComponent();
+            this.enabledButtons.RegisterButton(this.button1);
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
+        private void button2_Click(object sender, EventArgs e){
             this.Close();
         }
 
         private void button1_Click(object sender, EventArgs e){
-            this.ExecStoredProcedure("NULL.spCrearCliente");
+            this.ExecStoredProcedure("NULL.spCrearCliente", false);
             this.Close();
         }
 

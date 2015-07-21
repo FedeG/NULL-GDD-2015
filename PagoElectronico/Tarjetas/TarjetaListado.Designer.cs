@@ -39,9 +39,14 @@
             // 
             // tarjetaGridView
             // 
+            this.tarjetaGridView.AllowUserToAddRows = false;
+            this.tarjetaGridView.AllowUserToDeleteRows = false;
+            this.tarjetaGridView.AllowUserToResizeColumns = false;
+            this.tarjetaGridView.AllowUserToResizeRows = false;
             this.tarjetaGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tarjetaGridView.Location = new System.Drawing.Point(12, 12);
             this.tarjetaGridView.Name = "tarjetaGridView";
+            this.tarjetaGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.tarjetaGridView.Size = new System.Drawing.Size(497, 266);
             this.tarjetaGridView.TabIndex = 0;
             // 
@@ -57,7 +62,7 @@
             // 
             // editarButton
             // 
-            this.editarButton.Location = new System.Drawing.Point(93, 284);
+            this.editarButton.Location = new System.Drawing.Point(191, 284);
             this.editarButton.Name = "editarButton";
             this.editarButton.Size = new System.Drawing.Size(75, 23);
             this.editarButton.TabIndex = 2;
@@ -87,7 +92,7 @@
             // 
             // eliminarButton
             // 
-            this.eliminarButton.Location = new System.Drawing.Point(174, 284);
+            this.eliminarButton.Location = new System.Drawing.Point(272, 284);
             this.eliminarButton.Name = "eliminarButton";
             this.eliminarButton.Size = new System.Drawing.Size(75, 23);
             this.eliminarButton.TabIndex = 5;
@@ -99,7 +104,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(521, 323);
+            this.ClientSize = new System.Drawing.Size(521, 312);
             this.Controls.Add(this.eliminarButton);
             this.Controls.Add(this.asociarButton);
             this.Controls.Add(this.desasociarButton);
@@ -108,6 +113,7 @@
             this.Controls.Add(this.tarjetaGridView);
             this.Name = "TarjetaListado";
             this.Text = "Listado de Tarjetas";
+            this.Load += new System.EventHandler(this.TarjetaListado_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tarjetaGridView)).EndInit();
             this.ResumeLayout(false);
 

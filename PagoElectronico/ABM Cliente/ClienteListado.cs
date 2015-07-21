@@ -15,11 +15,18 @@ namespace PagoElectronico.ABM_Cliente
     {
         DbComunicator db;
         Commons.Validator validator;
+        Commons.EnabledButtons enabledButtons, enabledButtons2;
 
         public ClienteListado(){
             InitializeComponent();
             this.db = new DbComunicator();
             this.validator = new Commons.Validator();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons2 = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.ClienteUsername);
+            this.enabledButtons.RegisterButton(this.searchUsernameButton);
+            this.enabledButtons2.RegisterTextBox(this.DocCliente);
+            this.enabledButtons2.RegisterButton(this.searchDocumentoButton);
         }
 
         private void searchButton_Click(object sender, EventArgs e){
@@ -121,6 +128,10 @@ namespace PagoElectronico.ABM_Cliente
 
         private void DocCliente_KeyPress(object sender, KeyPressEventArgs e){
             this.validator.KeyPressBinding(this.validator.validateInt, false, e);
+        }
+
+        private void button1_Click(object sender, EventArgs e){
+            this.SearchClientePorUsername();
         }
 
     }

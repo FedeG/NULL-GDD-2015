@@ -16,6 +16,7 @@ namespace PagoElectronico.ABM_Cuenta
         public DbComunicator db;
         public Commons.Validator validator;
         public string cliCod;
+        public Commons.EnabledButtons enabledButtons;
         public Dictionary<object, object> PaisDict, TipoCuenta, TipoMoneda;
 
         public CuentaData(){
@@ -25,6 +26,8 @@ namespace PagoElectronico.ABM_Cuenta
             this.Nacionalidades_Load();
             this.Tipo_Moneda_Load();
             this.Tipo_Cuenta_Load();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.InputNumeroCuenta);
         }
 
         private void Nacionalidades_Load(){

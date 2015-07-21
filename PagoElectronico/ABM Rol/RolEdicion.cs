@@ -17,6 +17,7 @@ namespace PagoElectronico.ABM_Rol
         public RolEdicion(DataGridViewRow selected)
         {
             InitializeComponent();
+            this.enabledButtons.RegisterButton(this.commitEditButton);
             rolPk =selected.Cells["Rol_Nombre"].Value.ToString();
             rolNameBox.Text = rolPk;
             comboEstado.Text = selected.Cells["Rol_Estado"].Value.ToString();

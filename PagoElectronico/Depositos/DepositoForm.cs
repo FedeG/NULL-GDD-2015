@@ -13,10 +13,14 @@ namespace PagoElectronico.Depositos
     public partial class DepositoForm : Form
     {
         DbComunicator db;
+        Commons.EnabledButtons enabledButtons;
 
         public DepositoForm(string username){
             InitializeComponent();
             this.db = new DbComunicator();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.importeTextBox);
+            this.enabledButtons.RegisterButton(this.botonRealizar);
             string queryMonedas = "SELECT Moneda_Nombre, Moneda_Simbolo FROM [GD1C2015].[NULL].[Moneda]";
             comboMoneda.DataSource = new BindingSource(this.db.GetQueryDictionary(queryMonedas, "Moneda_Simbolo", "Moneda_Nombre"), null);
             comboMoneda.DisplayMember = "Key";

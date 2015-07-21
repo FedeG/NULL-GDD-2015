@@ -13,8 +13,14 @@ using PagoElectronico.Commons;
 namespace PagoElectronico.Login
 {
     public partial class FormLogin : Form{
+        Commons.EnabledButtons enabledButtons;
+
         public FormLogin(){
             InitializeComponent();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.InputUsername);
+            this.enabledButtons.RegisterTextBox(this.InputPassword);
+            this.enabledButtons.RegisterButton(this.button2);
         }
 
         public int GetCountUsers(DbComunicator dbCount, string username)

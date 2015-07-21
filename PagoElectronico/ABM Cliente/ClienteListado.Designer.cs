@@ -36,6 +36,7 @@
             this.editarClienteButton = new System.Windows.Forms.Button();
             this.BorrarButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TipoDocCliente = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -126,6 +127,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.ClienteUsername);
             this.groupBox1.Controls.Add(this.searchUsernameButton);
@@ -135,6 +137,16 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Buscar por Username";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(9, 61);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(114, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Mostrar Todos";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // groupBox2
             // 
@@ -271,5 +283,6 @@
         private System.Windows.Forms.Button HabilitarButton;
         private System.Windows.Forms.GroupBox Acciones;
         private System.Windows.Forms.Button DeshabilitarButton;
+        private System.Windows.Forms.Button button1;
     }
 }

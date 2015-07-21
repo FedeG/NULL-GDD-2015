@@ -13,10 +13,14 @@ namespace PagoElectronico.ABM_Rol
     public partial class RolListado : Form
     {
         DbComunicator db;
+        Commons.EnabledButtons enabledButtons;
         public RolListado()
         {
             InitializeComponent();
             db = new DbComunicator();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.rolName);
+            this.enabledButtons.RegisterButton(this.searchButton);
         }
 
         private void searchButton_Click(object sender, EventArgs e)
@@ -51,6 +55,11 @@ namespace PagoElectronico.ABM_Rol
             SqlCommand spCrearRol = this.db.GetStoreProcedure("NULL.spDeshabilitarRol");
             spCrearRol.Parameters.Add(new SqlParameter("@Rol_Pk", rolTable.SelectedRows[0].Cells["Rol_Nombre"].Value.ToString()));
             spCrearRol.ExecuteNonQuery();
+            this.SearchRol();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
             this.SearchRol();
         }
 

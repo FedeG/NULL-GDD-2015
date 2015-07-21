@@ -25,6 +25,28 @@ namespace PagoElectronico.Tarjetas
             this.SearchTarjetas();
         }
 
+        private void ActivarAcciones(object sender, EventArgs e)
+        {
+            if (!this.tarjetaGridView.SelectedRows[0].Cells["Tarjeta_Numero"].Value.ToString().Equals(""))
+            {
+                this.editarButton.Enabled = true;
+                this.eliminarButton.Enabled = true;
+                this.asociarButton.Enabled = true;
+                this.desasociarButton.Enabled = true;
+                tarjetaGridView.SelectionChanged += this.DesactivarAcciones;
+            }
+            else this.DesactivarAcciones(sender, e);
+        }
+
+        private void DesactivarAcciones(object sender, EventArgs e)
+        {
+            this.editarButton.Enabled = false;
+            this.eliminarButton.Enabled = false;
+            this.asociarButton.Enabled = false;
+            this.desasociarButton.Enabled = false;
+            this.tarjetaGridView.SelectionChanged -= this.DesactivarAcciones;
+        }
+
         private void desasociarButton_Click(object sender, EventArgs e)
         {
             string tarjetaPk = tarjetaGridView.SelectedRows[0].Cells["Tarjeta_Numero"].Value.ToString();
@@ -102,6 +124,11 @@ namespace PagoElectronico.Tarjetas
                 db.CerrarConexion();
                 this.SearchTarjetas();
             }
+        }
+
+        private void TarjetaListado_Load(object sender, EventArgs e){
+            tarjetaGridView.CellClick += this.ActivarAcciones;
+            tarjetaGridView.RowHeaderMouseClick += this.ActivarAcciones;
         }
 
         

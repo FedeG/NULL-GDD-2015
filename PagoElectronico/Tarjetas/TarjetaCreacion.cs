@@ -14,10 +14,16 @@ namespace PagoElectronico.Tarjetas
     public partial class TarjetaCreacion : TarjetaData
     {
         int cliCod;
+        Commons.Validator validator;
+
         public TarjetaCreacion(int cliCod)
         {
             InitializeComponent();
             this.cliCod = cliCod;
+            this.validator = new Commons.Validator();
+            this.seguridadTextBox.KeyPress += this.Number_KeyPress;
+            this.enabledButtons.RegisterTextBox(this.numeroTextBox);
+            this.enabledButtons.RegisterButton(this.createButton);
         }
 
         private void createButton_Click(object sender, EventArgs e){
@@ -61,6 +67,10 @@ namespace PagoElectronico.Tarjetas
             }
 
             this.Close();
+        }
+
+        private void Number_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
         }
     }
 }

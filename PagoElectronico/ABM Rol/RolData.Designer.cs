@@ -34,6 +34,7 @@
             this.comboEstado = new System.Windows.Forms.ComboBox();
             this.funcionalidadesListBox = new System.Windows.Forms.CheckedListBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.Salir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -86,11 +87,22 @@
             this.label3.TabIndex = 7;
             this.label3.Text = "Funcionalidades";
             // 
+            // Salir
+            // 
+            this.Salir.Location = new System.Drawing.Point(15, 238);
+            this.Salir.Name = "Salir";
+            this.Salir.Size = new System.Drawing.Size(75, 23);
+            this.Salir.TabIndex = 9;
+            this.Salir.Text = "Cancelar";
+            this.Salir.UseVisualStyleBackColor = true;
+            this.Salir.Click += new System.EventHandler(this.Salir_Click);
+            // 
             // RolData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(233, 273);
+            this.Controls.Add(this.Salir);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.funcionalidadesListBox);
             this.Controls.Add(this.comboEstado);
@@ -112,5 +124,6 @@
         public System.Windows.Forms.ComboBox comboEstado;
         public System.Windows.Forms.CheckedListBox funcionalidadesListBox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button Salir;
     }
 }
