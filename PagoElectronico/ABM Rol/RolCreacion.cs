@@ -23,8 +23,7 @@ namespace PagoElectronico.ABM_Rol
             DataTable funcionalidadesDelRol = new DataTable();
             funcionalidadesDelRol.Columns.Add("number", typeof(int));
 
-            foreach (int checkedIndex in funcionalidadesListBox.CheckedIndices)
-            {
+            foreach (int checkedIndex in funcionalidadesListBox.CheckedIndices){
                 funcionalidadesDelRol.Rows.Add(checkedIndex + 1);
             }
 

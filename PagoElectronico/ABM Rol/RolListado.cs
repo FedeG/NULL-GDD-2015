@@ -66,8 +66,31 @@ namespace PagoElectronico.ABM_Rol
             this.SearchRol();
         }
 
-        
+        private void RolListado_Load(object sender, EventArgs e)
+        {
+            this.editarRolButton.Enabled = false;
+            this.deshabilitarButton.Enabled = false;
+            this.rolTable.CellClick += this.ActivarAcciones;
+            this.rolTable.RowHeaderMouseClick += this.ActivarAcciones;
+        }
 
+        private void ActivarAcciones(object sender, EventArgs e)
+        {
+            if (!rolTable.SelectedRows[0].Cells["Rol_Nombre"].Value.ToString().Equals(""))
+            {
+                this.editarRolButton.Enabled = true;
+                this.deshabilitarButton.Enabled = true;
+                this.rolTable.SelectionChanged += this.DesactivarAcciones;
+            }
+            else this.DesactivarAcciones(sender, e);
+        }
+
+        private void DesactivarAcciones(object sender, EventArgs e)
+        {
+            this.editarRolButton.Enabled = false;
+            this.deshabilitarButton.Enabled = false;
+            rolTable.SelectionChanged -= this.DesactivarAcciones;
+        }
         
     }
 }

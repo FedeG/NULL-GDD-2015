@@ -51,12 +51,6 @@ namespace PagoElectronico.Login
             this.Close();
         }
 
-        public DbComunicator GetRoles(DbComunicator db,String username) {
-            db.EjecutarQuery("SELECT r.Rol_Nombre FROM [GD1C2015].[NULL].[Rol_Usuario] AS ru, [GD1C2015].[NULL].[Rol] AS r " + 
-                "WHERE ru.Usr_Username = '" + username + "' AND ru.Rol_Nombre = r.Rol_Nombre AND r.Rol_Estado = 'Habilitado'");
-            return db;
-        }
-
         private void button2_Click(object sender, EventArgs e){
             DbComunicator db1 = new DbComunicator();
             string username = InputUsername.Text;
@@ -64,10 +58,8 @@ namespace PagoElectronico.Login
             int resultado = this.LlamarProcedureLogin(username, password);
             switch (resultado){
                 case 0:
-                    FormSeleccionDeRol formRol = new FormSeleccionDeRol(this.GetRoles(db1, username));
+                    FormSeleccionDeRol formRol = new FormSeleccionDeRol(username);
                     formRol.ShowDialog();
-                    PagoElectronico.MenuPrincipal formMenu = new PagoElectronico.MenuPrincipal(formRol.rolSeleccionado, username);
-                    formMenu.ShowDialog();
                     break;
                 case 1: MessageBox.Show("Login Invalido!"); break;
                 case 2: MessageBox.Show("El usuario no existe"); break;

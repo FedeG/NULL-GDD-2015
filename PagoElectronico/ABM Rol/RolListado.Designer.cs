@@ -135,6 +135,7 @@
             this.Controls.Add(this.rolTable);
             this.Name = "RolListado";
             this.Text = "Listado roles";
+            this.Load += new System.EventHandler(this.RolListado_Load);
             ((System.ComponentModel.ISupportInitialize)(this.rolTable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
