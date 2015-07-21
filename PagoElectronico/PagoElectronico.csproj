@@ -138,6 +138,7 @@
     <Compile Include="ABM de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Commons\EnabledButtons.cs" />
     <Compile Include="Commons\Sha256Generator.cs" />
     <Compile Include="Commons\Validator.cs" />
     <Compile Include="Consulta Saldos\ConsultaForm.cs">

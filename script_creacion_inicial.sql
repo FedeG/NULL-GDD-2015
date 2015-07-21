@@ -133,6 +133,10 @@ IF OBJECT_ID('NULL.Transferencia', 'U') IS NOT NULL
   DROP TABLE "NULL".Transferencia
 GO
 
+IF OBJECT_ID('NULL.CuentaInhabilitadaLogeo', 'U') IS NOT NULL
+  DROP TABLE "NULL".CuentaInhabilitadaLogeo
+GO
+
 IF OBJECT_ID('NULL.Cuenta', 'U') IS NOT NULL
   DROP TABLE "NULL".Cuenta
 GO
@@ -273,6 +277,13 @@ CREATE TABLE "NULL".Cuenta
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cuenta_Borrado BIT NOT NULL  DEFAULT 0
+);
+
+CREATE TABLE "NULL".CuentaInhabilitadaLogeo
+(
+  Log_Cod NUMERIC(18,0) PRIMARY KEY IDENTITY(0,1),
+  Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
+  Inhabilitada_Fecha DATETIME NOT NULL
 );
 
 CREATE TABLE "NULL".Emisor
@@ -1145,9 +1156,14 @@ BEGIN
 	SET TipoCta_Nombre = @TipoCta_Nombre, Cuenta_Saldo = Cuenta_Saldo + @Importe
 	WHERE Cuenta_Numero = @Cuenta_Numero
 
-	/*INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe)
-	VALUES(12321, @Cuenta_Numero, , 1, )*/
-
+	DECLARE @Costo INT = (SELECT TOP 1 TipoCta_Costo_Apertura
+						  FROM [GD1C2015].[NULL].[TipoCuenta]
+						  WHERE TipoCta_Nombre = @TipoCta_Nombre)
+	
+	INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe)
+	SELECT Cli_Cod, Cuenta_Numero, Moneda_Nombre, 1, @Costo
+	FROM [GD1C2015].[NULL].[Cuenta] as cue
+	WHERE cue.Cuenta_Numero = @Cuenta_Numero
 END
 GO
 
@@ -1220,7 +1236,8 @@ IF OBJECT_ID (N'NULL.spDeshabilitarCuenta') IS NOT NULL
 GO
 
 CREATE PROCEDURE "NULL".spDeshabilitarCuenta
-	@Cuenta_Numero varchar(255)
+	@Cuenta_Numero varchar(255),
+	@Hoy DATETIME
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1228,6 +1245,9 @@ BEGIN
 	UPDATE [GD1C2015].[NULL].[Cuenta]
 	SET Cuenta_Estado = 'Inhabilitada'
 	WHERE Cuenta_Numero = @Cuenta_Numero
+
+	INSERT INTO "NULL".CuentaInhabilitadaLogeo(Cuenta_Numero, Inhabilitada_Fecha)
+	VALUES (@Cuenta_Numero, @Hoy)
 
 END
 GO
@@ -2230,6 +2250,42 @@ AS
   END
 GO
 
+IF EXISTS (
+  SELECT *
+    FROM INFORMATION_SCHEMA.ROUTINES
+   WHERE SPECIFIC_NAME = N'fnCantidadMovimientos'
+)
+   DROP FUNCTION "NULL".fnCantidadMovimientos
+GO
+
+CREATE FUNCTION "NULL".fnCantidadMovimientos(
+	@pais Numeric(18,0),
+	@year Numeric(18,0),
+	@mesi Numeric(18,0),
+	@mesf Numeric(18,0))
+	RETURNS INT
+AS
+	BEGIN
+		DECLARE @suma INT = 0
+		SET @suma = @suma + (SELECT COUNT(*)
+		FROM [GD1C2015].[NULL].[Retiro] AS re, [GD1C2015].[NULL].[Cuenta] AS cu
+		WHERE re.Cuenta_Numero=cu.Cuenta_Numero AND cu.Pais_Codigo=@Pais
+			AND YEAR(re.Retiro_Fecha) = @year AND MONTH(re.Retiro_Fecha) BETWEEN @mesi AND @mesf)
+
+		SET @suma = @suma + (SELECT COUNT(*)
+		FROM [GD1C2015].[NULL].[Deposito] AS de, [GD1C2015].[NULL].[Cuenta] AS cu
+		WHERE de.Cuenta_Numero=cu.Cuenta_Numero AND cu.Pais_Codigo=@Pais
+			AND YEAR(de.Deposito_Fecha) = @year AND MONTH(de.Deposito_Fecha) BETWEEN @mesi AND @mesf)
+
+		SET @suma = @suma + (SELECT COUNT(*)
+		FROM [GD1C2015].[NULL].[Transferencia] AS tra, [GD1C2015].[NULL].[Cuenta] AS cu, [GD1C2015].[NULL].[Cuenta] AS cud
+		WHERE tra.Cuenta_Origen_Numero=cu.Cuenta_Numero AND tra.Cuenta_Destino_Numero=cud.Cuenta_Numero AND (cu.Pais_Codigo=@Pais or cud.Pais_Codigo=@Pais
+			AND YEAR(tra.Transf_Fecha) = @year AND MONTH(tra.Transf_Fecha) BETWEEN @mesi AND @mesf))
+
+		RETURN @suma
+	END;
+GO
+
 SET IDENTITY_INSERT "NULL".Cuenta ON
 
 INSERT INTO "NULL".Cuenta(Cuenta_Numero, Cuenta_Estado, Cuenta_Fecha_Vencimiento, Cuenta_Fecha_Cierre,
@@ -2539,51 +2595,6 @@ BEGIN
 	UPDATE "NULL".Cuenta
 	SET Cuenta_Estado = 'Habilitada'
 	WHERE Cli_Cod = @Cli_Cod
-		
-END;
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spGenerarFacturaCuenta' 
-)
-   DROP PROCEDURE "NULL".spGenerarFacturaCuenta
-GO
-
-CREATE PROCEDURE "NULL".spGenerarFacturaCuenta 
-  @Usr_Username NVARCHAR(255),
-  @Hoy DATETIME,
-  @Cuenta_Numero NUMERIC(18,0)
-AS
-BEGIN
-	DECLARE @Cli_Cod NUMERIC(18,0)
-	DECLARE @Factura_Numero NUMERIC(18,0)
-	
-	SELECT @Cli_Cod = Cli_Cod FROM "NULL".Cliente as cli WHERE cli.Usr_Username = @Usr_Username
-	
-	INSERT INTO "NULL".Factura_Cabecera(Cli_Cod,Fact_Fecha,Fact_Tipo,Fact_Borrado, Moneda_Nombre)
-	VALUES (@Cli_Cod, CONVERT(DATETIME, @Hoy, 121), 'A', 0, 'Dólares Estadounidenses')
-	
-	SELECT @Factura_Numero = SCOPE_IDENTITY()
-	
-	INSERT INTO "NULL".Factura_Item(Transacc_Codigo,Fact_Numero,Fact_Tipo,F_Item_Cantidad,
-				F_Item_Desc,F_Item_Precio_Unitario,Moneda_Nombre, F_Item_Borrado)
-	SELECT Transacc_Codigo, @Factura_Numero, 'A', Transacc_Cantidad, Transacc_Detalle, Transacc_Importe, 'Dólares Estadounidenses', 0
-	FROM "NULL".Transaccion
-	WHERE Cli_Cod = @Cli_Cod AND Cuenta_Numero = @Cuenta_Numero AND Transacc_Facturada = 0
-	
-	UPDATE "NULL".Transaccion
-	SET Transacc_Facturada = 1
-	WHERE Cli_Cod = @Cli_Cod AND Cuenta_Numero = @Cuenta_Numero AND Transacc_Facturada = 0
-	
-	UPDATE "NULL".Factura_Cabecera
-	SET Fact_Total = (SELECT SUM(F_Item_Precio_Unitario*F_Item_Cantidad) FROM "NULL".Factura_Item WHERE Fact_Numero = @Factura_Numero)
-	WHERE Fact_Numero = @Factura_Numero
-	
-	UPDATE "NULL".Cuenta
-	SET Cuenta_Estado = 'Habilitada'
-	WHERE Cli_Cod = @Cli_Cod AND Cuenta_Numero = @Cuenta_Numero
 		
 END;
 GO

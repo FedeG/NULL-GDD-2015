@@ -28,52 +28,53 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.listadoTable = new System.Windows.Forms.DataGridView();
             this.listarButton = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbListado = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.cbTrimestre = new System.Windows.Forms.ComboBox();
+            this.tbAnio = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listadoTable)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // listadoTable
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(22, 83);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(366, 232);
-            this.dataGridView1.TabIndex = 0;
+            this.listadoTable.AllowUserToAddRows = false;
+            this.listadoTable.AllowUserToDeleteRows = false;
+            this.listadoTable.AllowUserToResizeColumns = false;
+            this.listadoTable.AllowUserToResizeRows = false;
+            this.listadoTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.listadoTable.Location = new System.Drawing.Point(22, 100);
+            this.listadoTable.Name = "listadoTable";
+            this.listadoTable.ReadOnly = true;
+            this.listadoTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.listadoTable.Size = new System.Drawing.Size(575, 221);
+            this.listadoTable.TabIndex = 0;
             // 
             // listarButton
             // 
-            this.listarButton.Location = new System.Drawing.Point(327, 336);
+            this.listarButton.Location = new System.Drawing.Point(522, 336);
             this.listarButton.Name = "listarButton";
             this.listarButton.Size = new System.Drawing.Size(75, 23);
             this.listarButton.TabIndex = 1;
             this.listarButton.Text = "Listar";
             this.listarButton.UseVisualStyleBackColor = true;
+            this.listarButton.Click += new System.EventHandler(this.listarButton_Click);
             // 
-            // comboBox1
+            // cbListado
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Clientes Inhabilitados",
-            "Comisiones Facturadas",
-            "Transacciones Realizadas",
-            "Paises",
-            "Total Facturado"});
-            this.comboBox1.Location = new System.Drawing.Point(267, 42);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 2;
+            this.cbListado.FormattingEnabled = true;
+            this.cbListado.Location = new System.Drawing.Point(25, 61);
+            this.cbListado.Name = "cbListado";
+            this.cbListado.Size = new System.Drawing.Size(572, 21);
+            this.cbListado.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 18);
+            this.label1.Location = new System.Drawing.Point(22, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(50, 13);
             this.label1.TabIndex = 3;
@@ -82,36 +83,33 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(22, 46);
+            this.label2.Location = new System.Drawing.Point(235, 15);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(26, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Año";
             // 
-            // comboBox2
+            // cbTrimestre
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "1er",
-            "2do",
-            "3er",
-            "4to"});
-            this.comboBox2.Location = new System.Drawing.Point(87, 15);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 21);
-            this.comboBox2.TabIndex = 5;
+            this.cbTrimestre.FormattingEnabled = true;
+            this.cbTrimestre.Location = new System.Drawing.Point(78, 12);
+            this.cbTrimestre.Name = "cbTrimestre";
+            this.cbTrimestre.Size = new System.Drawing.Size(135, 21);
+            this.cbTrimestre.TabIndex = 5;
             // 
-            // textBox1
+            // tbAnio
             // 
-            this.textBox1.Location = new System.Drawing.Point(87, 43);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(121, 20);
-            this.textBox1.TabIndex = 6;
+            this.tbAnio.Location = new System.Drawing.Point(267, 12);
+            this.tbAnio.MaxLength = 4;
+            this.tbAnio.Name = "tbAnio";
+            this.tbAnio.Size = new System.Drawing.Size(121, 20);
+            this.tbAnio.TabIndex = 6;
+            this.tbAnio.KeyPress += this.InputNumField_KeyPress;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(275, 18);
+            this.label3.Location = new System.Drawing.Point(22, 45);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 13);
             this.label3.TabIndex = 7;
@@ -121,18 +119,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(414, 371);
+            this.ClientSize = new System.Drawing.Size(609, 371);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.tbAnio);
+            this.Controls.Add(this.cbTrimestre);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cbListado);
             this.Controls.Add(this.listarButton);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.listadoTable);
             this.Name = "ListadosForm";
             this.Text = "Listados Estadisticos";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listadoTable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -140,13 +138,13 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView listadoTable;
         private System.Windows.Forms.Button listarButton;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbListado;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ComboBox cbTrimestre;
+        private System.Windows.Forms.TextBox tbAnio;
         private System.Windows.Forms.Label label3;
     }
 }
