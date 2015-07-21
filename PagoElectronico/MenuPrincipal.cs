@@ -70,6 +70,10 @@ namespace PagoElectronico
         }
 
         private void Abrir_Click(object sender, EventArgs e){
+            if (this.Funcionalidades.SelectedValue.ToString() == "No hay elementos para listar"){
+                MessageBox.Show("No tiene ninguna funcionalidad habilitada para ese rol seleccionado, contactese con un administrador");
+                return;
+            }
             this.SearchForm(Convert.ToInt16(Funcionalidades.SelectedValue)).ShowDialog();
         }
     }
