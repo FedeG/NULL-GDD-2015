@@ -762,6 +762,29 @@ CREATE TYPE "NULL".ListaNumeric AS Table (
 );
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarCreacionRol' 
+)
+   DROP FUNCTION "NULL".fnValidarCreacionRol
+GO
+
+CREATE FUNCTION "NULL".fnValidarCreacionRol(
+	@Rol_Nombre NVARCHAR(255) 
+	)
+	RETURNS INT
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Rol] WHERE Rol_Nombre = @Rol_Nombre ) = 1
+	BEGIN
+		RETURN(1)
+	END
+	
+	RETURN(0)
+END
+GO
+
 CREATE PROCEDURE "NULL".spCrearRol
 	@Rol_Nombre varchar(255),
 	@Rol_Estado varchar(255),
@@ -770,11 +793,18 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	
+	DECLARE @Validacion INT = "NULL".fnValidarCreacionRol(@Rol_Nombre)
+	
+	IF(@Validacion = 1)
+	BEGIN
 	INSERT INTO [GD1C2015].[NULL].[Rol](Rol_Nombre, Rol_Estado)
 	VALUES (@Rol_Nombre, @Rol_Estado)
 	
 	INSERT INTO [GD1C2015].[NULL].[Rol_Funcionalidad](Rol_Nombre, Func_Cod)
 	SELECT @Rol_Nombre, number FROM @Lista_Funcionalidades
+	END
+	
+	RETURN @Validacion
 END
 GO
 

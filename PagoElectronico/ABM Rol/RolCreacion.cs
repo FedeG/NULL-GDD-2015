@@ -28,10 +28,18 @@ namespace PagoElectronico.ABM_Rol
             }
 
             SqlCommand spCrearRol = this.db.GetStoreProcedure("NULL.spCrearRol");
+            SqlParameter returnParameter = spCrearRol.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
             spCrearRol.Parameters.Add(new SqlParameter("@Rol_Nombre", rolNameBox.Text));
             spCrearRol.Parameters.Add(new SqlParameter("@Rol_Estado", comboEstado.SelectedItem.ToString()));
             spCrearRol.Parameters.Add(new SqlParameter("@Lista_Funcionalidades", funcionalidadesDelRol));
             spCrearRol.ExecuteNonQuery();
+
+            switch ((int)returnParameter.Value)
+            {
+                case 0: MessageBox.Show("Rol creado con exito."); this.Close(); break;
+                case 1: MessageBox.Show("Ya existe un rol con el mismo nombre."); break;
+            }
 
             this.Close();
         }
