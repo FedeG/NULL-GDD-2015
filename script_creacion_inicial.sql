@@ -1156,9 +1156,14 @@ BEGIN
 	SET TipoCta_Nombre = @TipoCta_Nombre, Cuenta_Saldo = Cuenta_Saldo + @Importe
 	WHERE Cuenta_Numero = @Cuenta_Numero
 
-	/*INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe)
-	VALUES(12321, @Cuenta_Numero, , 1, )*/
-
+	DECLARE @Costo INT = (SELECT TOP 1 TipoCta_Costo_Apertura
+						  FROM [GD1C2015].[NULL].[TipoCuenta]
+						  WHERE TipoCta_Nombre = @TipoCta_Nombre)
+	
+	INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe)
+	SELECT Cli_Cod, Cuenta_Numero, Moneda_Nombre, 1, @Costo
+	FROM [GD1C2015].[NULL].[Cuenta] as cue
+	WHERE cue.Cuenta_Numero = @Cuenta_Numero
 END
 GO
 
@@ -2560,7 +2565,6 @@ GO
 CREATE PROCEDURE "NULL".spGenerarFactura 
   @Usr_Username NVARCHAR(255),
   @Hoy DATETIME
-  
 AS
 BEGIN
 	DECLARE @Cli_Cod NUMERIC(18,0)

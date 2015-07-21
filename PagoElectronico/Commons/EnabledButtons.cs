@@ -7,7 +7,6 @@ using System.Windows.Forms;
 namespace PagoElectronico.Commons{
 
     class EnabledButtons{
-        public event Action ValidationDone;
         private List<TextBox> texts = new List<TextBox>();
         private List<Button> buttons = new List<Button>();
         
