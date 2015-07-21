@@ -131,6 +131,7 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void button1_Click(object sender, EventArgs e){
+            this.ClienteUsername.Text = "";
             this.SearchClientePorUsername();
         }
 

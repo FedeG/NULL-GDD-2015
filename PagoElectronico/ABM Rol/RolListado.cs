@@ -40,7 +40,9 @@ namespace PagoElectronico.ABM_Rol
 
         private void createRolButton_Click(object sender, EventArgs e)
         {
-            new RolCreacion().Show();
+            new RolCreacion().ShowDialog();
+            this.rolName.Text = "";
+            this.SearchRol();
         }
 
         private void editarRolButton_Click(object sender, EventArgs e)
@@ -60,6 +62,7 @@ namespace PagoElectronico.ABM_Rol
 
         private void button1_Click(object sender, EventArgs e)
         {
+            this.rolName.Text = "";
             this.SearchRol();
         }
 
