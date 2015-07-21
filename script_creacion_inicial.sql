@@ -368,6 +368,7 @@ CREATE TABLE "NULL".Transaccion
   Transacc_Facturada BIT NOT NULL DEFAULT 0,
   Transacc_Detalle NVARCHAR(255) NOT NULL,
   Transacc_Transf_Codigo NUMERIC(18,0) REFERENCES "NULL".Transferencia(Transf_Codigo),
+  Transacc_Fecha DATETIME NOT NULL,
   Moneda_Nombre NVARCHAR(255) NOT NULL REFERENCES "NULL".Moneda(Moneda_Nombre),
   Cli_Cod NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cliente(Cli_Cod),
   Cuenta_Numero NUMERIC(18,0) NOT NULL REFERENCES "NULL".Cuenta(Cuenta_Numero),
@@ -1100,7 +1101,7 @@ BEGIN
 	DECLARE @Fecha_Vencimiento DATETIME = (SELECT TOP 1 Cuenta_Fecha_Vencimiento 
 	FROM [GD1C2015].[NULL].[Cuenta] 
 	WHERE Cuenta_Numero = @Cuenta_Numero) 
-	RETURN(@Importe *  DATEDIFF(DAY, @Fecha_Vencimiento, @Hoy))
+	RETURN(@Importe *  DATEDIFF(DAY, @Hoy, @Fecha_Vencimiento))
 END
 GO
 
@@ -1150,7 +1151,7 @@ BEGIN
 	FROM [GD1C2015].[NULL].[Cuenta] 
 	WHERE Cuenta_Numero = @Cuenta_Numero) 
 	
-	SET @Importe = (@Importe *  DATEDIFF(DAY, @Fecha_Vencimiento, @Hoy))
+	SET @Importe = (@Importe *  DATEDIFF(DAY, @Hoy, @Fecha_Vencimiento))
 	
 	UPDATE [GD1C2015].[NULL].[Cuenta]
 	SET TipoCta_Nombre = @TipoCta_Nombre, Cuenta_Saldo = Cuenta_Saldo + @Importe
@@ -1160,8 +1161,8 @@ BEGIN
 						  FROM [GD1C2015].[NULL].[TipoCuenta]
 						  WHERE TipoCta_Nombre = @TipoCta_Nombre)
 	
-	INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe)
-	SELECT Cli_Cod, Cuenta_Numero, Moneda_Nombre, 1, @Costo
+	INSERT INTO [GD1C2015].[NULL].[Transaccion](Cli_Cod, Cuenta_Numero, Moneda_Nombre, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Transacc_Fecha)
+	SELECT Cli_Cod, Cuenta_Numero, Moneda_Nombre, 1, @Costo, 'Cambio de tipo de cuenta', @Hoy
 	FROM [GD1C2015].[NULL].[Cuenta] as cue
 	WHERE cue.Cuenta_Numero = @Cuenta_Numero
 END
@@ -1219,7 +1220,7 @@ IF OBJECT_ID (N'NULL.spHabilitarCuenta') IS NOT NULL
 GO
 
 CREATE PROCEDURE "NULL".spHabilitarCuenta
-	@Cuenta_Numero varchar(255)
+	@Cuenta_Numero NUMERIC(18,0)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1236,7 +1237,7 @@ IF OBJECT_ID (N'NULL.spDeshabilitarCuenta') IS NOT NULL
 GO
 
 CREATE PROCEDURE "NULL".spDeshabilitarCuenta
-	@Cuenta_Numero varchar(255),
+	@Cuenta_Numero NUMERIC(18,1),
 	@Hoy DATETIME
 AS
 BEGIN
@@ -1257,7 +1258,7 @@ IF OBJECT_ID (N'NULL.spDarDeBajaCuenta') IS NOT NULL
 GO
 
 CREATE PROCEDURE "NULL".spDarDeBajaCuenta
-	@Cuenta_Numero varchar(255)
+	@Cuenta_Numero NUMERIC(18,0)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1301,7 +1302,8 @@ GO
 CREATE PROCEDURE "NULL".spAgregarSuscripcion
   @Cuenta_Numero Numeric(18,0),
   @TipoCta_Nombre NVARCHAR(255),
-  @Cantidad INT		
+  @Cantidad INT,
+  @Fecha_Transaccion DATETIME	
 AS
 BEGIN
 	DECLARE @Cantidad_Dias INT = (SELECT TOP 1 TipoCta_Duracion FROM "NULL".[TipoCuenta] WHERE TipoCta_Nombre = @TipoCta_Nombre) *  @Cantidad
@@ -1313,8 +1315,8 @@ BEGIN
 	SET Cuenta_Fecha_Vencimiento = DATEADD(DAY, @Cantidad_Dias, Cuenta_Fecha_Vencimiento), TipoCta_Nombre = @TipoCta_Nombre
 	WHERE Cuenta_Numero = @Cuenta_Numero
 	
-	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe, Cuenta_Numero)
-	VALUES(@Cli_Cod , @Moneda_Nombre, @Cantidad, 'Suscripcion de tipo de cuenta.', @Importe, @Cuenta_Numero)
+	INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Importe, Cuenta_Numero, Transacc_Fecha)
+	VALUES(@Cli_Cod , @Moneda_Nombre, @Cantidad, 'Suscripcion de tipo de cuenta.', @Importe, @Cuenta_Numero, @Fecha_Transaccion)
 END
 GO
 
@@ -2509,8 +2511,8 @@ BEGIN
 		
 		SELECT @InsertedTransferencia = SCOPE_IDENTITY()
 
-		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado, Transacc_Transf_Codigo, Cuenta_Numero) VALUES
-			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0, @InsertedTransferencia, @Cuenta_Numero);
+		INSERT INTO "NULL".Transaccion(Cli_Cod, Moneda_Nombre, Transacc_Cantidad, Transacc_Detalle, Transacc_Facturada, Transacc_Importe, Transacc_Borrado, Transacc_Transf_Codigo, Cuenta_Numero, Transacc_Fecha) VALUES
+			(@Cli_Cod, 'Dólares Estadounidenses', 1, @Descripcion, 1, @Importe, 0, @InsertedTransferencia, @Cuenta_Numero, @Transf_Fecha);
 		
 		SELECT @InsertedTransaccion = SCOPE_IDENTITY()
 		
@@ -2528,6 +2530,14 @@ GO
 EXEC [NULL].[spMigrarFacturas]
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trGenerarTransaccionCreacionCuenta' 
+)
+   DROP TRIGGER "NULL".trGenerarTransaccionCreacionCuenta
+GO
+
 CREATE TRIGGER "NULL".trGenerarTransaccionCreacionCuenta ON "NULL".Cuenta AFTER INSERT
 AS
 BEGIN
@@ -2535,24 +2545,63 @@ BEGIN
 	FROM [GD1C2015].[NULL].[TipoCuenta] as tc, inserted as cta
 	WHERE tc.TipoCta_Nombre = cta.TipoCta_Nombre)
 
-	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero)
-	SELECT cta.Cli_Cod, cta.Moneda_Nombre, 1, 'Apertura de Cuenta.',0, @Importe, 0, cta.Cuenta_Numero
+	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero, Transacc_Fecha)
+	SELECT cta.Cli_Cod, cta.Moneda_Nombre, 1, 'Apertura de Cuenta.',0, @Importe, 0, cta.Cuenta_Numero, cta.Cuenta_Fecha_Creacion
 	FROM inserted as cta
 END
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trGenerarTransaccionTransferencia' 
+)
+   DROP TRIGGER "NULL".trGenerarTransaccionTransferencia
 GO
 
 CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia AFTER INSERT
 AS
 BEGIN
 	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
-				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero)
+				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero, Transacc_Fecha)
 	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.', i.Transf_Codigo,
-			0, i.Transf_Costo, 0, i.Cuenta_Origen_Numero
+			0, i.Transf_Costo, 0, i.Cuenta_Origen_Numero, i.Transf_Fecha
 	FROM inserted as i, "NULL".Cuenta as cta
 	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
 END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'trDeshabilitado' 
+)
+   DROP TRIGGER "NULL".trDeshabilitado
+GO
+
+CREATE TRIGGER "NULL".trDeshabilitado ON "NULL".Transaccion AFTER INSERT
+AS
+BEGIN
+	DECLARE @Cuenta_Numero NUMERIC(18,1) = (SELECT TOP 1 Cuenta_Numero from inserted)
+	DECLARE @Fecha_Deshabilitacion DATETIME = (SELECT TOP 1 Transacc_Fecha from inserted)
+	DECLARE @Cantidad_Transacciones INT = (SELECT COUNT(*) 
+										   FROM [GD1C2015].[NULL].[Transaccion] 
+										   WHERE Cuenta_Numero = @Cuenta_Numero AND Transacc_Facturada = 0)
+	
+	
+	IF(@Cantidad_Transacciones >= 5 )
+	BEGIN
+		
+		UPDATE [GD1C2015].[NULL].[Cuenta]
+		SET Cuenta_Estado = 'Inhabilitada'
+		WHERE Cuenta_Numero = @Cuenta_Numero
+
+		INSERT INTO "NULL".CuentaInhabilitadaLogeo(Cuenta_Numero, Inhabilitada_Fecha)
+		VALUES (@Cuenta_Numero, @Fecha_Deshabilitacion)
+	END
+	
+END
+GO
 
 IF EXISTS (
   SELECT * 
