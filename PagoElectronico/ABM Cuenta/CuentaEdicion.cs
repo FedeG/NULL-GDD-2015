@@ -17,6 +17,7 @@ namespace PagoElectronico.ABM_Cuenta
         public CuentaEdicion(DataGridViewRow selected){
             InitializeComponent();
             this.db = new DbComunicator();
+            this.InputTipoCuenta.Enabled = false;
             this.LoadCuentaData(selected);
         }
 
