@@ -35,13 +35,10 @@ namespace PagoElectronico.ABM_Rol
             spCrearRol.Parameters.Add(new SqlParameter("@Lista_Funcionalidades", funcionalidadesDelRol));
             spCrearRol.ExecuteNonQuery();
 
-            switch ((int)returnParameter.Value)
-            {
+            switch ((int)returnParameter.Value){
                 case 0: MessageBox.Show("Rol creado con exito."); this.Close(); break;
                 case 1: MessageBox.Show("Ya existe un rol con el mismo nombre."); break;
             }
-
-            this.Close();
         }
 
     }
