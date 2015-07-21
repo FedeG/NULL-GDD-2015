@@ -36,7 +36,6 @@ namespace PagoElectronico.Listados
             querylistado = querylistado.Replace("@year", anio.ToString())
                 .Replace("@mesi", trimestre.ToString())
                 .Replace("@mesf", (trimestre+2).ToString());
-            MessageBox.Show(querylistado);
             this.listadoTable.DataSource = db.GetDataAdapter(querylistado).Tables[0];
         }
 
