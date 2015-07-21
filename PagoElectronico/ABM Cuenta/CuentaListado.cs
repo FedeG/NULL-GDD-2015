@@ -16,6 +16,7 @@ namespace PagoElectronico.ABM_Cuenta
         DbComunicator db;
         Commons.Validator validator;
         string username, cliCod;
+        Commons.EnabledButtons enabledButtons, enabledButtons2;
         Boolean is_admin;
 
         public CuentaListado(){
@@ -23,6 +24,12 @@ namespace PagoElectronico.ABM_Cuenta
             this.db = new DbComunicator();
             this.validator = new Commons.Validator();
             this.is_admin = true;
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons2 = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.ClienteUsername);
+            this.enabledButtons.RegisterButton(this.searchUsernameButton);
+            this.enabledButtons2.RegisterTextBox(this.DocCliente);
+            this.enabledButtons2.RegisterButton(this.searchDocumentoButton);
         }
 
         public CuentaListado(string username){
@@ -206,6 +213,10 @@ namespace PagoElectronico.ABM_Cuenta
                 }
             }
             else MessageBox.Show("Su cuenta no se puede cerrar porque hay deudas pendientes");
+            this.SearchCuentaPorUsername();
+        }
+
+        private void button1_Click(object sender, EventArgs e){
             this.SearchCuentaPorUsername();
         }
 

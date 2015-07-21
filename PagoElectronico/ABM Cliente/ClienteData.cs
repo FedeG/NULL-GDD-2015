@@ -15,12 +15,14 @@ namespace PagoElectronico.ABM_Cliente
     {
         public DbComunicator db;
         public Commons.Validator validator;
+        public Commons.EnabledButtons enabledButtons;
         public Dictionary<object, object> TipoDocs, NacionalidadesDict;
 
         public ClienteData(){
             InitializeComponent();
             this.db = new DbComunicator();
             this.validator = new Commons.Validator();
+            this.loadEnabledButtons();
             this.Nacionalidades_Load();
             this.Tipo_Docs_Load();
         }
@@ -34,6 +36,23 @@ namespace PagoElectronico.ABM_Cliente
             this.db.CerrarConexion();
         }
 
+        public void loadEnabledButtons(){
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.InputApellido);
+            this.enabledButtons.RegisterTextBox(this.InputCalle);
+            this.enabledButtons.RegisterTextBox(this.InputDepto);
+            this.enabledButtons.RegisterTextBox(this.InputLocalidad);
+            this.enabledButtons.RegisterTextBox(this.InputMail);
+            this.enabledButtons.RegisterTextBox(this.InputNombre);
+            this.enabledButtons.RegisterTextBox(this.InputNumDoc);
+            this.enabledButtons.RegisterTextBox(this.InputNumDomicilio);
+            this.enabledButtons.RegisterTextBox(this.InputPassword);
+            this.enabledButtons.RegisterTextBox(this.InputPiso);
+            this.enabledButtons.RegisterTextBox(this.InputPregunta);
+            this.enabledButtons.RegisterTextBox(this.InputRespuestaSecreta);
+            this.enabledButtons.RegisterTextBox(this.InputUsername);
+        }
+
         private void Tipo_Docs_Load(){
             this.db.ConectarConDB();
             this.TipoDocs = db.GetQueryDictionary("SELECT TipoDoc_Cod, TipoDoc_Desc FROM GD1C2015.[NULL].TipoDoc WHERE TipoDoc_Borrado=0", "TipoDoc_Cod", "TipoDoc_Desc");
@@ -43,13 +62,17 @@ namespace PagoElectronico.ABM_Cliente
             this.db.CerrarConexion();
         }
 
-        public void ExecStoredProcedure(string sp_name){
+        public void ExecStoredProcedure(string sp_name, Boolean hashed){
             SqlCommand sp = this.db.GetStoreProcedure(sp_name);
             sp.Parameters.Add(new SqlParameter("@Usr_Username", InputUsername.Text));
-            string password = new Sha256Generator().GetHashString(InputPassword.Text);
+            string password = this.InputPassword.Text;
+            if (!hashed)
+               password = new Sha256Generator().GetHashString(InputPassword.Text);
             sp.Parameters.Add(new SqlParameter("@Usr_Password", password));
             sp.Parameters.Add(new SqlParameter("@Usr_Pregunta_Secreta", InputPregunta.Text));
-            string respuesta_secreta = new Sha256Generator().GetHashString(InputRespuestaSecreta.Text);
+            string respuesta_secreta = this.InputRespuestaSecreta.Text;
+            if (!hashed)
+                respuesta_secreta = new Sha256Generator().GetHashString(InputRespuestaSecreta.Text);
             sp.Parameters.Add(new SqlParameter("@Usr_Respuesta_Secreta", respuesta_secreta));
             sp.Parameters.Add(new SqlParameter("@Cli_Nombre", InputNombre.Text));
             sp.Parameters.Add(new SqlParameter("@Cli_Apellido", InputApellido.Text));

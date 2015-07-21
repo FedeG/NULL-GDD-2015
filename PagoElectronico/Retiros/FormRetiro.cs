@@ -13,9 +13,14 @@ namespace PagoElectronico.Retiros
     public partial class FormRetiro : Form
     {
         string username = "";
+        Commons.EnabledButtons enabledButtons;
         public FormRetiro(string username)
         {
             InitializeComponent();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.nroDocTextBox);
+            this.enabledButtons.RegisterTextBox(this.importeTextBox);
+            this.enabledButtons.RegisterButton(this.realizarButton);
             this.username = username;
 
             DbComunicator db = new DbComunicator();
@@ -80,6 +85,11 @@ namespace PagoElectronico.Retiros
                 case 3: MessageBox.Show("l saldo disponible es insuficiente para realizar el retiro."); break;
                 case 4: MessageBox.Show("La cuenta no se encuentra Habilitada."); break;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
     }

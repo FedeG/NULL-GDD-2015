@@ -34,6 +34,7 @@
             this.BorrarButton = new System.Windows.Forms.Button();
             this.HabilitarButton = new System.Windows.Forms.Button();
             this.Acciones = new System.Windows.Forms.GroupBox();
+            this.CerrarButton = new System.Windows.Forms.Button();
             this.btnSuscripcion = new System.Windows.Forms.Button();
             this.cambiarTipo = new System.Windows.Forms.Button();
             this.DeshabilitarButton = new System.Windows.Forms.Button();
@@ -47,7 +48,7 @@
             this.ClienteUsername = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.searchUsernameButton = new System.Windows.Forms.Button();
-            this.CerrarButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.cuentaTable)).BeginInit();
             this.Acciones.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -127,6 +128,17 @@
             this.Acciones.TabIndex = 10;
             this.Acciones.TabStop = false;
             this.Acciones.Text = "Acciones";
+            // 
+            // CerrarButton
+            // 
+            this.CerrarButton.Location = new System.Drawing.Point(196, 19);
+            this.CerrarButton.Name = "CerrarButton";
+            this.CerrarButton.Size = new System.Drawing.Size(156, 23);
+            this.CerrarButton.TabIndex = 15;
+            this.CerrarButton.Text = "Cerrar Cuenta";
+            this.CerrarButton.UseVisualStyleBackColor = true;
+            this.CerrarButton.Visible = false;
+            this.CerrarButton.Click += new System.EventHandler(this.CerrarButton_Click);
             // 
             // btnSuscripcion
             // 
@@ -236,6 +248,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.ClienteUsername);
             this.groupBox1.Controls.Add(this.searchUsernameButton);
@@ -256,16 +269,15 @@
             this.searchUsernameButton.UseVisualStyleBackColor = true;
             this.searchUsernameButton.Click += new System.EventHandler(this.searchUsernameButton_Click);
             // 
-            // CerrarButton
+            // button1
             // 
-            this.CerrarButton.Location = new System.Drawing.Point(196, 19);
-            this.CerrarButton.Name = "CerrarButton";
-            this.CerrarButton.Size = new System.Drawing.Size(156, 23);
-            this.CerrarButton.TabIndex = 15;
-            this.CerrarButton.Text = "Cerrar Cuenta";
-            this.CerrarButton.UseVisualStyleBackColor = true;
-            this.CerrarButton.Visible = false;
-            this.CerrarButton.Click += new System.EventHandler(this.CerrarButton_Click);
+            this.button1.Location = new System.Drawing.Point(9, 61);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(138, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Mostrar Todos";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CuentaListado
             // 
@@ -312,5 +324,6 @@
         private System.Windows.Forms.Button searchUsernameButton;
         private System.Windows.Forms.Button btnSuscripcion;
         private System.Windows.Forms.Button CerrarButton;
+        private System.Windows.Forms.Button button1;
     }
 }

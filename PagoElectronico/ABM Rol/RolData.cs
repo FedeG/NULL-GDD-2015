@@ -13,10 +13,13 @@ namespace PagoElectronico.ABM_Rol
     {
         
         public DbComunicator db;
-        
+        public Commons.EnabledButtons enabledButtons;
+
         public RolData()
         {
             InitializeComponent();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.rolNameBox);
             comboEstado.Items.Add("Habilitado");
             comboEstado.Items.Add("Deshabilitado");
 
@@ -29,6 +32,10 @@ namespace PagoElectronico.ABM_Rol
                 int cod = Convert.ToInt16(this.db.getLector()["Func_Cod"].ToString()) - 1;
                 funcionalidadesListBox.Items.Insert(cod, this.db.getLector()["Func_Nombre"]);
             }
+        }
+
+        private void Salir_Click(object sender, EventArgs e){
+            this.Close();
         }
     }
 }

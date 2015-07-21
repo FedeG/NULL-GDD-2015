@@ -36,6 +36,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.seguridadTextBox = new System.Windows.Forms.TextBox();
+            this.cancelar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -104,11 +105,22 @@
             this.seguridadTextBox.Size = new System.Drawing.Size(197, 20);
             this.seguridadTextBox.TabIndex = 9;
             // 
+            // cancelar
+            // 
+            this.cancelar.Location = new System.Drawing.Point(16, 172);
+            this.cancelar.Name = "cancelar";
+            this.cancelar.Size = new System.Drawing.Size(87, 31);
+            this.cancelar.TabIndex = 10;
+            this.cancelar.Text = "Cancelar";
+            this.cancelar.UseVisualStyleBackColor = true;
+            this.cancelar.Click += new System.EventHandler(this.cancelar_Click);
+            // 
             // TarjetaData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(340, 215);
+            this.Controls.Add(this.cancelar);
             this.Controls.Add(this.seguridadTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -134,5 +146,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.TextBox seguridadTextBox;
+        private System.Windows.Forms.Button cancelar;
     }
 }

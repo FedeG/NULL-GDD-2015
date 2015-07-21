@@ -41,6 +41,7 @@
             this.bancoComboBox = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.comboMoneda = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cuentaComboBox
@@ -153,11 +154,22 @@
             this.comboMoneda.Size = new System.Drawing.Size(134, 21);
             this.comboMoneda.TabIndex = 12;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(21, 279);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "Cancelar";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // FormRetiro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(304, 314);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.comboMoneda);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.bancoComboBox);
@@ -193,5 +205,6 @@
         private System.Windows.Forms.ComboBox bancoComboBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboMoneda;
+        private System.Windows.Forms.Button button1;
     }
 }

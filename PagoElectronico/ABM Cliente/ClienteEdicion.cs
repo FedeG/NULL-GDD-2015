@@ -19,6 +19,7 @@ namespace PagoElectronico.ABM_Cliente
             InitializeComponent();
             this.db = new DbComunicator();
             this.username = selected.Cells["Usr_Username"].Value.ToString();
+            this.enabledButtons.RegisterButton(this.button1);
             this.LoadUserData();
             this.LoadClientData(selected);
         }
@@ -44,9 +45,11 @@ namespace PagoElectronico.ABM_Cliente
         private void LoadUserData(){
             InputUsername.Text = this.username;
             InputUsername.Enabled = false;
-            db.EjecutarQuery("SELECT Usr_Pregunta_Secreta FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = '" + username + "'");
+            db.EjecutarQuery("SELECT Usr_Password, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = '" + username + "'");
             while (db.getLector().Read()){
                 InputPregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
+                InputPassword.Text = db.getLector()["Usr_Password"].ToString();
+                InputRespuestaSecreta.Text = db.getLector()["Usr_Respuesta_Secreta"].ToString();
             }
         }
 
@@ -55,7 +58,7 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void button1_Click(object sender, EventArgs e){
-            this.ExecStoredProcedure("NULL.spEditarCliente");
+            this.ExecStoredProcedure("NULL.spEditarCliente", true);
             this.Close();
         }
 

@@ -15,6 +15,7 @@ namespace PagoElectronico.ABM_Rol
         public RolCreacion()
         {
             InitializeComponent();
+            this.enabledButtons.RegisterButton(this.button1);
         }
 
         private void button1_Click(object sender, EventArgs e)

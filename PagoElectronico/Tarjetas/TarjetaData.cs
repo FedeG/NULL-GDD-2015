@@ -13,6 +13,8 @@ namespace PagoElectronico.Tarjetas
 {
     public partial class TarjetaData : Form
     {
+        public Commons.EnabledButtons enabledButtons;
+
         public TarjetaData()
         {
             InitializeComponent();
@@ -22,6 +24,8 @@ namespace PagoElectronico.Tarjetas
             emisorComboBox.DisplayMember = "Key";
             emisorComboBox.ValueMember = "Value";
             db.CerrarConexion();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.seguridadTextBox);
         }
 
         public SqlCommand setCommand(string command, int cliCod, string shaNumero, string numeroVisible, string shaCod) {
@@ -46,6 +50,11 @@ namespace PagoElectronico.Tarjetas
             insertCmd.Parameters["@Vencimiento"].Value = vencimientoTimePicker.Value;
 
             return insertCmd;
+        }
+
+        private void cancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
