@@ -2565,6 +2565,7 @@ GO
 CREATE PROCEDURE "NULL".spGenerarFactura 
   @Usr_Username NVARCHAR(255),
   @Hoy DATETIME
+  
 AS
 BEGIN
 	DECLARE @Cli_Cod NUMERIC(18,0)
