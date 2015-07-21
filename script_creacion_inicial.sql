@@ -776,7 +776,7 @@ CREATE FUNCTION "NULL".fnValidarCreacionRol(
 	RETURNS INT
 AS
 BEGIN
-	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Rol] WHERE Rol_Nombre = @Rol_Nombre ) = 1
+	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Rol] WHERE Rol_Nombre = @Rol_Nombre ) >= 1
 	BEGIN
 		RETURN(1)
 	END
@@ -795,7 +795,7 @@ BEGIN
 	
 	DECLARE @Validacion INT = "NULL".fnValidarCreacionRol(@Rol_Nombre)
 	
-	IF(@Validacion = 1)
+	IF(@Validacion = 0)
 	BEGIN
 	INSERT INTO [GD1C2015].[NULL].[Rol](Rol_Nombre, Rol_Estado)
 	VALUES (@Rol_Nombre, @Rol_Estado)
