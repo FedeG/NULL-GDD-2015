@@ -2333,30 +2333,33 @@ IF EXISTS (
 GO
 
 CREATE FUNCTION "NULL".fnCantidadMovimientos(
-	@pais Numeric(18,0),
 	@year Numeric(18,0),
 	@mesi Numeric(18,0),
 	@mesf Numeric(18,0))
-	RETURNS INT
+	RETURNS @listado TABLE (
+		Pais_Codigo NUMERIC(18,0),
+		Total_Movimientos INT
+	)
 AS
 	BEGIN
-		DECLARE @suma INT = 0
-		SET @suma = @suma + (SELECT COUNT(*)
-		FROM [GD1C2015].[NULL].[Retiro] AS re, [GD1C2015].[NULL].[Cuenta] AS cu
-		WHERE re.Cuenta_Numero=cu.Cuenta_Numero AND cu.Pais_Codigo=@Pais
-			AND YEAR(re.Retiro_Fecha) = @year AND MONTH(re.Retiro_Fecha) BETWEEN @mesi AND @mesf)
-
-		SET @suma = @suma + (SELECT COUNT(*)
-		FROM [GD1C2015].[NULL].[Deposito] AS de, [GD1C2015].[NULL].[Cuenta] AS cu
-		WHERE de.Cuenta_Numero=cu.Cuenta_Numero AND cu.Pais_Codigo=@Pais
-			AND YEAR(de.Deposito_Fecha) = @year AND MONTH(de.Deposito_Fecha) BETWEEN @mesi AND @mesf)
-
-		SET @suma = @suma + (SELECT COUNT(*)
-		FROM [GD1C2015].[NULL].[Transferencia] AS tra, [GD1C2015].[NULL].[Cuenta] AS cu, [GD1C2015].[NULL].[Cuenta] AS cud
-		WHERE tra.Cuenta_Origen_Numero=cu.Cuenta_Numero AND tra.Cuenta_Destino_Numero=cud.Cuenta_Numero AND (cu.Pais_Codigo=@Pais or cud.Pais_Codigo=@Pais
-			AND YEAR(tra.Transf_Fecha) = @year AND MONTH(tra.Transf_Fecha) BETWEEN @mesi AND @mesf))
-
-		RETURN @suma
+		INSERT @listado
+			SELECT TOP 5 rets.Pais_Codigo, rets.total + depos.total + trans.total total
+			FROM (SELECT cu.Pais_Codigo, COUNT(*) total
+				FROM [GD1C2015].[NULL].Deposito AS re JOIN [GD1C2015].[NULL].[Cuenta] AS cu ON re.Cuenta_Numero=cu.Cuenta_Numero
+				WHERE YEAR(re.Deposito_Fecha) = 2016 AND MONTH(re.Deposito_Fecha) BETWEEN 1 AND 3
+				GROUP BY cu.Pais_Codigo) as depos
+			FULL OUTER JOIN
+				(SELECT cu.Pais_Codigo, COUNT(*) total
+				FROM [GD1C2015].[NULL].Retiro AS re JOIN [GD1C2015].[NULL].[Cuenta] AS cu ON re.Cuenta_Numero=cu.Cuenta_Numero
+				WHERE YEAR(re.Retiro_Fecha) = 2016 AND MONTH(re.Retiro_Fecha) BETWEEN 1 AND 3
+				GROUP BY cu.Pais_Codigo) as rets ON depos.Pais_Codigo = rets.Pais_Codigo
+			FULL OUTER JOIN
+				(SELECT cu.Pais_Codigo, COUNT(*) total
+				FROM [GD1C2015].[NULL].[Transferencia] AS tra LEFT JOIN [GD1C2015].[NULL].[Cuenta] cu ON tra.Cuenta_Destino_Numero = cu.Cuenta_Numero OR tra.Cuenta_Origen_Numero=cu.Cuenta_Numero
+				WHERE YEAR(tra.Transf_Fecha) = 2016 AND MONTH(tra.Transf_Fecha) BETWEEN 1 AND 3
+				GROUP BY cu.Pais_Codigo) as trans ON depos.Pais_Codigo = rets.Pais_Codigo AND rets.Pais_Codigo = trans.Pais_Codigo
+			ORDER BY total DESC
+		RETURN
 	END;
 GO
 
