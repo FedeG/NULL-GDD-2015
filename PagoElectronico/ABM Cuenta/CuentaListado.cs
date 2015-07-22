@@ -75,6 +75,9 @@ namespace PagoElectronico.ABM_Cuenta
         }
 
         private void loadCuentaTable(string queryGetCliCod){
+            SqlCommand sp = db.GetStoreProcedure("NULL.spDeshabilitarCuentasVencidas");
+            sp.Parameters.Add(new SqlParameter("@Hoy", Properties.Settings.Default.FechaSistema));
+            sp.ExecuteNonQuery();
             db.EjecutarQuery(queryGetCliCod);
             db.getLector().Read();
             this.cliCod = db.getLector()["Cli_Cod"].ToString();
