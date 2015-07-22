@@ -14,7 +14,7 @@ namespace PagoElectronico
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             DbComunicator db = new DbComunicator();
-            SqlCommand sp = db.GetStoreProcedure("NULL.spDeshabiliarCuentasVencidas");
+            SqlCommand sp = db.GetStoreProcedure("NULL.spDeshabilitarCuentasVencidas");
             sp.Parameters.Add("@Hoy", Properties.Settings.Default.FechaSistema);
             sp.ExecuteNonQuery();
             Application.Run(new Login.FormLogin());
