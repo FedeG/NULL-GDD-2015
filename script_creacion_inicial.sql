@@ -857,7 +857,10 @@ IF EXISTS (
 GO
 
 CREATE FUNCTION "NULL".fnValidarCreacionCliente(
-	@Usr_Username NVARCHAR(255) 
+	@Usr_Username NVARCHAR(255),
+	@Cli_Nro_Doc NVARCHAR(255),
+	@TipoDoc_Cod NUMERIC(18,0),
+	@Cli_Mail NVARCHAR(255)
 	)
 	RETURNS INT
 AS
@@ -865,6 +868,16 @@ BEGIN
 	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Usr_Username) = 1
 	BEGIN
 		RETURN(1)
+	END
+	
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cliente] WHERE TipoDoc_Cod = @TipoDoc_Cod AND Cli_Nro_Doc = @Cli_Nro_Doc) = 1
+	BEGIN
+		RETURN(2)
+	END
+	
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cliente] WHERE Cli_Mail = @Cli_Mail) = 1
+	BEGIN
+		RETURN(3)
 	END
 	
 	RETURN(0)
@@ -903,7 +916,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	
-	DECLARE @Validacion INT = "NULL".fnValidarCreacionCliente(@Usr_Username)
+	DECLARE @Validacion INT = "NULL".fnValidarCreacionCliente(@Usr_Username, @Cli_Nro_Doc, @TipoDoc_Cod, @Cli_Mail)
 	
 	IF(@Validacion = 0)
 	BEGIN
@@ -961,8 +974,6 @@ BEGIN
   UPDATE [GD1C2015].[NULL].[Cliente]
 	SET Cli_Nombre = @Cli_Nombre, Cli_Apellido = @Cli_Apellido, TipoDoc_Cod = @TipoDoc_Cod, Cli_Nro_Doc = @Cli_Nro_Doc, Cli_Dom_Calle = @Cli_Dom_Calle, Cli_Dom_Nro = @Cli_Dom_Nro, Cli_Dom_Piso = @Cli_Dom_Piso, Cli_Dom_Depto = @Cli_Dom_Depto, Cli_Localidad = @Cli_Localidad, Cli_Fecha_Nac = @Cli_Fecha_Nac, Cli_Mail = @Cli_Mail, Cli_Nacionalidad = @Cli_Nacionalidad, Pais_Codigo = @Pais_Codigo
 	WHERE Usr_Username = @Usr_Username
-  
-  RETURN(0)
 END
 GO
 
