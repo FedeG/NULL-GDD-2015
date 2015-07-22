@@ -46,6 +46,7 @@
             this.HabilitarButton = new System.Windows.Forms.Button();
             this.Acciones = new System.Windows.Forms.GroupBox();
             this.DeshabilitarButton = new System.Windows.Forms.Button();
+            this.TarjetasButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.clienteTable)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -218,14 +219,15 @@
             // 
             // Acciones
             // 
+            this.Acciones.Controls.Add(this.TarjetasButton);
             this.Acciones.Controls.Add(this.DeshabilitarButton);
             this.Acciones.Controls.Add(this.BorrarButton);
             this.Acciones.Controls.Add(this.HabilitarButton);
             this.Acciones.Controls.Add(this.editarClienteButton);
             this.Acciones.Enabled = false;
-            this.Acciones.Location = new System.Drawing.Point(579, 275);
+            this.Acciones.Location = new System.Drawing.Point(498, 275);
             this.Acciones.Name = "Acciones";
-            this.Acciones.Size = new System.Drawing.Size(278, 56);
+            this.Acciones.Size = new System.Drawing.Size(359, 56);
             this.Acciones.TabIndex = 10;
             this.Acciones.TabStop = false;
             this.Acciones.Text = "Acciones";
@@ -240,6 +242,16 @@
             this.DeshabilitarButton.UseVisualStyleBackColor = true;
             this.DeshabilitarButton.Visible = false;
             this.DeshabilitarButton.Click += new System.EventHandler(this.DeshabilitarButton_Click);
+            // 
+            // TarjetasButton
+            // 
+            this.TarjetasButton.Location = new System.Drawing.Point(266, 18);
+            this.TarjetasButton.Name = "TarjetasButton";
+            this.TarjetasButton.Size = new System.Drawing.Size(75, 23);
+            this.TarjetasButton.TabIndex = 12;
+            this.TarjetasButton.Text = "Tarjetas";
+            this.TarjetasButton.UseVisualStyleBackColor = true;
+            this.TarjetasButton.Click += new System.EventHandler(this.TarjetasButton_Click);
             // 
             // ClienteListado
             // 
@@ -284,5 +296,6 @@
         private System.Windows.Forms.GroupBox Acciones;
         private System.Windows.Forms.Button DeshabilitarButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button TarjetasButton;
     }
 }

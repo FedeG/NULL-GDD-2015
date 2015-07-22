@@ -135,5 +135,12 @@ namespace PagoElectronico.ABM_Cliente
             this.SearchClientePorUsername();
         }
 
+        private void TarjetasButton_Click(object sender, EventArgs e)
+        {
+            string username = clienteTable.SelectedRows[0].Cells[0].Value.ToString();
+            Tarjetas.TarjetaListado re = new Tarjetas.TarjetaListado(username);
+            re.Show();
+        }
+
     }
 }
