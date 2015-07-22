@@ -848,6 +848,29 @@ BEGIN
 END
 GO
 
+IF EXISTS (
+  SELECT * 
+    FROM INFORMATION_SCHEMA.ROUTINES 
+   WHERE SPECIFIC_NAME = N'fnValidarCreacionCliente' 
+)
+   DROP FUNCTION "NULL".fnValidarCreacionCliente
+GO
+
+CREATE FUNCTION "NULL".fnValidarCreacionCliente(
+	@Usr_Username NVARCHAR(255) 
+	)
+	RETURNS INT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = @Usr_Username) = 1
+	BEGIN
+		RETURN(1)
+	END
+	
+	RETURN(0)
+END
+GO
+
 IF OBJECT_ID (N'NULL.spCrearCliente') IS NOT NULL
    DROP PROCEDURE "NULL".spCrearCliente
 GO
@@ -879,16 +902,23 @@ CREATE PROCEDURE "NULL".spCrearCliente
 AS
 BEGIN
 	SET NOCOUNT ON;
+	
+	DECLARE @Validacion INT = "NULL".fnValidarCreacionCliente(@Usr_Username)
+	
+	IF(@Validacion = 0)
+	BEGIN
+	
+		INSERT INTO [GD1C2015].[NULL].[Usuario] (Usr_Username, Usr_Password, Usr_Fecha_Creacion, Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta, Usr_Intentos_Login, Usr_Borrado, Usr_Estado)
+		VALUES (@Usr_Username, @Usr_Password, CONVERT(DATETIME, @Fecha_Sistema, 121), CONVERT(DATETIME, @Fecha_Sistema, 121), @Usr_Pregunta_Secreta, @Usr_Respuesta_Secreta, 0, 0, 'Habilitado')
 
-  INSERT INTO [GD1C2015].[NULL].[Usuario] (Usr_Username, Usr_Password, Usr_Fecha_Creacion, Usr_Fecha_Ultima_Modificacion, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta, Usr_Intentos_Login, Usr_Borrado, Usr_Estado)
-	VALUES (@Usr_Username, @Usr_Password, CONVERT(DATETIME, @Fecha_Sistema, 121), CONVERT(DATETIME, @Fecha_Sistema, 121), @Usr_Pregunta_Secreta, @Usr_Respuesta_Secreta, 0, 0, 'Habilitado')
+		INSERT INTO [GD1C2015].[NULL].[Cliente] (Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad, Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
+		VALUES (@Usr_Username, @Cli_Nombre, @Cli_Apellido, @TipoDoc_Cod, @Cli_Nro_Doc, @Cli_Dom_Calle, @Cli_Dom_Nro, @Cli_Dom_Piso, @Cli_Dom_Depto, @Cli_Localidad, @Cli_Fecha_Nac, @Cli_Mail, @Cli_Nacionalidad, @Pais_Codigo, 0)
 
-	INSERT INTO [GD1C2015].[NULL].[Cliente] (Usr_Username, Cli_Nombre, Cli_Apellido, TipoDoc_Cod, Cli_Nro_Doc, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Dom_Piso, Cli_Dom_Depto, Cli_Localidad, Cli_Fecha_Nac, Cli_Mail, Cli_Nacionalidad, Pais_Codigo, Cli_Borrado)
-	VALUES (@Usr_Username, @Cli_Nombre, @Cli_Apellido, @TipoDoc_Cod, @Cli_Nro_Doc, @Cli_Dom_Calle, @Cli_Dom_Nro, @Cli_Dom_Piso, @Cli_Dom_Depto, @Cli_Localidad, @Cli_Fecha_Nac, @Cli_Mail, @Cli_Nacionalidad, @Pais_Codigo, 0)
-
-  INSERT INTO [GD1C2015].[NULL].[Rol_Usuario] (Rol_Nombre, Usr_Username)
-  VALUES ('Cliente', @Usr_Username)
-
+		INSERT INTO [GD1C2015].[NULL].[Rol_Usuario] (Rol_Nombre, Usr_Username)
+		VALUES ('Cliente', @Usr_Username)
+	END
+	
+	RETURN(@Validacion)
 END
 GO
 
@@ -931,7 +961,8 @@ BEGIN
   UPDATE [GD1C2015].[NULL].[Cliente]
 	SET Cli_Nombre = @Cli_Nombre, Cli_Apellido = @Cli_Apellido, TipoDoc_Cod = @TipoDoc_Cod, Cli_Nro_Doc = @Cli_Nro_Doc, Cli_Dom_Calle = @Cli_Dom_Calle, Cli_Dom_Nro = @Cli_Dom_Nro, Cli_Dom_Piso = @Cli_Dom_Piso, Cli_Dom_Depto = @Cli_Dom_Depto, Cli_Localidad = @Cli_Localidad, Cli_Fecha_Nac = @Cli_Fecha_Nac, Cli_Mail = @Cli_Mail, Cli_Nacionalidad = @Cli_Nacionalidad, Pais_Codigo = @Pais_Codigo
 	WHERE Usr_Username = @Usr_Username
-
+  
+  RETURN(0)
 END
 GO
 
