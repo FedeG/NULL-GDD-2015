@@ -424,30 +424,6 @@ CREATE TABLE "NULL".Auditoria_Login
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'spActualizarEstadoCuenta' 
-)
-   DROP PROCEDURE "NULL".spActualizarEstadoCuenta
-GO
-
-CREATE PROCEDURE "NULL".spActualizarEstadoCuenta
-  @Cuenta_Numero NUMERIC(18,0), 
-  @Hoy DATETIME
-AS
-BEGIN
-	DECLARE @Fecha_Vencimiento DATETIME = (SELECT TOP 1 Cuenta_Fecha_Vencimiento FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Numero)
-	
-	IF(@Hoy >= @Fecha_Vencimiento)
-	BEGIN
-		UPDATE [GD1C2015].[NULL].[Cuenta]
-		SET Cuenta_Estado = 'Inhabilitada'
-		WHERE Cuenta_Numero = @Cuenta_Numero
-	END
-END
-GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
    WHERE SPECIFIC_NAME = N'fnValidarDeposito' 
 )
    DROP FUNCTION "NULL".fnValidarDeposito
@@ -508,7 +484,6 @@ CREATE PROCEDURE "NULL".spRealizarDeposito
 AS
 BEGIN
   DECLARE @Validacion int
-  EXEC "NULL".spActualizarEstadoCuenta @Cuenta_Numero, @Fecha_Deposito
   SET @Validacion = "NULL".fnValidarDeposito(@Cuenta_Numero, @Importe, @Fecha_Deposito, @Moneda_Nombre, @Tarjeta_Numero)
   
   IF(@Validacion = 0)
@@ -679,7 +654,6 @@ CREATE PROCEDURE "NULL".spRealizarRetiro
 	@Moneda_Nombre NVARCHAR(255)
 AS
 	DECLARE @Validacion int
-	EXEC "NULL".spActualizarEstadoCuenta @Cuenta_Numero, @Fecha_Deposito
 	SET @Validacion = "NULL".fnValidarRetiro(@Username, @TipoDoc_Cod, @Nro_Doc, @Cuenta_Numero, @Importe)
 	IF(@Validacion = 0)
 	BEGIN
@@ -758,7 +732,6 @@ CREATE PROCEDURE "NULL".spRealizarTransferencia
 	@Moneda_Nombre NVARCHAR(255)
 AS
 BEGIN
-	EXEC "NULL".spActualizarEstadoCuenta @Cuenta_Origen, @Fecha_Transferencia
 	DECLARE @Validacion INT = "NULL".fnValidarTransferencia(@Cuenta_Origen, @Cuenta_Destino, @Importe)
 	DECLARE @Transferencia_Costo INT = 0
 	IF(@Validacion = 0)

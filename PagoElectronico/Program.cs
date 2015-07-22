@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace PagoElectronico
 {
@@ -12,6 +13,10 @@ namespace PagoElectronico
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            DbComunicator db = new DbComunicator();
+            SqlCommand sp = db.GetStoreProcedure("NULL.spDeshabiliarCuentasVencidas");
+            sp.Parameters.Add("@Hoy", Properties.Settings.Default.FechaSistema);
+            sp.ExecuteNonQuery();
             Application.Run(new Login.FormLogin());
         }
     }
