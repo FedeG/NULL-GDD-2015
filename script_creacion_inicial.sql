@@ -1090,6 +1090,11 @@ BEGIN
 	BEGIN
 		RETURN(1)
 	END
+	
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Tarjeta] WHERE Tarjeta_Codigo_Seg = @Tarjeta_Codigo_Seg) >= 1
+	BEGIN
+		RETURN(1)
+	END
 
 	INSERT INTO [GD1C2015].[NULL].[Tarjeta]
 	(Tarjeta_Numero, Tarjeta_Numero_Visible, Tarjeta_Codigo_Seg, Emisor_Cod, Cli_Cod, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento)
