@@ -47,8 +47,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.ClienteUsername = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.searchUsernameButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.searchUsernameButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.cuentaTable)).BeginInit();
             this.Acciones.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -204,6 +204,7 @@
             this.DocCliente.Name = "DocCliente";
             this.DocCliente.Size = new System.Drawing.Size(214, 20);
             this.DocCliente.TabIndex = 2;
+            this.DocCliente.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.documento_KeyPress);
             // 
             // groupBox2
             // 
@@ -218,6 +219,7 @@
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Buscar por Documento";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // searchDocumentoButton
             // 
@@ -245,6 +247,7 @@
             this.ClienteUsername.Name = "ClienteUsername";
             this.ClienteUsername.Size = new System.Drawing.Size(295, 20);
             this.ClienteUsername.TabIndex = 2;
+            this.ClienteUsername.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.username_KeyPress);
             // 
             // groupBox1
             // 
@@ -259,16 +262,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Buscar por Username";
             // 
-            // searchUsernameButton
-            // 
-            this.searchUsernameButton.Location = new System.Drawing.Point(287, 61);
-            this.searchUsernameButton.Name = "searchUsernameButton";
-            this.searchUsernameButton.Size = new System.Drawing.Size(75, 23);
-            this.searchUsernameButton.TabIndex = 4;
-            this.searchUsernameButton.Text = "Buscar";
-            this.searchUsernameButton.UseVisualStyleBackColor = true;
-            this.searchUsernameButton.Click += new System.EventHandler(this.searchUsernameButton_Click);
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(9, 61);
@@ -278,6 +271,16 @@
             this.button1.Text = "Mostrar Todos";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // searchUsernameButton
+            // 
+            this.searchUsernameButton.Location = new System.Drawing.Point(287, 61);
+            this.searchUsernameButton.Name = "searchUsernameButton";
+            this.searchUsernameButton.Size = new System.Drawing.Size(75, 23);
+            this.searchUsernameButton.TabIndex = 4;
+            this.searchUsernameButton.Text = "Buscar";
+            this.searchUsernameButton.UseVisualStyleBackColor = true;
+            this.searchUsernameButton.Click += new System.EventHandler(this.searchUsernameButton_Click);
             // 
             // CuentaListado
             // 

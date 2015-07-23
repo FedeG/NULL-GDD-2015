@@ -30,6 +30,11 @@ namespace PagoElectronico.ABM_Cuenta
             this.enabledButtons.RegisterButton(this.searchUsernameButton);
             this.enabledButtons2.RegisterTextBox(this.DocCliente);
             this.enabledButtons2.RegisterButton(this.searchDocumentoButton);
+            this.DocCliente.KeyPress += this.InputNumField_KeyPress;
+        }
+
+        private void InputNumField_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
         }
 
         public CuentaListado(string username){
@@ -43,7 +48,7 @@ namespace PagoElectronico.ABM_Cuenta
             BorrarButton.Visible = false;
             CerrarButton.Visible = true;
             ClienteUsername.Text = username;
-            string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Cli_Cod, Usr_Username FROM GD1C2015.[NULL].Cliente WHERE Usr_Username='" + ClienteUsername.Text + "') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
+            string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Cli_Cod, Usr_Username FROM GD1C2015.[NULL].Cliente WHERE Usr_Username='" + username + "') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
             this.loadCuentaTable(queryGetCliCod);
             groupBox1.Visible = false;
             groupBox2.Visible = false;
@@ -80,11 +85,16 @@ namespace PagoElectronico.ABM_Cuenta
             sp.ExecuteNonQuery();
             db.EjecutarQuery(queryGetCliCod);
             db.getLector().Read();
-            this.cliCod = db.getLector()["Cli_Cod"].ToString();
-            db.CerrarConexion();
-            createCuentaButton.Enabled = true;
-            string query = "SELECT Cuenta_Numero,Cuenta_Estado,Cuenta_Fecha_Vencimiento,Cuenta_Saldo,TipoCta_Nombre,Moneda_Nombre,Cuenta_Borrado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = '" + this.cliCod + "'";
-            cuentaTable.DataSource = db.GetDataAdapter(query).Tables[0];
+            try{
+                this.cliCod = db.getLector()["Cli_Cod"].ToString();
+                db.CerrarConexion();
+                createCuentaButton.Enabled = true;
+                string query = "SELECT Cuenta_Numero,Cuenta_Estado,Cuenta_Fecha_Vencimiento,Cuenta_Saldo,TipoCta_Nombre,Moneda_Nombre,Cuenta_Borrado FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = '" + this.cliCod + "'";
+                cuentaTable.DataSource = db.GetDataAdapter(query).Tables[0];
+            }
+            catch (System.InvalidOperationException e){
+                MessageBox.Show("No existen cuentas para el usuario buscado");
+            }
         }
          
         private void ActivarAcciones(object sender, EventArgs e){
@@ -180,7 +190,8 @@ namespace PagoElectronico.ABM_Cuenta
         }
 
         void SearchCuentaPorDocumento(){
-            string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Usr_Username, Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Cli_Nro_Doc LIKE '%" + DocCliente.Text + "%' AND TipoDoc_Cod LIKE '%" + TipoDoc.SelectedValue + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
+            string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Usr_Username, Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Cli_Nro_Doc LIKE '%" + DocCliente.Text + "%' AND TipoDoc_Cod=" + this.TipoDoc.SelectedValue + ") AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
+            MessageBox.Show(queryGetCliCod);
             this.loadCuentaTable(queryGetCliCod);
         }
 
@@ -224,5 +235,28 @@ namespace PagoElectronico.ABM_Cuenta
             this.SearchCuentaPorUsername();
         }
 
+        private void username_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.searchUsernameButton.PerformClick();
+            }
+        }
+
+        private void documento_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                if (!String.IsNullOrEmpty(this.TipoDoc.Text))
+                    this.searchDocumentoButton.PerformClick();
+            }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
