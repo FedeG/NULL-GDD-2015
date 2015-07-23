@@ -249,6 +249,8 @@
             this.InputPiso.Name = "InputPiso";
             this.InputPiso.Size = new System.Drawing.Size(40, 20);
             this.InputPiso.TabIndex = 20;
+            this.InputPiso.Tag = "";
+            this.InputPiso.Text = "-";
             // 
             // label16
             // 
@@ -265,6 +267,7 @@
             this.InputDepto.Name = "InputDepto";
             this.InputDepto.Size = new System.Drawing.Size(40, 20);
             this.InputDepto.TabIndex = 18;
+            this.InputDepto.Text = "-";
             // 
             // InputLocalidad
             // 
@@ -297,7 +300,6 @@
             this.InputNumDomicilio.Name = "InputNumDomicilio";
             this.InputNumDomicilio.Size = new System.Drawing.Size(47, 20);
             this.InputNumDomicilio.TabIndex = 13;
-            this.InputNumDomicilio.KeyPress += this.InputNumField_KeyPress;
             // 
             // label14
             // 
@@ -338,7 +340,6 @@
             this.InputNumDoc.Name = "InputNumDoc";
             this.InputNumDoc.Size = new System.Drawing.Size(187, 20);
             this.InputNumDoc.TabIndex = 17;
-            this.InputNumDoc.KeyPress += this.InputNumField_KeyPress;
             // 
             // label8
             // 
