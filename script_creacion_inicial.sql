@@ -1273,9 +1273,11 @@ CREATE PROCEDURE "NULL".spCrearCuenta
 AS
 BEGIN
   SET NOCOUNT ON;
+  
+  DECLARE @Duracion INT = (SELECT TOP 1 TipoCta_Duracion FROM [GD1C2015].[NULL].[TipoCuenta] WHERE TipoCta_Nombre = @TipoCta_Nombre)
 
   INSERT INTO [GD1C2015].[NULL].[Cuenta] (Cuenta_Estado, Cuenta_Fecha_Vencimiento, Cuenta_Fecha_Cierre, Cuenta_Fecha_Creacion, Cuenta_Saldo, Pais_Codigo, TipoCta_Nombre, Cli_Cod, Moneda_Nombre, Cuenta_Borrado)
-  VALUES ('Pendiente de Activación', NULL, NULL, @Cuenta_Fecha_Creacion, 0, @Pais_Codigo, @TipoCta_Nombre, @Cli_Cod, @Moneda_Nombre, 0)
+  VALUES ('Pendiente de Activación', DATEADD(DAY, @Duracion, @Cuenta_Fecha_Creacion), NULL, @Cuenta_Fecha_Creacion, 0, @Pais_Codigo, @TipoCta_Nombre, @Cli_Cod, @Moneda_Nombre, 0)
 
 END
 GO

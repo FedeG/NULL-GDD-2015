@@ -14,10 +14,12 @@ namespace PagoElectronico.Facturacion {
     {
         DbComunicator db;
         string username;
+        string queryGetCliCod;
 
         public FormFacturacion(){
             InitializeComponent();
             this.db = new DbComunicator();
+            this.queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + this.username + "%'";
             string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Transacc_Borrado = 0 AND Transacc_Facturada = 0";
             transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
             btnFacturar.Enabled = false;
@@ -27,6 +29,7 @@ namespace PagoElectronico.Facturacion {
             InitializeComponent();
             this.db = new DbComunicator();
             this.username = username;
+            this.queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username = '" + this.username + "'";
             this.loadTransaccTable();
 
             string query = "SELECT Cli_Cod FROM [GD1C2015].[NULL].[Cliente] WHERE Usr_Username = '" + username + "'";
@@ -46,8 +49,7 @@ namespace PagoElectronico.Facturacion {
         }
 
         private void loadTransaccTable(){
-            string queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + this.username + "%'";
-            string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cli_Cod = (" + queryGetCliCod + ") AND Transacc_Borrado = 0 AND Transacc_Facturada = 0";
+            string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cli_Cod = (" + this.queryGetCliCod + ") AND Transacc_Borrado = 0 AND Transacc_Facturada = 0";
             transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
         }
 
