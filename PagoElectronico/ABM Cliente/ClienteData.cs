@@ -62,8 +62,10 @@ namespace PagoElectronico.ABM_Cliente
             this.db.CerrarConexion();
         }
 
-        public void ExecStoredProcedure(string sp_name, Boolean hashed){
+        public int ExecStoredProcedure(string sp_name, Boolean hashed){
             SqlCommand sp = this.db.GetStoreProcedure(sp_name);
+            SqlParameter returnParameter = sp.Parameters.Add("RetVal", SqlDbType.Int);
+            returnParameter.Direction = ParameterDirection.ReturnValue;
             sp.Parameters.Add(new SqlParameter("@Usr_Username", InputUsername.Text));
             string password = this.InputPassword.Text;
             if (!hashed)
@@ -89,6 +91,7 @@ namespace PagoElectronico.ABM_Cliente
             sp.Parameters.Add(new SqlParameter("@Cli_Fecha_Nac", InputFechaNacimiento.Value.Date));
             sp.Parameters.Add(new SqlParameter("@Fecha_Sistema", Properties.Settings.Default.FechaSistema));
             sp.ExecuteNonQuery();
+            return (int) returnParameter.Value;
         }
 
         private void InputNumField_KeyPress(object sender, KeyPressEventArgs e){
