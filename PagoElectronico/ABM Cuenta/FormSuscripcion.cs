@@ -39,6 +39,7 @@ namespace PagoElectronico.ABM_Cuenta
             spAgregarSuscripcion.Parameters.Add(new SqlParameter("@Cuenta_Numero", this.cuentaNumero));
             spAgregarSuscripcion.Parameters.Add(new SqlParameter("@TipoCta_Nombre", tiposTable.SelectedRows[0].Cells["TipoCta_Nombre"].Value));
             spAgregarSuscripcion.Parameters.Add(new SqlParameter("@Cantidad", Cantidad.Text));
+            spAgregarSuscripcion.Parameters.Add(new SqlParameter("@Fecha_Transaccion", PagoElectronico.Properties.Settings.Default.FechaSistema));
             SqlParameter returnParameter = spAgregarSuscripcion.Parameters.Add("RetVal", SqlDbType.Int);
             returnParameter.Direction = ParameterDirection.ReturnValue;
             spAgregarSuscripcion.ExecuteNonQuery();
