@@ -49,6 +49,12 @@ namespace PagoElectronico.Depositos
   
 
         private void botonRealizar_Click(object sender, EventArgs e){
+            if (comboCuenta.SelectedValue.ToString() == "No hay elementos para listar")
+            {
+                MessageBox.Show("Debe registrar una cuenta para poder realizar depositos");
+                return;
+            }
+            
             if (comboTarjeta.SelectedValue.ToString() == "No hay elementos para listar"){
                 MessageBox.Show("Debe registrar una tarjeta para poder realizar depositos");
                 return;
