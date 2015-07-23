@@ -16,9 +16,9 @@ namespace PagoElectronico.Transferencias
         public TransferenciaForm(string username){
             string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = '" + username + "')";
             InitializeComponent();
-            this.enabledButtons.RegisterTextBox(this.cuentaDestinoTextBox);
-            this.enabledButtons.RegisterTextBox(this.importeTextBox);
-            this.enabledButtons.RegisterButton(this.realizarButton);
+            //this.enabledButtons.RegisterTextBox(this.importeTextBox);
+            //this.enabledButtons.RegisterTextBox(this.cuentaDestinoTextBox);
+            //this.enabledButtons.RegisterButton(this.realizarButton);
             DbComunicator db = new DbComunicator();
             
             cuentaOrigenComboBox.DataSource = new BindingSource(db.GetQueryDictionary(query, "Cuenta_Numero", "Cuenta_Numero"), null);
@@ -49,6 +49,7 @@ namespace PagoElectronico.Transferencias
 
             if ((int)returnParameter.Value == 0)
             {
+                MessageBox.Show("Transferencia realizada con exito.");
                 this.Close();
             }
 
@@ -65,6 +66,16 @@ namespace PagoElectronico.Transferencias
             if ((int)returnParameter.Value == 3)
             {
                 MessageBox.Show("El saldo disponible es insuficiente para realizar la transferencia.");
+            }
+
+            if ((int)returnParameter.Value == 4)
+            {
+                MessageBox.Show("La cuenta de origen debe ser distinta a la de destino.");
+            }
+
+            if ((int)returnParameter.Value == 5)
+            {
+                MessageBox.Show("La cuenta de destino ingresada no existe.");
             }
         }
 
