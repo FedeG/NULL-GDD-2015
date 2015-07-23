@@ -25,6 +25,9 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void LoadClientData(DataGridViewRow selected){
+            this.InputMail.Enabled = false;
+            this.InputNumDoc.Enabled = false;
+            this.InputTipoDocCliente.Enabled = false;
             InputNombre.Text = selected.Cells["Cli_Nombre"].Value.ToString();
             InputApellido.Text = selected.Cells["Cli_Apellido"].Value.ToString();
             InputNacCliente.Text = selected.Cells["Cli_Nacionalidad"].Value.ToString();
@@ -43,13 +46,13 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void LoadUserData(){
-            InputUsername.Text = this.username;
-            InputUsername.Enabled = false;
+            this.InputUsername.Text = this.username;
+            this.InputUsername.Enabled = false;
             db.EjecutarQuery("SELECT Usr_Password, Usr_Pregunta_Secreta, Usr_Respuesta_Secreta FROM [GD1C2015].[NULL].[Usuario] WHERE Usr_Username = '" + username + "'");
             while (db.getLector().Read()){
-                InputPregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
-                InputPassword.Text = db.getLector()["Usr_Password"].ToString();
-                InputRespuestaSecreta.Text = db.getLector()["Usr_Respuesta_Secreta"].ToString();
+                this.InputPregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
+                this.InputPassword.Text = db.getLector()["Usr_Password"].ToString();
+                this.InputRespuestaSecreta.Text = db.getLector()["Usr_Respuesta_Secreta"].ToString();
             }
         }
 
@@ -59,6 +62,7 @@ namespace PagoElectronico.ABM_Cliente
 
         private void button1_Click(object sender, EventArgs e){
             this.ExecStoredProcedure("NULL.spEditarCliente", true);
+            MessageBox.Show("El usuario fue editado exitosamente.");
             this.Close();
         }
 
