@@ -55,10 +55,10 @@
             // numeroTextBox
             // 
             this.numeroTextBox.Location = new System.Drawing.Point(131, 11);
+            this.numeroTextBox.MaxLength = 16;
             this.numeroTextBox.Name = "numeroTextBox";
             this.numeroTextBox.Size = new System.Drawing.Size(196, 20);
             this.numeroTextBox.TabIndex = 12;
-            this.numeroTextBox.KeyPress += this.Number_KeyPress;
             // 
             // TarjetaCreacion
             // 

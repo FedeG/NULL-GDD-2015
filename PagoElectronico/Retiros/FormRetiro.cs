@@ -14,9 +14,14 @@ namespace PagoElectronico.Retiros
     {
         string username = "";
         Commons.EnabledButtons enabledButtons;
-        public FormRetiro(string username)
-        {
+        Commons.Validator validator;
+        
+        public FormRetiro(string username){
             InitializeComponent();
+            this.validator = new Commons.Validator();
+            this.nroDocTextBox.KeyPress += this.Number_KeyPress;
+            this.importeTextBox.KeyPress += this.NumberDouble_KeyPress;
+
             this.enabledButtons = new Commons.EnabledButtons();
             this.enabledButtons.RegisterTextBox(this.nroDocTextBox);
             this.enabledButtons.RegisterTextBox(this.importeTextBox);
@@ -59,8 +64,15 @@ namespace PagoElectronico.Retiros
             db.CerrarConexion();
         }
 
-        private void realizarButton_Click(object sender, EventArgs e)
-        {
+        private void Number_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
+        }
+
+        private void NumberDouble_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateDouble, false, e);
+        }
+
+        private void realizarButton_Click(object sender, EventArgs e){
             DbComunicator db = new DbComunicator();
             SqlCommand spRealizarRetiro = db.GetStoreProcedure("NULL.spRealizarRetiro");
             SqlParameter returnParameter = spRealizarRetiro.Parameters.Add("RetVal", SqlDbType.Int);

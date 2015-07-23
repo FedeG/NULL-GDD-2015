@@ -22,6 +22,7 @@ namespace PagoElectronico.Tarjetas
             this.cliCod = cliCod;
             this.validator = new Commons.Validator();
             this.seguridadTextBox.KeyPress += this.Number_KeyPress;
+            this.numeroTextBox.KeyPress += this.Number_KeyPress;
             this.enabledButtons.RegisterTextBox(this.numeroTextBox);
             this.enabledButtons.RegisterButton(this.createButton);
         }

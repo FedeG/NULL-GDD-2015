@@ -12,10 +12,13 @@ namespace PagoElectronico.Consulta_Saldos
     public partial class ConsultaForm : Form
     {
         DbComunicator db;
-        public ConsultaForm()
-        {
+        Commons.Validator validator;
+
+        public ConsultaForm(){
             InitializeComponent();
             db = new DbComunicator();
+            this.validator = new Commons.Validator();
+            this.autocomplete.KeyPress += this.Number_KeyPress;
             cuentaComboBox.Visible = false;
             consultarClienteButton.Visible = false;
             autocomplete.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -27,8 +30,11 @@ namespace PagoElectronico.Consulta_Saldos
             db.CerrarConexion();
         }
 
-        public ConsultaForm(string username)
-        {
+        private void Number_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
+        }
+
+        public ConsultaForm(string username){
             InitializeComponent();
             autocomplete.Visible = false;
             consultarAdminButton.Visible = false;

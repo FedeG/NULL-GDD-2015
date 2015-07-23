@@ -204,6 +204,7 @@
             // autocomplete
             // 
             this.autocomplete.Location = new System.Drawing.Point(85, 10);
+            this.autocomplete.MaxLength = 18;
             this.autocomplete.Name = "autocomplete";
             this.autocomplete.Size = new System.Drawing.Size(137, 20);
             this.autocomplete.TabIndex = 13;

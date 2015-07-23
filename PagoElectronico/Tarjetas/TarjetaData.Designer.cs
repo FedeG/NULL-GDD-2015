@@ -100,6 +100,7 @@
             // seguridadTextBox
             // 
             this.seguridadTextBox.Location = new System.Drawing.Point(131, 138);
+            this.seguridadTextBox.MaxLength = 7;
             this.seguridadTextBox.Name = "seguridadTextBox";
             this.seguridadTextBox.PasswordChar = '*';
             this.seguridadTextBox.Size = new System.Drawing.Size(197, 20);

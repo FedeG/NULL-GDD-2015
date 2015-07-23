@@ -14,10 +14,12 @@ namespace PagoElectronico.Depositos
     {
         DbComunicator db;
         Commons.EnabledButtons enabledButtons;
+        Commons.Validator validator;
 
         public DepositoForm(string username){
             InitializeComponent();
             this.db = new DbComunicator();
+            this.validator = new Commons.Validator();
             this.enabledButtons = new Commons.EnabledButtons();
             this.enabledButtons.RegisterTextBox(this.importeTextBox);
             this.enabledButtons.RegisterButton(this.botonRealizar);
@@ -45,8 +47,13 @@ namespace PagoElectronico.Depositos
             comboCuenta.DisplayMember = "Key";
             comboCuenta.ValueMember = "Value";
             this.db.CerrarConexion();
+            this.importeTextBox.KeyPress += this.NumberDouble_KeyPress;
         }
-  
+
+
+        private void NumberDouble_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateDouble, false, e);
+        }
 
         private void botonRealizar_Click(object sender, EventArgs e){
             if (comboCuenta.SelectedValue.ToString() == "No hay elementos para listar")

@@ -69,6 +69,7 @@
             // cuentaDestinoTextBox
             // 
             this.cuentaDestinoTextBox.Location = new System.Drawing.Point(159, 58);
+            this.cuentaDestinoTextBox.MaxLength = 18;
             this.cuentaDestinoTextBox.Name = "cuentaDestinoTextBox";
             this.cuentaDestinoTextBox.Size = new System.Drawing.Size(121, 20);
             this.cuentaDestinoTextBox.TabIndex = 3;
@@ -85,6 +86,7 @@
             // importeTextBox
             // 
             this.importeTextBox.Location = new System.Drawing.Point(159, 134);
+            this.importeTextBox.MaxLength = 18;
             this.importeTextBox.Name = "importeTextBox";
             this.importeTextBox.Size = new System.Drawing.Size(121, 20);
             this.importeTextBox.TabIndex = 5;

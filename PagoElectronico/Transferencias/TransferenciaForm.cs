@@ -13,12 +13,16 @@ namespace PagoElectronico.Transferencias
     public partial class TransferenciaForm : Form
     {
         Commons.EnabledButtons enabledButtons;
+        Commons.Validator validator;
+
         public TransferenciaForm(string username){
             string query = "SELECT Cuenta_Numero FROM [GD1C2015].[NULL].[Cuenta] WHERE Cli_Cod = (SELECT Cliente.Cli_Cod FROM [GD1C2015].[NULL].[Cliente] as Cliente WHERE Usr_Username = '" + username + "')";
             InitializeComponent();
-            //this.enabledButtons.RegisterTextBox(this.importeTextBox);
-            //this.enabledButtons.RegisterTextBox(this.cuentaDestinoTextBox);
-            //this.enabledButtons.RegisterButton(this.realizarButton);
+            this.validator = new Commons.Validator();
+            this.enabledButtons = new Commons.EnabledButtons();
+            this.enabledButtons.RegisterTextBox(this.importeTextBox);
+            this.enabledButtons.RegisterTextBox(this.cuentaDestinoTextBox);
+            this.enabledButtons.RegisterButton(this.realizarButton);
             DbComunicator db = new DbComunicator();
             
             cuentaOrigenComboBox.DataSource = new BindingSource(db.GetQueryDictionary(query, "Cuenta_Numero", "Cuenta_Numero"), null);
@@ -31,6 +35,16 @@ namespace PagoElectronico.Transferencias
             comboMoneda.ValueMember = "Value";
 
             db.CerrarConexion();
+            this.cuentaDestinoTextBox.KeyPress += this.Number_KeyPress;
+            this.importeTextBox.KeyPress += this.NumberDouble_KeyPress;
+        }
+
+        private void Number_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateInt, false, e);
+        }
+
+        private void NumberDouble_KeyPress(object sender, KeyPressEventArgs e){
+            this.validator.KeyPressBinding(this.validator.validateDouble, false, e);
         }
 
         private void realizarButton_Click(object sender, EventArgs e)
@@ -41,7 +55,7 @@ namespace PagoElectronico.Transferencias
             returnParameter.Direction = ParameterDirection.ReturnValue;
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Origen", Convert.ToInt64(cuentaOrigenComboBox.SelectedValue)));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Cuenta_Destino", Convert.ToInt64(cuentaDestinoTextBox.Text)));
-            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Importe", Convert.ToInt32(importeTextBox.Text)));
+            spRealizarTransferencia.Parameters.Add(new SqlParameter("@Importe", Convert.ToDouble(importeTextBox.Text)));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Fecha_Transferencia", Properties.Settings.Default.FechaSistema));
             spRealizarTransferencia.Parameters.Add(new SqlParameter("@Moneda_Nombre", comboMoneda.SelectedValue.ToString()));
 
