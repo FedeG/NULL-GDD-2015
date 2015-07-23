@@ -697,14 +697,24 @@ CREATE FUNCTION "NULL".fnValidarTransferencia(
 	RETURNS INT
 AS
 BEGIN
+	IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Destino) = 0
+	BEGIN
+		RETURN(5)
+	END
+	
 	IF (SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Destino AND Cuenta_Estado = 'Habilitada' OR Cuenta_Estado ='Inhabilitada') = 0
 	BEGIN
 		RETURN(1)
 	END
 	
-	IF @Importe < 0 
+	IF @Importe <= 0 
 	BEGIN
 		RETURN(2)
+	END
+	
+	IF(@Cuenta_Origen = @Cuenta_Destino)
+	BEGIN
+		RETURN(4)
 	END
 	
 	IF(SELECT TOP 1 Cuenta_Saldo FROM [GD1C2015].[NULL].[Cuenta] WHERE Cuenta_Numero = @Cuenta_Origen) < @Importe
@@ -739,10 +749,23 @@ BEGIN
 		IF(SELECT COUNT(*) FROM [GD1C2015].[NULL].[Cuenta] as c1, [GD1C2015].[NULL].[Cuenta] as c2 WHERE c1.Cuenta_Numero = @Cuenta_Origen AND c2.Cuenta_Numero = @Cuenta_Destino AND c1.Cli_Cod = c2.Cli_Cod) = 0
 		BEGIN
 			SET @Transferencia_Costo = (SELECT TOP 1 tc.TipoCta_Costo_Transf FROM [GD1C2015].[NULL].[TipoCuenta] as tc, [GD1C2015].[NULL].[Cuenta] as c WHERE c.TipoCta_Nombre = tc.TipoCta_Nombre AND c.Cuenta_Numero = @Cuenta_Origen)
+			
+			INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo, Moneda_Nombre)
+			VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo, @Moneda_Nombre)
+			
+			INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
+				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero, Transacc_Fecha)
+			SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.', SCOPE_IDENTITY(), 0, @Transferencia_Costo, 0, @Cuenta_Origen, CONVERT(DATETIME, @Fecha_Transferencia, 121)
+			FROM "NULL".Cuenta as cta
+			WHERE @Cuenta_Origen = cta.Cuenta_Numero
 		END
+		ELSE
+		BEGIN
 		
-		INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo, Moneda_Nombre)
-		VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo, @Moneda_Nombre)
+			INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo, Moneda_Nombre)
+			VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo, @Moneda_Nombre)
+		
+		END
 	END
 	
 	RETURN @Validacion
@@ -2644,27 +2667,6 @@ BEGIN
 	FROM inserted as cta
 END
 GO
-
-IF EXISTS (
-  SELECT * 
-    FROM INFORMATION_SCHEMA.ROUTINES 
-   WHERE SPECIFIC_NAME = N'trGenerarTransaccionTransferencia' 
-)
-   DROP TRIGGER "NULL".trGenerarTransaccionTransferencia
-GO
-
-CREATE TRIGGER "NULL".trGenerarTransaccionTransferencia ON "NULL".Transferencia AFTER INSERT
-AS
-BEGIN
-	INSERT INTO "NULL".Transaccion(Cli_Cod,Moneda_Nombre,Transacc_Cantidad,Transacc_Detalle,
-				Transacc_Transf_Codigo, Transacc_Facturada,Transacc_Importe,Transacc_Borrado, Cuenta_Numero, Transacc_Fecha)
-	SELECT cta.Cli_Cod, 'Dólares Estadounidenses', 1, 'Comisión por transferencia.', i.Transf_Codigo,
-			0, i.Transf_Costo, 0, i.Cuenta_Origen_Numero, i.Transf_Fecha
-	FROM inserted as i, "NULL".Cuenta as cta
-	WHERE i.Cuenta_Origen_Numero = cta.Cuenta_Numero
-END
-GO
-
 IF EXISTS (
   SELECT * 
     FROM INFORMATION_SCHEMA.ROUTINES 
