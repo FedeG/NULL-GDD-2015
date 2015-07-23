@@ -25,6 +25,8 @@ namespace PagoElectronico.ABM_Cliente
             this.loadEnabledButtons();
             this.Nacionalidades_Load();
             this.Tipo_Docs_Load();
+            this.InputNumDoc.KeyPress += this.InputNumField_KeyPress;
+            this.InputNumDomicilio.KeyPress += this.InputNumField_KeyPress;
         }
 
         private void Nacionalidades_Load(){
