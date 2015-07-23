@@ -100,6 +100,7 @@
             this.comboCuenta.Name = "comboCuenta";
             this.comboCuenta.Size = new System.Drawing.Size(121, 21);
             this.comboCuenta.TabIndex = 6;
+            this.comboCuenta.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.element_KeyPress);
             // 
             // btnConsultar
             // 

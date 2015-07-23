@@ -23,6 +23,15 @@ namespace PagoElectronico.Login
             this.enabledButtons.RegisterButton(this.button2);
         }
 
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.button2.PerformClick();
+            }
+        }
+
         public int GetCountUsers(DbComunicator dbCount, string username)
         {
             dbCount.EjecutarQuery("SELECT count(*) FROM [GD1C2015].[NULL].[USUARIO] WHERE Usr_Username = '"

@@ -45,6 +45,15 @@ namespace PagoElectronico.ABM_Rol
             this.SearchRol();
         }
 
+        private void element_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.searchButton.PerformClick();
+            }
+        }
+
         private void editarRolButton_Click(object sender, EventArgs e)
         {
             RolEdicion re = new RolEdicion(rolTable.SelectedRows[0]);

@@ -63,5 +63,14 @@ namespace PagoElectronico.Listados
             this.cbListado.DisplayMember = "Key";
             this.cbListado.ValueMember = "Value";
         }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.listarButton.PerformClick();
+            }
+        }
     }
 }

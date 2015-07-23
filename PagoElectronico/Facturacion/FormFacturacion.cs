@@ -74,5 +74,14 @@ namespace PagoElectronico.Facturacion {
             string queryTransaccAPagar = "SELECT Transacc_Codigo, Transacc_Cantidad, Transacc_Importe, Transacc_Detalle, Moneda_Nombre FROM [GD1C2015].[NULL].[Transaccion] WHERE Cuenta_Numero = " + comboCuenta.SelectedValue + " AND Transacc_Borrado = 0 AND Transacc_Facturada = 0";
             transaccTable.DataSource = db.GetDataAdapter(queryTransaccAPagar).Tables[0];
         }
+
+        private void element_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.btnConsultar.PerformClick();
+            }
+        }
     }
 }

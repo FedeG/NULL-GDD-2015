@@ -70,6 +70,7 @@
             this.cbListado.Name = "cbListado";
             this.cbListado.Size = new System.Drawing.Size(572, 21);
             this.cbListado.TabIndex = 2;
+            this.cbListado.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
             // label1
             // 
@@ -104,7 +105,6 @@
             this.tbAnio.Name = "tbAnio";
             this.tbAnio.Size = new System.Drawing.Size(121, 20);
             this.tbAnio.TabIndex = 6;
-            this.tbAnio.KeyPress += this.InputNumField_KeyPress;
             // 
             // label3
             // 

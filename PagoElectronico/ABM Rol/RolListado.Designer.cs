@@ -69,6 +69,7 @@
             this.rolName.Name = "rolName";
             this.rolName.Size = new System.Drawing.Size(100, 20);
             this.rolName.TabIndex = 2;
+            this.rolName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.element_KeyPress);
             // 
             // createRolButton
             // 

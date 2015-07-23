@@ -32,6 +32,15 @@ namespace PagoElectronico
             Funcionalidades.ValueMember = "Value";
         }
 
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.Abrir.PerformClick();
+            }
+        }
+
         private Form SearchForm(Int16 Func_Cod){
             Form form = null;
             switch (Func_Cod){
