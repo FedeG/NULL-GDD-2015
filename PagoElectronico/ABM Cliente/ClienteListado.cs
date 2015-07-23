@@ -27,6 +27,7 @@ namespace PagoElectronico.ABM_Cliente
             this.enabledButtons.RegisterButton(this.searchUsernameButton);
             this.enabledButtons2.RegisterTextBox(this.DocCliente);
             this.enabledButtons2.RegisterButton(this.searchDocumentoButton);
+            this.DocCliente.KeyPress += this.DocCliente_KeyPress;
         }
 
         private void searchButton_Click(object sender, EventArgs e){
@@ -38,7 +39,7 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         void SearchClientePorDocumento(){
-            clienteTable.DataSource = db.GetDataAdapter("SELECT Cliente.Usr_Username, Cli_Cod, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado, Usr_Estado FROM (SELECT Usr_Username, Cli_Nombre, Cli_Cod ,Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado FROM GD1C2015.[NULL].Cliente WHERE Cli_Nro_Doc LIKE '%" + DocCliente.Text + "%' AND TipoDoc_Cod LIKE '%" + TipoDocCliente.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username").Tables[0];
+            clienteTable.DataSource = db.GetDataAdapter("SELECT Cliente.Usr_Username, Cli_Cod, Cli_Nombre, Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado, Usr_Estado FROM (SELECT Usr_Username, Cli_Nombre, Cli_Cod ,Cli_Apellido, Cli_Nacionalidad, Cli_Dom_Calle, Cli_Dom_Nro, Cli_Borrado FROM GD1C2015.[NULL].Cliente WHERE Cli_Nro_Doc LIKE '%" + DocCliente.Text + "%' AND TipoDoc_Cod="+ this.TipoDocCliente.SelectedValue+") AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username").Tables[0];
         }
 
         void SearchClientePorUsername(object sender, FormClosedEventArgs e){
@@ -62,11 +63,11 @@ namespace PagoElectronico.ABM_Cliente
         private void ClienteListado_Load(object sender, EventArgs e){
             clienteTable.CellClick += this.ActivarAcciones;
             clienteTable.RowHeaderMouseClick += this.ActivarAcciones;
-            this.db.EjecutarQuery("SELECT TipoDoc_Desc FROM [GD1C2015].[NULL].[TipoDoc]");
-            while (this.db.getLector().Read()){
-                string nombre = this.db.getLector()["TipoDoc_Desc"].ToString();
-                TipoDocCliente.Items.Add(nombre);
-            }
+            string query = "SELECT TipoDoc_Cod, TipoDoc_Desc FROM [GD1C2015].[NULL].[TipoDoc]";
+            Dictionary<object, object> TiposDoc = db.GetQueryDictionary(query, "TipoDoc_Cod", "TipoDoc_Desc");
+            this.TipoDocCliente.DataSource = new BindingSource(TiposDoc, null);
+            this.TipoDocCliente.DisplayMember = "Value";
+            this.TipoDocCliente.ValueMember = "Key";
         }
          
         private void ActivarAcciones(object sender, EventArgs e){
@@ -142,5 +143,28 @@ namespace PagoElectronico.ABM_Cliente
             re.Show();
         }
 
+        private void username_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.searchUsernameButton.PerformClick();
+            }
+        }
+
+        private void documento_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                if (!String.IsNullOrEmpty(this.TipoDocCliente.Text))
+                    this.searchDocumentoButton.PerformClick();
+            }
+        }
+
+        private void DocCliente_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

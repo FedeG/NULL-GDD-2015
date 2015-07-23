@@ -45,8 +45,8 @@
             this.searchDocumentoButton = new System.Windows.Forms.Button();
             this.HabilitarButton = new System.Windows.Forms.Button();
             this.Acciones = new System.Windows.Forms.GroupBox();
-            this.DeshabilitarButton = new System.Windows.Forms.Button();
             this.TarjetasButton = new System.Windows.Forms.Button();
+            this.DeshabilitarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.clienteTable)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -85,6 +85,7 @@
             this.ClienteUsername.Name = "ClienteUsername";
             this.ClienteUsername.Size = new System.Drawing.Size(295, 20);
             this.ClienteUsername.TabIndex = 2;
+            this.ClienteUsername.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.username_KeyPress);
             // 
             // createClienteButton
             // 
@@ -196,6 +197,8 @@
             this.DocCliente.Name = "DocCliente";
             this.DocCliente.Size = new System.Drawing.Size(214, 20);
             this.DocCliente.TabIndex = 2;
+            this.DocCliente.TextChanged += new System.EventHandler(this.DocCliente_TextChanged);
+            this.DocCliente.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.documento_KeyPress);
             // 
             // searchDocumentoButton
             // 
@@ -232,6 +235,16 @@
             this.Acciones.TabStop = false;
             this.Acciones.Text = "Acciones";
             // 
+            // TarjetasButton
+            // 
+            this.TarjetasButton.Location = new System.Drawing.Point(266, 18);
+            this.TarjetasButton.Name = "TarjetasButton";
+            this.TarjetasButton.Size = new System.Drawing.Size(75, 23);
+            this.TarjetasButton.TabIndex = 12;
+            this.TarjetasButton.Text = "Tarjetas";
+            this.TarjetasButton.UseVisualStyleBackColor = true;
+            this.TarjetasButton.Click += new System.EventHandler(this.TarjetasButton_Click);
+            // 
             // DeshabilitarButton
             // 
             this.DeshabilitarButton.Location = new System.Drawing.Point(103, 19);
@@ -242,16 +255,6 @@
             this.DeshabilitarButton.UseVisualStyleBackColor = true;
             this.DeshabilitarButton.Visible = false;
             this.DeshabilitarButton.Click += new System.EventHandler(this.DeshabilitarButton_Click);
-            // 
-            // TarjetasButton
-            // 
-            this.TarjetasButton.Location = new System.Drawing.Point(266, 18);
-            this.TarjetasButton.Name = "TarjetasButton";
-            this.TarjetasButton.Size = new System.Drawing.Size(75, 23);
-            this.TarjetasButton.TabIndex = 12;
-            this.TarjetasButton.Text = "Tarjetas";
-            this.TarjetasButton.UseVisualStyleBackColor = true;
-            this.TarjetasButton.Click += new System.EventHandler(this.TarjetasButton_Click);
             // 
             // ClienteListado
             // 
