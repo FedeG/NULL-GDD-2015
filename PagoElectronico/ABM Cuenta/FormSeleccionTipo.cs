@@ -28,5 +28,19 @@ namespace PagoElectronico.ABM_Cuenta
             this.tipoSeleccionado = comboBox1.SelectedValue.ToString();
             this.Close();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void element_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.button1.PerformClick();
+            }
+        }
     }
 }
