@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using PagoElectronico.Commons;
 
 namespace PagoElectronico.ABM_Cliente
 {
     public partial class ClienteEdicion : ClienteData
     {
-        string username;
+        string username, password_hash, respuesta_hash;
 
         public ClienteEdicion(DataGridViewRow selected)
         {
@@ -52,7 +53,9 @@ namespace PagoElectronico.ABM_Cliente
             while (db.getLector().Read()){
                 this.InputPregunta.Text = db.getLector()["Usr_Pregunta_Secreta"].ToString();
                 this.InputPassword.Text = db.getLector()["Usr_Password"].ToString();
+                this.password_hash = db.getLector()["Usr_Password"].ToString();
                 this.InputRespuestaSecreta.Text = db.getLector()["Usr_Respuesta_Secreta"].ToString();
+                this.respuesta_hash = db.getLector()["Usr_Respuesta_Secreta"].ToString();
             }
         }
 
@@ -61,6 +64,10 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void button1_Click(object sender, EventArgs e){
+            if (this.respuesta_hash != this.InputRespuestaSecreta.Text)
+                this.InputRespuestaSecreta.Text = new Sha256Generator().GetHashString(InputRespuestaSecreta.Text);
+            if (this.password_hash != this.InputPassword.Text)
+                this.InputPassword.Text = new Sha256Generator().GetHashString(InputPassword.Text);
             this.ExecStoredProcedure("NULL.spEditarCliente", true);
             MessageBox.Show("El usuario fue editado exitosamente.");
             this.Close();
