@@ -185,7 +185,15 @@ namespace PagoElectronico.ABM_Cuenta
         }
 
         void SearchCuentaPorUsername(){
-            string queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Cli_Cod, Usr_Username FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + ClienteUsername.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
+            string queryGetCliCod;
+            if (this.is_admin)
+            {
+                queryGetCliCod = "SELECT Cli_Cod FROM (SELECT Cli_Cod, Usr_Username FROM GD1C2015.[NULL].Cliente WHERE Usr_Username LIKE '%" + ClienteUsername.Text + "%') AS Cliente INNER JOIN GD1C2015.[NULL].Usuario AS Usuario ON Cliente.Usr_Username=Usuario.Usr_Username";
+            }
+            else {
+                queryGetCliCod = "SELECT Cli_Cod FROM GD1C2015.[NULL].Cliente WHERE Usr_Username = '" + this.username + "'";
+            }
+            
             this.loadCuentaTable(queryGetCliCod);
         }
 
