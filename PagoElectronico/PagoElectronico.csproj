@@ -207,6 +207,9 @@
     <EmbeddedResource Include="ABM Cuenta\FormSuscripcion.resx">
       <DependentUpon>FormSuscripcion.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM de Usuario\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Consulta Saldos\ConsultaForm.resx">
       <DependentUpon>ConsultaForm.cs</DependentUpon>
     </EmbeddedResource>
