@@ -22,8 +22,13 @@ namespace PagoElectronico.ABM_Cliente
         }
 
         private void button1_Click(object sender, EventArgs e){
-            this.ExecStoredProcedure("NULL.spCrearCliente", false);
-            this.Close();
+            int resultado = this.ExecStoredProcedure("NULL.spCrearCliente", false);
+            switch (resultado){
+                case 0: MessageBox.Show("El usuario fue creado exitosamente."); this.Close();  break;
+                case 1: MessageBox.Show("El username ya existe, por favor seleccione otro."); break;
+                case 2: MessageBox.Show("El número de documento esta asignado a otro usuario, por favor ingrese otro numero o tipo de documento."); break;
+                case 3: MessageBox.Show("El mail ingresado ya esta asignado a otro usuario, por favor seleccione otro mail."); break;
+            }
         }
 
     }
