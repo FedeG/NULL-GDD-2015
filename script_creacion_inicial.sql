@@ -761,7 +761,7 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-		
+			SET @Transferencia_Costo = 0
 			INSERT INTO [GD1C2015].[NULL].[Transferencia](Cuenta_Origen_Numero, Cuenta_Destino_Numero, Transf_Fecha, Transf_Importe, Transf_Costo, Moneda_Nombre)
 			VALUES(@Cuenta_Origen, @Cuenta_Destino, CONVERT(DATETIME, @Fecha_Transferencia, 121), @Importe, @Transferencia_Costo, @Moneda_Nombre)
 		
