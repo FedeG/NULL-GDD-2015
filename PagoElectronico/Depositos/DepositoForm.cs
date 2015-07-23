@@ -34,7 +34,7 @@ namespace PagoElectronico.Depositos
             this.db.CerrarConexion();
 
             /* FALTA COMPLETAR SELECT QUE TRAE TARJETA DEL CLIENTE */
-            string queryTarjetas = "SELECT Tarjeta_Numero, Tarjeta_Numero_Visible FROM [GD1C2015].[NULL].[Tarjeta] WHERE Cli_Cod= " + cli_Cod;
+            string queryTarjetas = "SELECT Tarjeta_Numero, Tarjeta_Numero_Visible FROM [GD1C2015].[NULL].[Tarjeta] WHERE Cli_Cod= " + cli_Cod + " AND Tarjeta_Estado= 'Asociada'";
             comboTarjeta.DataSource = new BindingSource(this.db.GetQueryDictionary(queryTarjetas, "Tarjeta_Numero_Visible", "Tarjeta_Numero"), null);
             comboTarjeta.DisplayMember = "Key";
             comboTarjeta.ValueMember = "Value";
